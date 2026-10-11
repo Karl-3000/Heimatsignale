@@ -92,7 +92,7 @@
 					</h2>
 					<p class="text-ink-muted">
 						{personen(view.core.root.count)}
-						{umkreis.scope === SCOPE_ALL ? 'leben im Umkreis.' : `leben in ${view.core.root.name}.`}
+						{umkreis.scope === SCOPE_ALL ? `leben im Umkreis von ${overview.radius_km} km.` : `leben in ${view.core.root.name}.`}
 						Öffne ein Bundesland, dann einen Landkreis, dann einen Ort.
 					</p>
 				</div>

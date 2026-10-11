@@ -15,8 +15,9 @@
 
 	<h2>1. Zweck des Dienstes</h2>
 	<p>
-		{session.siteName} hilft Menschen, die in eine neue Stadt gezogen sind, andere Zugezogene aus der eigenen Heimatregion im Umkreis von 20 km zu
-		finden. Der Dienst gilt nur für Deutschland: Heimatort und Wohnort sind deutsche Gemeinden.
+		{session.siteName} hilft Menschen, die in eine neue Stadt gezogen sind, andere Zugezogene aus der eigenen Heimatregion im Umkreis zu
+		finden. Der Umkreis beträgt {session.defaultRadius} km um den Wohnort und lässt sich auf {session.maxRadius} km erweitern. Andere Mitglieder können dich aus bis
+		zu {session.maxRadius} km Entfernung sehen und dir eine Kontaktanfrage senden. Der Dienst gilt nur für Deutschland: Heimatort und Wohnort sind deutsche Gemeinden.
 	</p>
 	<p>
 		Der Dienst ist <strong>keine Dating-Plattform</strong>. Wer ihn zur Partnersuche oder zur Anmache nutzt, wird gesperrt.

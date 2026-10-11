@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CLUSTER_THRESHOLD_PX, COMPACT_RADIUS, MINIATURE_MAX_RADIUS, MINIATURE_MIN_RADIUS, clusterPoints, countMarkerOverlaps, desiredMiniatureRadius, sizeClusters, type ScreenPoint } from './cluster';
-import { haversineKm } from './geo';
-import { datasetDreiWohnorte } from '../network/synthetic';
+import { fitPxPerKm, haversineKm, localProject } from './geo';
+import { datasetDreiWohnorte, datasetWeit } from '../network/synthetic';
 
 function minDistance(points: Array<{ x: number; y: number }>): number {
 	let min = Number.POSITIVE_INFINITY;
@@ -133,5 +133,69 @@ describe('desiredMiniatureRadius', () => {
 		expect(b).toBeGreaterThan(a);
 		expect(desiredMiniatureRadius(20, 9)).toBe(MINIATURE_MAX_RADIUS);
 		expect(desiredMiniatureRadius(0, 9)).toBe(MINIATURE_MIN_RADIUS);
+	});
+});
+
+describe('100 km mit 60 Wohnorten', () => {
+	const overview = datasetWeit().overview;
+	const center: [number, number] = [overview.me.residence.lon, overview.me.residence.lat];
+
+	function project(width: number, height: number, zoomFactor: number): ScreenPoint[] {
+		const scale = fitPxPerKm(width, height, overview.radius_km) * zoomFactor;
+		return overview.residences.map((r) => {
+			const p = localProject([r.lon, r.lat], center, scale, width, height);
+			return { id: r.ags, x: p.x, y: p.y, weight: r.total };
+		});
+	}
+
+	it('hat 60 Wohnorte innerhalb von 100 km', () => {
+		expect(overview.radius_km).toBe(100);
+		expect(overview.residences).toHaveLength(60);
+		for (const r of overview.residences) expect(haversineKm(center, [r.lon, r.lat])).toBeLessThanOrEqual(100);
+	});
+
+	it('hält auf Telefon und Desktop 48 px Abstand, zählt niemanden doppelt und überdeckt nichts', () => {
+		const total = overview.residences.reduce((a, r) => a + r.total, 0);
+		for (const [width, height] of [
+			[328, 320],
+			[1056, 540]
+		]) {
+			for (const zoomFactor of [1, 2, 4, 8, 16]) {
+				const clusters = clusterPoints(project(width, height, zoomFactor));
+				expect(minDistance(clusters)).toBeGreaterThanOrEqual(CLUSTER_THRESHOLD_PX);
+				expect(clusters.reduce((a, c) => a + c.weight, 0)).toBe(total);
+				expect(clusters.reduce((a, c) => a + c.ids.length, 0)).toBe(60);
+				for (const desired of [MINIATURE_MIN_RADIUS, 60, MINIATURE_MAX_RADIUS]) {
+					expect(countMarkerOverlaps(sizeClusters(clusters, desired))).toBe(0);
+				}
+			}
+		}
+	});
+
+	it('fasst herausgezoomt zusammen und trennt beim Hineinzoomen wieder alle Wohnorte', () => {
+		const far = clusterPoints(project(328, 320, 1));
+		expect(far.length).toBeLessThan(30);
+		expect(far.some((c) => c.ids.length > 1)).toBe(true);
+		let previous = far.length;
+		for (const zoomFactor of [2, 4, 8, 16, 32, 64]) {
+			const count = clusterPoints(project(328, 320, zoomFactor)).length;
+			expect(count).toBeGreaterThanOrEqual(previous - 1);
+			previous = count;
+		}
+		expect(clusterPoints(project(328, 320, 64))).toHaveLength(60);
+	});
+
+	it('bleibt auch mit 400 Punkten schnell', () => {
+		const points: ScreenPoint[] = Array.from({ length: 400 }, (_, i) => ({
+			id: `p${String(i).padStart(3, '0')}`,
+			x: (i * 7919) % 1000,
+			y: (i * 104729) % 600,
+			weight: 1 + (i % 5)
+		}));
+		const start = Date.now();
+		const clusters = clusterPoints(points);
+		expect(Date.now() - start).toBeLessThan(1500);
+		expect(minDistance(clusters)).toBeGreaterThanOrEqual(CLUSTER_THRESHOLD_PX);
+		expect(clusters.reduce((a, c) => a + c.weight, 0)).toBe(points.reduce((a, p) => a + p.weight, 0));
 	});
 });

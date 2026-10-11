@@ -233,3 +233,38 @@ test('Ohne Anmeldung gibt es keine Nutzerdaten, und der Admin-Bereich verlangt d
 	}
 	await bild(page, 'rechtstexte-entwurf');
 });
+
+test('Umkreis umschalten: 20 km als Standard, 100 km auf Wunsch, Auswahl bleibt erhalten', async ({ browser }) => {
+	const kontext = await browser.newContext({ locale: 'de-DE' });
+	const page = await kontext.newPage();
+	await anmelden(page, DEMO.email, DEMO.password);
+	await expect(id(page, 'radius-toggle')).toBeVisible();
+	await expect(id(page, 'umkreis-summary')).toContainText('20 km');
+	const eng = await (await page.request.get('/api/nearby/overview')).json();
+
+	const antwort = page.waitForResponse((r) => r.url().includes('/api/nearby/overview') && r.url().includes('radius_km=100'));
+	await id(page, 'radius-100').click();
+	const weit = await (await antwort).json();
+	expect(weit.radius_km).toBe(100);
+	expect(weit.total).toBeGreaterThan(eng.total);
+	expect(weit.residences.length).toBeGreaterThan(eng.residences.length);
+	await expect(id(page, 'umkreis-summary')).toContainText('100 km');
+	await expect(id(page, 'radius-hint')).toContainText('100 km');
+	await page.waitForTimeout(1200);
+	await bild(page, 'umkreis-100-km');
+
+	// Auch in der weiten Ansicht lässt sich bis zur Person hineinzoomen.
+	for (const level of ['state', 'district', 'place']) {
+		await page.locator(`[data-testid="network-node"][data-level="${level}"][data-own="true"]`).first().click();
+		await page.waitForTimeout(600);
+	}
+	await expect(id(page, 'people-panel')).toBeVisible();
+
+	// Die Auswahl bleibt nach dem Neuladen erhalten und lässt sich zurückstellen.
+	await page.reload();
+	await expect(id(page, 'umkreis-summary')).toContainText('100 km');
+	await id(page, 'radius-20').click();
+	await expect(id(page, 'umkreis-summary')).toContainText('20 km');
+	expect((await page.request.get('/api/nearby/overview?radius_km=55')).status()).toBe(422);
+	await kontext.close();
+});

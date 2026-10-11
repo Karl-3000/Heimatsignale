@@ -2,7 +2,8 @@
  * Künstliche Daten für den Netz-Prototyp (Projektplan, Abschnitt 5).
  * Sie decken die geforderten Fälle ab: 5, 50 und 300 Knoten, lange Ortsnamen,
  * sehr ungleiche Gruppen, drei dicht benachbarte Wohnorte, eigene Herkunft
- * außerhalb der fünf größten Gruppen und einen leeren Umkreis.
+ * außerhalb der fünf größten Gruppen, einen leeren Umkreis und einen weiten Umkreis
+ * von 100 km mit 60 Wohnorten.
  *
  * Alle Personen sind erfunden. Die Daten entstehen deterministisch aus einem
  * festen Startwert, damit Tests und Entwicklungsansicht dasselbe zeigen.
@@ -11,6 +12,7 @@
 import type { NearbyOverview, PlacePoint, PublicUser, ResidenceOverview } from '../api/types';
 import type { OriginSource } from './source';
 import { SCOPE_ALL } from './source';
+import { destination } from '../map/geo';
 import { stateName } from './states';
 import type { OriginItem } from './types';
 
@@ -194,7 +196,7 @@ function buildPeople(groups: readonly SyntheticGroup[], residences: readonly Res
 	return people;
 }
 
-function buildOverview(groups: readonly SyntheticGroup[], residences: readonly ResidenceSeed[]): NearbyOverview {
+function buildOverview(groups: readonly SyntheticGroup[], residences: readonly ResidenceSeed[], radiusKm: number): NearbyOverview {
 	const out: ResidenceOverview[] = [];
 	for (const r of residences) {
 		const mine = groups.filter((g) => g.residenceAgs === r.ags);
@@ -212,7 +214,7 @@ function buildOverview(groups: readonly SyntheticGroup[], residences: readonly R
 		});
 	}
 	return {
-		radius_km: 20,
+		radius_km: radiusKm,
 		me: { residence: ME_RESIDENCE, home: ME_HOME },
 		total: out.reduce((a, r) => a + r.total, 0),
 		residences: out
@@ -249,7 +251,8 @@ function finish(
 	title: string,
 	description: string,
 	groups: SyntheticGroup[],
-	residences: readonly ResidenceSeed[]
+	residences: readonly ResidenceSeed[],
+	radiusKm: number = 20
 ): SyntheticDataset {
 	const people = buildPeople(groups, residences);
 	const states = new Set(groups.map((g) => g.stateCode));
@@ -259,7 +262,7 @@ function finish(
 		id,
 		title,
 		description,
-		overview: buildOverview(groups, residences),
+		overview: buildOverview(groups, residences, radiusKm),
 		groups,
 		source: makeSource(groups, people),
 		nodeCount: states.size + districts.size + places.size
@@ -459,7 +462,7 @@ export function datasetHerkunftAusserhalb(): SyntheticDataset {
 }
 
 export function datasetLeer(): SyntheticDataset {
-	return finish('leer', 'Leerer Umkreis', 'Niemand im Umkreis von 20 km. Statt einer leeren Karte erscheint eine Erklärung.', [], [MARL]);
+	return finish('leer', 'Leerer Umkreis', 'Niemand im Umkreis. Statt einer leeren Karte erscheint eine Erklärung.', [], [MARL]);
 }
 
 /** Beispielnetz der Startseite: klein genug zum Erfassen, groß genug zum Ausprobieren. */
@@ -487,6 +490,58 @@ export function datasetBeispiel(): SyntheticDataset {
 	);
 }
 
+/**
+ * Weiter Umkreis: 100 km mit 60 Wohnorten, teils dicht beieinander. Prüft, dass die Karte
+ * mit vielen Knoten benutzbar bleibt (Sammelknoten unter 48 px, keine Überdeckung).
+ */
+export function datasetWeit(): SyntheticDataset {
+	const rand = seededRandom(100);
+	const used = new Set<string>();
+	const residences: ResidenceSeed[] = [MARL, HERTEN, RECKLINGHAUSEN, OER, DORSTEN, HALTERN, GELSENKIRCHEN];
+	while (residences.length < 60) {
+		const index = residences.length;
+		let name = '';
+		do {
+			name = NAME_HEAD[Math.floor(rand() * NAME_HEAD.length)] + NAME_TAIL[Math.floor(rand() * NAME_TAIL.length)];
+		} while (used.has(name));
+		used.add(name);
+		// Gleichmäßig über die Kreisfläche verteilt, bis knapp unter 100 km.
+		const [lon, lat] = destination([MARL.lon, MARL.lat], 8 + Math.sqrt(rand()) * 90, rand() * Math.PI * 2);
+		residences.push({ ags: `05${pad(900 + Math.floor(index / 10), 3)}${pad(index, 3)}`, name, lat, lon });
+	}
+	const origins: Array<[string, number, string, number, string, number]> = [
+		['09', 780, 'Oberallgäu', 139, 'Sonthofen', 0],
+		['09', 780, 'Oberallgäu', 124, 'Immenstadt', 8],
+		['09', 187, 'Rosenheim', 150, 'Rosenheim', 150],
+		['14', 524, 'Zwickau', 330, 'Zwickau', 410],
+		['14', 625, 'Bautzen', 20, 'Bautzen', 500],
+		['08', 436, 'Ravensburg', 64, 'Ravensburg', 60],
+		['03', 454, 'Emsland', 32, 'Lingen', 590],
+		['06', 631, 'Fulda', 9, 'Fulda', 320],
+		['16', 67, 'Gotha', 29, 'Gotha', 330],
+		['12', 73, 'Uckermark', 452, 'Prenzlau', 640],
+		['13', 72, 'Rostock', 43, 'Güstrow', 700],
+		['01', 54, 'Nordfriesland', 56, 'Husum', 760]
+	];
+	const groups: SyntheticGroup[] = [];
+	for (const residence of residences) {
+		const count = 1 + Math.floor(rand() * 3);
+		const start = Math.floor(rand() * origins.length);
+		for (let i = 0; i < count; i++) {
+			const o = origins[(start + i * 5) % origins.length];
+			groups.push(g(o[0], o[1], o[2], o[3], o[4], residence, 1 + Math.floor(Math.pow(rand(), 2) * 8), o[5]));
+		}
+	}
+	return finish(
+		'weit',
+		'100 km mit 60 Wohnorten',
+		'Der weite Umkreis: viele Wohnorte, teils dicht beieinander. Auf der Karte entstehen Sammelknoten, die sich beim Hineinzoomen trennen.',
+		groups,
+		residences,
+		100
+	);
+}
+
 export function allDatasets(): SyntheticDataset[] {
 	return [
 		datasetKlein(),
@@ -496,6 +551,7 @@ export function allDatasets(): SyntheticDataset[] {
 		datasetUngleich(),
 		datasetDreiWohnorte(),
 		datasetHerkunftAusserhalb(),
-		datasetLeer()
+		datasetLeer(),
+		datasetWeit()
 	];
 }

@@ -16,7 +16,8 @@
 	const datasets = allDatasets();
 
 	function build(dataset: SyntheticDataset): UmkreisState {
-		const built = new UmkreisState(dataset.source);
+		const built = new UmkreisState(() => dataset.source);
+		built.radius = dataset.overview.radius_km;
 		built.setOverview(dataset.overview);
 		return built;
 	}

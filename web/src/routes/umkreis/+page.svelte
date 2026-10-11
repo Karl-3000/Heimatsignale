@@ -73,7 +73,7 @@
 	{#if !overview && umkreis.loading}
 		<p role="status" class="text-ink-muted" data-testid="umkreis-loading">Dein Umkreis wird geladen.</p>
 	{:else if overview && overview.total === 0}
-		<EmptyUmkreis {overview} />
+		<EmptyUmkreis {overview} wider={umkreis.options.find((o) => o > overview.radius_km) ?? null} />
 	{:else if overview}
 		<UmkreisPanel state={umkreis} {tilesUrl} {glyphsUrl} />
 	{/if}

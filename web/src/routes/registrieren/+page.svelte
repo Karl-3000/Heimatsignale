@@ -255,7 +255,7 @@
 				<p class="text-ink-muted">Der Ort, aus dem du stammst: eine Gemeinde oder Stadt in Deutschland, kein Landkreis und kein Bundesland.</p>
 				<PlaceSearch label="Heimatort" bind:value={home} error={errors.home_ags} testid="register-home" />
 			{:else if step === 4}
-				<p class="text-ink-muted">Die Gemeinde oder Stadt, in der du jetzt lebst. Um diesen Ort liegt dein Umkreis von 20 km.</p>
+				<p class="text-ink-muted">Die Gemeinde oder Stadt, in der du jetzt lebst. Um diesen Ort liegt dein Umkreis: zuerst {session.defaultRadius} km, auf Wunsch bis {session.maxRadius} km.</p>
 				<PlaceSearch label="Wohnort" bind:value={residence} error={errors.residence_ags} testid="register-residence" />
 				{#if !residence}
 					<Card tone="sunken">

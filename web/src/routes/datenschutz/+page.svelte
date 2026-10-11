@@ -105,9 +105,15 @@
 
 	<h2>Was andere Mitglieder von dir sehen</h2>
 	<p>
-		Angemeldete Mitglieder, deren Wohnort höchstens 20 km von deinem entfernt liegt (gemessen zwischen den Mittelpunkten der Gemeinden), sehen:
+		Angemeldete Mitglieder, deren Wohnort höchstens {session.maxRadius} km von deinem entfernt liegt (gemessen zwischen den Mittelpunkten der Gemeinden),
+		sehen:
 		Nickname, ungefähre Altersspanne, Heimatort mit Landkreis und Bundesland, Wohnort-Gemeinde und den Monat deiner Registrierung. Nicht sichtbar sind
 		E-Mail, Geburtsdatum, Adresse, Online-Status und Lesestatus. Ob ein Gespräch ungelesen ist, merkt sich nur dein eigener Browser.
+	</p>
+	<p>
+		Die Umkreis-Ansicht zeigt zuerst {session.defaultRadius} km und lässt sich auf {session.maxRadius} km erweitern. Unabhängig davon, welchen Umkreis du selbst
+		gerade ansiehst, können dich Mitglieder aus bis zu {session.maxRadius} km Entfernung sehen und dir eine Kontaktanfrage senden. Welchen Umkreis du
+		gewählt hast, merkt sich nur dein Browser.
 	</p>
 	<p>
 		<strong>Restrisiko:</strong> Genauer Heimatort, Altersspanne und Wohnort-Gemeinde zusammen können in kleinen Orten auf eine bestimmte Person hinweisen.
@@ -154,7 +160,7 @@
 	<p>
 		Der Webserver protokolliert Zugriffe mit gekürzter IP-Adresse (letzter Teil entfernt) und löscht diese Protokolle nach 7 Tagen. Der Dienst setzt nur
 		technisch notwendige Cookies: eines für die Anmeldung und eines zum Schutz von Formularen. Dein Browser speichert außerdem lokal das gewählte
-		Farbschema und bis wann du ein Gespräch gelesen hast.
+		Farbschema, den gewählten Umkreis und bis wann du ein Gespräch gelesen hast.
 	</p>
 
 	<h2>Empfänger und Auftragsverarbeiter</h2>

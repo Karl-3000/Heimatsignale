@@ -15,7 +15,7 @@ weiter (gleiche Origin). Der API-Vertrag steht in `../docs/API.md`.
 | `npm run build`     | Statischer Build nach `build/`                                        |
 | `npm run preview`   | Build lokal ansehen                                                   |
 
-Umgebungsvariablen: siehe `.env.example`. Ohne `PUBLIC_TILES_URL` zeigt die Karte nur Hintergrund, 20-km-Kreis
+Umgebungsvariablen: siehe `.env.example`. Ohne `PUBLIC_TILES_URL` zeigt die Karte nur Hintergrund, Umkreis-Kreis
 und Knoten und stellt keine einzige Anfrage nach außen. Ortsnamen auf der Grundkarte gibt es nur mit
 `PUBLIC_GLYPHS_URL`; der Stil erwartet dort den Schriftschnitt „Noto Sans Regular“.
 
@@ -83,16 +83,27 @@ hält sie außerhalb der Seite, damit nach einem Profilbesuch alles wie zuvor is
 
 Jede Wohnort-Gemeinde ist ein HTML-Knoten über der Karte. Die Positionen kommen bei jeder Kartenbewegung aus
 `map.project`; aus den Pixelabständen bildet `cluster.ts` Sammelknoten (unter 48 px) und begrenzt die Größe der
-Miniaturen so, dass sich nie zwei überdecken. Der kleinste Zoom ist der, bei dem der 20-km-Kreis gerade in die
-Fläche passt; außerhalb des Kreises deckt eine Maske die Karte ab. Kann MapLibre nicht starten (kein WebGL),
+Miniaturen so, dass sich nie zwei überdecken. Der kleinste Zoom ist der, bei dem der Kreis des gewählten Umkreises
+gerade in die Fläche passt; außerhalb des Kreises deckt eine Maske die Karte ab. Kann MapLibre nicht starten (kein WebGL),
 erscheint eine schematische Ersatzdarstellung mit denselben Knoten.
+
+## Umkreis 20 km oder 100 km
+
+Die Auswahl kommt aus `site.radius_options`, der Standard aus `site.radius_km`. Der gewählte Wert liegt in
+`network/umkreis.svelte.ts` (`radius`, `setRadius`) und wird im Browser unter `hs:umkreis` gemerkt; ein
+gespeicherter Wert gilt nur, wenn der Server ihn anbietet (`util/radius.ts`). Übersicht, Herkunft und Personen
+werden immer mit demselben `radius_km` abgefragt (`createApiSource(radius)`). Ein Wechsel lädt die Übersicht neu
+und verwirft alle Netze; Darstellung und Sortierung bleiben. Karte, Texte und leerer Zustand richten sich nach
+dem angewandten Wert `overview.radius_km`. `datasetWeit()` (100 km, 60 Wohnorte) prüft Sammelknoten und
+Überdeckungsfreiheit; die Paarsuche in `cluster.ts` arbeitet dafür mit einem Gitter.
 
 ## Sicherheit und Datenschutz
 
 - Keine Anfragen an fremde Hosts, kein Tracking. Die CSP kommt aus `svelte.config.js` (`kit.csp`, Modus `hash`).
 - Koordinaten verlassen das Gerät nur gerundet (zwei Nachkommastellen) an `/api/places/nearest`, nach einem
   ausdrücklichen Klick, und werden nicht gespeichert.
-- localStorage enthält nur `hs:theme` (Farbschema) und `hs:gelesen` (bis wann ein Gespräch gelesen ist).
+- localStorage enthält nur `hs:theme` (Farbschema), `hs:umkreis` (gewählter Umkreis) und `hs:gelesen` (bis wann
+  ein Gespräch gelesen ist).
 
 ## Test-IDs
 
@@ -101,7 +112,7 @@ Stabile `data-testid`-Attribute für die Ende-zu-Ende-Tests, nach Bereich:
 - Rahmen: `brand`, `nav-umkreis`, `nav-anfragen`, `nav-gespraeche`, `nav-einstellungen` (mobil mit Endung `-mobil`),
   `nav-anmelden`, `nav-registrieren`, `logout`, `muted-banner`, `session-error`, `toaster`, `toast`,
   `theme-toggle`, `theme-system`, `theme-light`, `theme-dark`
-- Start und Vorschau: `landing-register`, `landing-preview`, `preview-card`, `preview-levels`, `preview-risk`,
+- Start und Vorschau: `landing-register`, `landing-preview`, `preview-card`, `preview-radius`, `preview-levels`, `preview-risk`,
   `preview-register`
 - Registrierung: `register-form` (Attribut `data-step`), `register-progress`, `register-step-title`,
   `register-email`, `register-password`, `register-day`, `register-month`, `register-year`, `register-home`,
@@ -119,7 +130,8 @@ Stabile `data-testid`-Attribute für die Ende-zu-Ende-Tests, nach Bereich:
   `status-appeal-form`, `status-appeal-text`, `status-appeal-submit`, `status-appeal-done`,
   `status-appeal-exists`, `appeal-form`, `appeal-text`, `appeal-submit`, `appeal-done`, `appeal-exists`,
   `appeal-invalid`, `appeal-error`, `staff-page`, `staff-admin-link`
-- Umkreis: `umkreis-page`, `umkreis-summary`, `umkreis-refresh`, `umkreis-loading`, `umkreis-error`,
+- Umkreis: `umkreis-page`, `umkreis-summary`, `radius-toggle`, `radius-20`, `radius-100` (je Wert aus
+  `site.radius_options`), `radius-status`, `empty-wider`, `umkreis-refresh`, `umkreis-loading`, `umkreis-error`,
   `umkreis-empty`, `umkreis-map` (Attribut `data-ready`), `map-node` und `map-cluster` (Attribute `data-ags`,
   `data-mode`), `map-zoom-in`, `map-zoom-out`, `map-reset`, `radius-hint`, `residence-list`, `residence-all`,
   `residence-item` (Attribut `data-ags`), `network-title`

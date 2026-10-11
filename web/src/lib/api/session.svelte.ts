@@ -1,4 +1,5 @@
 import { fetchSession, setCsrfToken } from './client';
+import { largestRadius, radiusOptions } from '../util/radius';
 import { DEFAULT_SITE, type EffectiveState, type Me, type SessionResponse, type SiteInfo } from './types';
 
 /**
@@ -28,6 +29,16 @@ class SessionStore {
 
 	get siteName(): string {
 		return this.data?.site?.name || DEFAULT_SITE.name;
+	}
+
+	/** Standard-Umkreis in km. */
+	get defaultRadius(): number {
+		return this.site.radius_km || DEFAULT_SITE.radius_km;
+	}
+
+	/** Größter wählbarer Umkreis in km. So weit reichen Sichtbarkeit, Profile und Anfragen. */
+	get maxRadius(): number {
+		return largestRadius(radiusOptions(this.site.radius_options, this.defaultRadius), this.defaultRadius);
 	}
 
 	get adminPath(): string {

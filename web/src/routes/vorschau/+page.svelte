@@ -38,7 +38,7 @@
 
 	<div class="grid gap-6 lg:grid-cols-2">
 		<section class="grid content-start gap-3" aria-labelledby="sichtbar-titel">
-			<h2 id="sichtbar-titel">Das sehen andere Zugezogene im Umkreis</h2>
+			<h2 id="sichtbar-titel">Das sehen andere Zugezogene im Umkreis von bis zu {session.maxRadius} km</h2>
 			<Card padding="lg" testid="preview-card">
 				<PersonSummary user={shown} size="lg" showMemberSince />
 			</Card>
@@ -69,11 +69,18 @@
 	</div>
 
 	<section class="grid max-w-prose gap-3" aria-labelledby="grenzen-titel">
-		<h2 id="grenzen-titel">Zwei Dinge, die du wissen solltest</h2>
+		<h2 id="grenzen-titel">Drei Dinge, die du wissen solltest</h2>
+		<Notice tone="info" title="Der Umkreis reicht bis {session.maxRadius} km" testid="preview-radius">
+			<p>
+				Die Ansicht zeigt zuerst {session.defaultRadius} km um den Wohnort{#if session.maxRadius > session.defaultRadius}
+					und lässt sich auf {session.maxRadius} km erweitern{/if}. Gemessen wird zwischen den Mittelpunkten der Gemeinden. Wer bis zu {session.maxRadius} km von
+				dir entfernt wohnt, kann dich also sehen und anfragen, auch wenn du selbst nur den kleineren Umkreis ansiehst.
+			</p>
+		</Notice>
 		<Notice tone="info" title="Die Stufen sind Navigation, kein Schutz" testid="preview-levels">
 			<p>
 				Die Herkunft erscheint stufenweise: Bundesland, dann Landkreis, dann Ort. Das dient der Übersicht. Jedes angemeldete Mitglied im Umkreis von
-				20 km kann bis zu deinem Heimatort und deinem Profil durchklicken.
+				bis zu {session.maxRadius} km kann bis zu deinem Heimatort und deinem Profil durchklicken und dir eine Kontaktanfrage senden.
 			</p>
 		</Notice>
 		<Notice tone="warning" title="Restrisiko in kleinen Orten" testid="preview-risk">

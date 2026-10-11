@@ -2,7 +2,13 @@
 	import type { NearbyOverview } from '$lib/api/types';
 
 	/** Gestalteter leerer Zustand: Erklärung statt leerer Karte. */
-	let { overview }: { overview: NearbyOverview } = $props();
+	interface Props {
+		overview: NearbyOverview;
+		/** Größerer wählbarer Umkreis in km, falls es einen gibt. */
+		wider?: number | null;
+	}
+
+	let { overview, wider = null }: Props = $props();
 </script>
 
 <section class="empty" data-testid="umkreis-empty">
@@ -28,6 +34,9 @@
 			Sobald sich weitere Zugezogene im Umkreis von {overview.me.residence.name} registrieren, erscheinen hier ihre Wohnorte und ihre Herkunft: erst nach
 			Bundesland, dann nach Landkreis, dann nach Ort.
 		</p>
+		{#if wider}
+			<p data-testid="empty-wider">Vielleicht wohnt jemand etwas weiter weg: Stelle den Umkreis oben auf {wider} km.</p>
+		{/if}
 		<p>Du musst nichts weiter tun. Schau später wieder vorbei oder erzähle anderen Zugezogenen von dem Dienst.</p>
 	</div>
 </section>

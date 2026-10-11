@@ -55,6 +55,17 @@ class Command(BaseCommand):
         for i in range(anzahl):
             pool = rng.choices([[heimat], same_district, same_state, everywhere], weights=[1, 2, 4, 9])[0]
             create(f"kunst{i}@example.org", rng.choice(pool), wohnort if rng.random() < 0.45 else rng.choice(residences))
+        # Einige Konten im weiteren Umland, damit die 100-km-Ansicht mehr zeigt als die 20-km-Ansicht.
+        with connection.cursor() as cur:
+            cur.execute(
+                "SELECT b.ags FROM places a, places b WHERE a.ags = %s AND ST_DWithin(a.center, b.center, %s) "
+                "AND NOT ST_DWithin(a.center, b.center, %s) ORDER BY b.ags",
+                [wohnort, settings.RADIUS_METERS, settings.RADIUS_DEFAULT_KM * 1000],
+            )
+            outer = [row[0] for row in cur.fetchall()]
+        for i in range(anzahl // 3 if outer else 0):
+            pool = rng.choices([[heimat], same_district, same_state, everywhere], weights=[1, 2, 4, 9])[0]
+            create(f"umland{i}@example.org", rng.choice(pool), rng.choice(outer))
         self.stdout.write(self.style.SUCCESS(
             f"Demo-Konten angelegt. Anmeldung: demo@example.org oder demo2@example.org, Passwort: {passwort}"
         ))

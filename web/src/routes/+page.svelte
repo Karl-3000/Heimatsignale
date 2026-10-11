@@ -6,15 +6,16 @@
 
 <svelte:head>
 	<title>{session.siteName}: Zugezogene aus deiner Heimat im Umkreis finden</title>
-	<meta name="description" content="Wer neu in eine Stadt zieht, findet hier andere Zugezogene aus der eigenen Heimatregion im Umkreis von 20 km. Nur für Deutschland, keine Dating-Plattform." />
+	<meta name="description" content="Wer neu in eine Stadt zieht, findet hier andere Zugezogene aus der eigenen Heimatregion im Umkreis von 20 km, auf Wunsch bis 100 km. Nur für Deutschland, keine Dating-Plattform." />
 </svelte:head>
 
 <div class="grid gap-12 pb-8">
 	<section class="grid gap-5 pt-4 sm:pt-10">
 		<h1 class="hero-title max-w-[22ch]">Finde Menschen aus deiner Heimat, dort wo du jetzt wohnst.</h1>
 		<p class="max-w-prose text-lg text-ink-muted">
-			{session.siteName} zeigt dir andere Zugezogene im Umkreis von 20 km um deinen Wohnort und lässt dich Schritt für Schritt erkennen, woher sie stammen:
-			erst das Bundesland, dann der Landkreis, dann der genaue Ort.
+			{session.siteName} zeigt dir andere Zugezogene im Umkreis von {session.defaultRadius} km um deinen Wohnort und lässt dich Schritt für Schritt erkennen, woher sie
+			stammen: erst das Bundesland, dann der Landkreis, dann der genaue Ort.{#if session.maxRadius > session.defaultRadius}
+				Wenn dir das zu eng ist, erweiterst du den Umkreis auf {session.maxRadius} km.{/if}
 		</p>
 		<div class="flex flex-wrap gap-3">
 			<Button href="/registrieren" variant="primary" testid="landing-register">Registrieren</Button>
@@ -69,7 +70,8 @@
 		<div>
 			<h3>Sparsam mit Daten</h3>
 			<p>
-				Kein Tracking, keine Werbung. Dein Gerätestandort wird nie gespeichert. Was andere von dir sehen und was niemand sieht, zeigt die
+				Kein Tracking, keine Werbung. Dein Gerätestandort wird nie gespeichert. Andere Mitglieder können dich aus bis zu {session.maxRadius} km Entfernung
+				sehen und anfragen. Was sie von dir sehen und was niemand sieht, zeigt die
 				<a href="/vorschau">Vorschau</a> vor der Registrierung.
 			</p>
 		</div>
