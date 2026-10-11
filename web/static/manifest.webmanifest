@@ -1,0 +1,19 @@
+{
+	"name": "Heimatsignale",
+	"short_name": "Heimatsignale",
+	"description": "Zugezogene aus deiner Heimatregion im Umkreis von 20 km finden.",
+	"lang": "de",
+	"start_url": "/umkreis",
+	"scope": "/",
+	"display": "standalone",
+	"background_color": "#efeeeb",
+	"theme_color": "#0b5c6b",
+	"icons": [
+		{
+			"src": "/icon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "any"
+		}
+	]
+}
