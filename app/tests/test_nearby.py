@@ -97,7 +97,8 @@ class OriginNetworkTest(BaseTest):
             self.assertEqual(dict((p["key"], p["count"]) for p in place)[SONTHOFEN], 1)
             ids = {p["id"] for p in self.api.get("/nearby/people", residence="all", home=SONTHOFEN).data["items"]}
             self.assertNotIn(str(blocked.id), ids)
-            self.assertEqual(self.api.get(f"/users/{blocked.id}").status_code, 200 if blocker is self.viewer else 404)
+            self.assertEqual(self.api.get(f"/users/{blocked.id}").status_code, 404)
+            self.assertEqual(Api(blocked).get(f"/users/{self.viewer.id}").status_code, 404)
             # Dasselbe aus Sicht der anderen Person.
             other = Api(blocked).get("/nearby/overview").data
             self.assertEqual(other["total"], 5)

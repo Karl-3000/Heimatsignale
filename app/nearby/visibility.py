@@ -45,3 +45,13 @@ def is_blocked_between(a_id, b_id) -> bool:
             [a_id, b_id, b_id, a_id],
         )
         return cur.fetchone() is not None
+
+
+def visible_ids(viewer, user_ids) -> set:
+    """Welche der genannten Nutzer sind für ``viewer`` im Umkreis sichtbar?"""
+    ids = list({i for i in user_ids})
+    if not ids:
+        return set()
+    with connection.cursor() as cur:
+        cur.execute(f"SELECT u.id {VISIBLE_FROM} AND u.id = ANY(%(ids)s)", params(viewer, ids=ids))
+        return {row[0] for row in cur.fetchall()}

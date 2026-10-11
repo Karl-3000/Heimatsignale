@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { circleBounds, circleRing, clampToCircle, destination, haversineKm, maskPolygon, type LngLat } from './geo';
+import { circleBounds, circleRing, clampToCircle, destination, fitPxPerKm, haversineKm, localProject, maskPolygon, type LngLat } from './geo';
 
 const MARL: LngLat = [7.0904, 51.6567];
 
@@ -52,5 +52,18 @@ describe('geo', () => {
 		expect(mask).toHaveLength(2);
 		expect(mask[0][0]).toEqual(mask[0][mask[0].length - 1]);
 		expect(mask[1][0]).toEqual(mask[1][mask[1].length - 1]);
+	});
+
+	it('projiziert in der Ersatzdarstellung den Mittelpunkt in die Mitte und 20 km an den Rand', () => {
+		const scale = fitPxPerKm(400, 300, 20, 30);
+		expect(scale).toBeCloseTo(6, 6);
+		expect(localProject(MARL, MARL, scale, 400, 300)).toEqual({ x: 200, y: 150 });
+		const north = localProject(destination(MARL, 20, 0), MARL, scale, 400, 300);
+		expect(north.x).toBeCloseTo(200, 0);
+		expect(150 - north.y).toBeGreaterThan(118);
+		expect(150 - north.y).toBeLessThan(122);
+		const east = localProject(destination(MARL, 20, Math.PI / 2), MARL, scale, 400, 300);
+		expect(east.x - 200).toBeGreaterThan(118);
+		expect(east.x - 200).toBeLessThan(122);
 	});
 });

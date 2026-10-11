@@ -12,6 +12,7 @@ from django.utils import timezone
 from accounts import mail, states
 from accounts.models import User
 from adminpanel import audit
+from adminpanel.models import AuditLog
 from contacts.models import Block, ContactRequest, Conversation, Message
 from heimatsignale.errors import ApiError, not_found, validation
 from jobs import stats
@@ -90,14 +91,17 @@ def create_report(reporter: User, *, target_type: str, target_id, conversation_i
         raise validation({"target_type": "Unbekanntes Ziel."})
 
     with transaction.atomic():
-        User.objects.select_for_update().filter(pk=reported.pk).first()
+        User.objects.select_for_update(no_key=True).filter(pk=reported.pk).first()
         window = now - timedelta(days=settings.INCIDENT_WINDOW_DAYS)
         same_target = Report.objects.filter(
             reported_user=reported, target_type=target_type, target_id=target_id, created_at__gt=window
         )
         if same_target.filter(reporter=reporter).exists():
             return  # dieselbe Meldung noch einmal: stillschweigend zusammengeführt
-        key = same_target.order_by("created_at").values_list("incident_key", flat=True).first() or uuid.uuid4().hex
+        key = (
+            same_target.filter(resolved_at__isnull=True).order_by("created_at").values_list("incident_key", flat=True).first()
+            or uuid.uuid4().hex
+        )
         Report.objects.create(
             reporter=reporter, reported_user=reported, target_type=target_type, target_id=target_id,
             snapshot=snapshot, reason=reason, severity=Report.SEVERITY[reason], note=note, incident_key=key,
@@ -111,8 +115,15 @@ def create_report(reporter: User, *, target_type: str, target_id, conversation_i
 def _auto_mute(reported: User, now) -> bool:
     """Drei verschiedene Konten in 24 Stunden, jedes seit mindestens 7 Tagen aktiv: 48 Stunden stumm."""
     since = now - timedelta(hours=settings.MUTE_WINDOW_HOURS)
+    # Geprüfte Meldungen zählen nicht mehr, und nach einer aufgehobenen Stummschaltung
+    # beginnt die Zählung neu. Sonst würde jede weitere Meldung die Aufhebung umkehren.
+    lifted = AuditLog.objects.filter(
+        target_user=reported, action__in=["unmute", "appeal_overturned"]
+    ).order_by("-created_at").values_list("created_at", flat=True).first()
+    if lifted is not None and lifted > since:
+        since = lifted
     reporter_ids = (
-        Report.objects.filter(reported_user=reported, created_at__gt=since, reporter__isnull=False)
+        Report.objects.filter(reported_user=reported, created_at__gt=since, reporter__isnull=False, resolved_at__isnull=True)
         .values_list("reporter_id", flat=True).distinct()
     )
     min_age = timedelta(days=settings.MUTE_REPORTER_MIN_ACTIVE_DAYS)
@@ -135,14 +146,37 @@ def appeal_link(user: User) -> str:
     return f"{settings.SITE_URL}/einspruch?token={token}"
 
 
-def _create_appeal(user: User, text: str, report: Report | None) -> Appeal:
+MEASURES = {"suspended": ["suspend"], "muted": ["mute"]}
+
+
+def _measure(user: User, kind: str) -> tuple[Report | None, object]:
+    """Worauf sich ein Einspruch bezieht: die auslösende Meldung (falls es eine gibt) und der Beginn der Maßnahme."""
+    entry = AuditLog.objects.filter(target_user=user, action__in=MEASURES[kind]).order_by("-created_at").first()
+    if kind == "suspended":
+        report = Report.objects.filter(reported_user=user, outcome=Report.Outcome.CONFIRMED).order_by("-resolved_at").first()
+        if report is not None and entry is not None and abs((report.resolved_at - entry.created_at).total_seconds()) > 60:
+            report = None  # die aktuelle Sperre stammt nicht aus diesem Vorfall
+    else:
+        report = Report.objects.filter(reported_user=user, resolved_at__isnull=True).order_by("-created_at").first()
+    started = entry.created_at if entry is not None else None
+    if report is not None and (started is None or report.created_at > started):
+        started = report.created_at if kind == "muted" else started
+    return report, started
+
+
+def _create_appeal(user: User, text: str, kind: str) -> Appeal:
     text = (text or "").strip()
     if not text:
         raise validation({"text": "Bitte beschreibe kurz, warum du Einspruch einlegst."})
     if len(text) > 2000:
         raise validation({"text": "Der Text darf höchstens 2000 Zeichen lang sein."})
     exists = ApiError(409, "appeal_exists", "Zu diesem Vorfall liegt bereits ein Einspruch vor.")
-    if report is not None and Appeal.objects.filter(user=user, report__incident_key=report.incident_key).exists():
+    report, started = _measure(user, kind)
+    # Einmal Einspruch pro Maßnahme, ob sie aus einer Meldung stammt oder direkt gesetzt wurde.
+    mine = Appeal.objects.filter(user=user)
+    if report is not None and mine.filter(report__incident_key=report.incident_key).exists():
+        raise exists
+    if started is not None and mine.filter(created_at__gte=started).exists():
         raise exists
     try:
         with transaction.atomic():
@@ -154,8 +188,7 @@ def _create_appeal(user: User, text: str, report: Report | None) -> Appeal:
 def appeal_as_muted(user: User, text: str) -> Appeal:
     if states.effective_state(user) != states.MUTED:
         raise ApiError(400, "not_muted", "Einspruch ist nur während einer Stummschaltung möglich.")
-    report = Report.objects.filter(reported_user=user).order_by("-created_at").first()
-    return _create_appeal(user, text, report)
+    return _create_appeal(user, text, "muted")
 
 
 def appeal_by_token(token: str, text: str) -> Appeal:
@@ -167,8 +200,20 @@ def appeal_by_token(token: str, text: str) -> Appeal:
     user = User.objects.filter(pk=data.get("u"), status="suspended").first()
     if user is None:
         raise invalid
-    report = Report.objects.filter(reported_user=user, outcome=Report.Outcome.CONFIRMED).order_by("-resolved_at").first()
-    return _create_appeal(user, text, report)
+    return _create_appeal(user, text, "suspended")
+
+
+def first_deciders(appeal: Appeal) -> set:
+    """Wer die Maßnahme entschieden hat, gegen die sich der Einspruch richtet."""
+    ids = set()
+    if appeal.report is not None and appeal.report.resolved_by_id:
+        ids.add(appeal.report.resolved_by_id)
+    entry = AuditLog.objects.filter(
+        target_user_id=appeal.user_id, action__in=["suspend", "mute"], created_at__lte=appeal.created_at
+    ).order_by("-created_at").first()
+    if entry is not None and entry.admin_id:
+        ids.add(entry.admin_id)
+    return ids
 
 
 # -- Entscheidungen im Admin-Bereich ---------------------------------------------
@@ -218,7 +263,7 @@ def decide_appeal(admin: User, appeal: Appeal, overturned: bool, reason: str = "
     """Über den Einspruch entscheidet eine andere Person als die Erstentscheidung."""
     if appeal.decided_at is not None:
         raise ValueError("Über diesen Einspruch wurde bereits entschieden.")
-    if appeal.report is not None and appeal.report.resolved_by_id == admin.pk:
+    if admin.pk in first_deciders(appeal):
         raise PermissionError("Den Einspruch muss eine andere Person entscheiden als die Erstentscheidung.")
     with transaction.atomic():
         appeal.decided_at = timezone.now()

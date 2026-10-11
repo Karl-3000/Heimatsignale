@@ -30,7 +30,7 @@ Fehler haben einen HTTP-Status und diesen Körper:
 
 | Status | Bedeutung                                                               |
 |--------|-------------------------------------------------------------------------|
-| 400    | Anfrage fachlich nicht möglich (`code` nennt den Grund)                 |
+| 400    | Anfrage fachlich nicht möglich (`code` nennt den Grund); `bad_request` bei ungültigem JSON oder unzulässigen Zeichen |
 | 401    | `not_authenticated`: nicht angemeldet oder Sitzung beendet              |
 | 403    | `csrf_failed`, `state_forbidden`, `awaiting_approval`, `muted`, `staff_only_admin` |
 | 404    | `not_found`: existiert nicht **oder ist für dich nicht sichtbar**       |
@@ -212,7 +212,10 @@ Feste Seitengröße 50.
 `request_blocked_reason`: `null`, `"muted"`, `"attempts_exhausted"`,
 `"already_requested"`, `"connected"`, `"quota_daily"`, `"quota_active"`,
 `"not_visible"` (außerhalb deines Umkreises oder von dir blockiert).
-404, wenn der Nutzer nicht sichtbar ist.
+404, wenn der Nutzer nicht sichtbar ist. Das gilt auch bei einer
+Blockierung in beliebiger Richtung; `blocked_by_me` ist deshalb immer
+`false` und nur noch aus Kompatibilität vorhanden. Die Blockliste
+(`GET /api/blocks`) nennt den Nickname.
 
 ## Kontaktanfragen
 
@@ -280,6 +283,8 @@ Ob etwas "ungelesen" ist, entscheidet nur der Client (lokaler Speicher).
 ### `GET /api/blocks`
 `{ "items": [ { "user_id": "…", "nickname": "…" | null, "created_at": "…" } ] }`
 ### `POST /api/blocks` `{ "user_id": "…" }` → 204
+404, wenn du das Konto nicht kennst (nicht im Umkreis sichtbar, kein
+Gespräch, keine Anfrage zwischen euch).
 ### `DELETE /api/blocks/{user_id}` → 204
 
 ### `POST /api/reports`

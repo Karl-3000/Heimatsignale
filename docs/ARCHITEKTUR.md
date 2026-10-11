@@ -95,15 +95,40 @@ direkt danach und zusätzlich stündlich und ist beliebig wiederholbar.
 | Standortfreigabe | Der Browser sendet auf zwei Nachkommastellen gerundete Koordinaten einmalig an `/api/places/nearest`, im Körper der Anfrage. Sie werden weder gespeichert noch protokolliert |
 | Erste Nachricht | Der Text einer angenommenen Anfrage wird zur ersten Nachricht der Konversation |
 | Tageskontingent | Zurückgezogene Anfragen zählen weiter zu den 5 neuen Anfragen des Kalendertags, fallen aber sofort aus den 20 offenen |
-| Gegenanfrage auf eine abgelehnte Anfrage | zählt als neue Anfrage; nimmt die Gegenseite an, ist die alte erledigt |
+| Gegenanfrage auf eine abgelehnte Anfrage | gilt wie eine Gegenanfrage auf eine offene: beide sind angenommen. Sonst könnte die erste Seite an der Kombination "offen" plus "eingehend" die Ablehnung erkennen |
+| Blockieren | nur gegenüber Konten, die man kennt (im Umkreis sichtbar, im Gespräch oder über eine Anfrage). Eine Blockierung, gleich in welche Richtung, macht das Profil für beide unsichtbar; die Blockliste zeigt nur den Nickname |
+| Links in Nachrichten | nach 10 Nachrichten, wenn beide Seiten geschrieben haben |
+| Nachrichtenlimit | gezählt wird das Senden (60 pro Stunde und Konversation), nicht der Bestand; Löschen schafft keinen Platz |
+| Tabelle `django_admin_log` | Djangos eigenes Protokoll des Admin-Bereichs; wird wie das Audit-Log nach 24 Monaten gelöscht |
 | Entblocken | öffnet ein beendetes Gespräch nicht wieder; eine neue Anfrage ist nötig |
 | Löschjournal | SQLite mit Triggern (nur anfügbar), Einträge `request` und `confirm` |
 | Kennzahlen | zusätzliche Spalten `*_cohort`, die Ergebnisse dem Entstehungstag zuschreiben |
 | Admin-Konten | eigene Konten ohne Orte; sie melden sich nur im Admin-Bereich an und erscheinen nie im Umkreis |
-| Login-Regeln | gelten auch für die Anmeldung im Admin-Bereich; Fehlversuche werden als Hash von Konto und IP höchstens 24 Stunden gehalten |
+| Login-Regeln | gelten auch für die Anmeldung im Admin-Bereich, dort ohne den zusätzlichen Proof-of-Work (der zweite Faktor schützt, und niemand soll Admins durch Fehlversuche aussperren können). Die Sperre dauert 15 Minuten ab dem jüngsten Fehlversuch. Gleichzeitige Versuche werden nacheinander gezählt. Fehlversuche werden als Hash von Konto und IP höchstens 24 Stunden gehalten |
+| Unbestätigte Konten | verfallen nach 48 Stunden exakt nach Zeitstempel (kein Login, kein Bestätigen, kein neuer Link); der Tagesjob entfernt sie nur |
+| Einspruch | einmal pro Maßnahme, auch bei direkter Sperre ohne Meldung; entscheiden darf weder, wer die Meldung entschieden hat, noch wer gesperrt oder stummgeschaltet hat |
+| Automatische Stummschaltung | zählt nur ungeprüfte Meldungen und beginnt nach einer aufgehobenen Stummschaltung neu |
 | Proof-of-Work | Altcha-Protokoll (SHA-256), Server und Löser selbst umgesetzt, keine fremden Dienste |
 | Karte ohne Kacheln | funktioniert: Knoten und Umkreis auf neutralem Hintergrund |
 | Oberfläche | SvelteKit als reine SPA (`adapter-static`), weil alles hinter dem Login liegt |
+
+## Unabhängige Durchsicht
+
+Das Backend wurde nach der ersten Fassung von einer zweiten Instanz gegen
+den Plan geprüft. Die Befunde (unter anderem: Blockieren als Umweg um die
+Sichtbarkeit, Aussperren von Admins über die Login-Regeln, Verklemmung bei
+gegenseitigen Meldungen, Umgehen des IP-Limits durch gleichzeitige
+Registrierungen) sind behoben und in `app/tests/test_review_findings.py`
+als Regressionstests festgehalten.
+
+Bekannt und nicht behoben:
+
+- Antwortzeiten können verraten, ob eine E-Mail-Adresse registriert ist
+  (der Versand läuft in der Anfrage). Abhilfe wäre ein Versand über eine Warteschlange.
+- Nach einer Blockierung zeigt die Oberfläche keine Nachrichten mehr an;
+  gemeldet werden kann dann nur noch das Profil (aus der Blockliste).
+- Der Nachlauf nach einer Wiederherstellung führt unbestätigte
+  Journal-Einträge nicht von selbst aus, siehe WIEDERHERSTELLUNG.md.
 
 ## Nicht umgesetzt
 

@@ -6,6 +6,9 @@ aktuellen Zeit und erzwingt die Berechtigungstabelle. Außerdem prüft sie für
 die gesamte API den CSRF-Token und setzt die Cache-Header.
 """
 
+import json
+from urllib.parse import unquote
+
 from django.conf import settings
 from django.contrib.auth import logout
 from django.http import JsonResponse
@@ -23,6 +26,23 @@ def _error(status: int, code: str, message: str) -> JsonResponse:
     response = JsonResponse({"code": code, "message": message}, status=status)
     response["Cache-Control"] = "private, no-store"
     return response
+
+
+def _input_ok(request) -> bool:
+    """Weist NUL-Zeichen, kaputte Kodierung und ungültiges JSON ab, bevor sie die Datenbank erreichen."""
+    try:
+        if "\x00" in unquote(request.META.get("QUERY_STRING", ""), errors="strict") or "\x00" in request.path:
+            return False
+        body = request.body
+        if not body or not body.strip():
+            return True
+        if len(body) > 64 * 1024:
+            return False
+        text = json.dumps(json.loads(body.decode("utf-8")), ensure_ascii=False)
+        text.encode("utf-8")  # einzelne Surrogate lassen sich nicht kodieren
+        return "\\u0000" not in text  # json.dumps schreibt NUL immer als \\u0000
+    except (ValueError, UnicodeError):
+        return False
 
 
 def csrf_failure(request, reason=""):
@@ -52,6 +72,8 @@ class AccountStateMiddleware:
                 request.effective_state = state
 
         if is_api:
+            if not _input_ok(request):
+                return _error(400, "bad_request", "Die Anfrage enthält unzulässige Zeichen oder ist kein gültiges JSON.")
             if request.method not in SAFE_METHODS and check_csrf(request) is not None:
                 return _error(403, "csrf_failed", "Die Sitzung konnte nicht geprüft werden. Bitte lade die Seite neu.")
             path = request.path.rstrip("/")

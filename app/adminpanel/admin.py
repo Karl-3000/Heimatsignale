@@ -6,7 +6,7 @@ from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin.helpers import ActionForm
 from django.db import transaction
-from django.db.models import Count, OuterRef, Subquery
+from django.db.models import Count, F, OuterRef, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import path, reverse
 from django.utils import timezone
@@ -117,6 +117,18 @@ class UserAdmin(ReadOnlyAdmin):
               "last_activity_at", "created_at", "deleted_at", "ort_aendern")
     readonly_fields = fields
 
+    def get_ordering(self, request):
+        # Die Freigabe-Warteschlange zeigt die ältesten Registrierungen zuerst.
+        return ("created_at",) if request.GET.get("zustand") == "freigabe" else self.ordering
+
+    def get_fields(self, request, obj=None):
+        # Die Moderation braucht weder E-Mail-Adresse noch Geburtsjahr.
+        hidden = () if request.user.is_superuser else ("email", "birth_year", "adult_self_declared_at", "ort_aendern")
+        return [f for f in self.fields if f not in hidden]
+
+    def get_search_fields(self, request):
+        return self.search_fields if request.user.is_superuser else ("nickname",)
+
     @admin.display(description="Wirksamer Zustand")
     def zustand(self, obj):
         return STATE_LABELS[states.effective_state(obj)]
@@ -147,8 +159,12 @@ class UserAdmin(ReadOnlyAdmin):
     @admin.action(description="Freigeben (Warteschlange)")
     def approve(self, request, queryset):
         n = 0
-        for user in queryset.filter(status="pending", approval_required=True, approved_at__isnull=True):
+        for candidate in queryset.filter(status="pending", approval_required=True, approved_at__isnull=True):
             with transaction.atomic():
+                # Frisch und gesperrt lesen: Die E-Mail-Bestätigung kann gleichzeitig laufen.
+                user = User.objects.select_for_update(no_key=True).get(pk=candidate.pk)
+                if user.status != "pending" or user.approved_at is not None:
+                    continue
                 user.approved_at = timezone.now()
                 states.apply_activation(user)
                 user.save(update_fields=["approved_at", "status"])
@@ -223,8 +239,46 @@ class UserAdmin(ReadOnlyAdmin):
         return render(request, "admin/place_change.html", context)
 
 
+class AuditedAdmin(admin.ModelAdmin):
+    """Schreibt Anlegen, Ändern und Löschen ins Audit-Log (ohne Inhalte)."""
+
+    audit_name = ""
+
+    def _target(self, obj):
+        return getattr(obj, "user", None)
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        audit.log(request.user, f"{self.audit_name}_{'changed' if change else 'created'}", self._target(obj))
+
+    def delete_model(self, request, obj):
+        audit.log(request.user, f"{self.audit_name}_deleted", self._target(obj))
+        super().delete_model(request, obj)
+
+    def delete_queryset(self, request, queryset):
+        for obj in queryset:
+            audit.log(request.user, f"{self.audit_name}_deleted", self._target(obj))
+        super().delete_queryset(request, queryset)
+
+
+class ModeratorForm(forms.ModelForm):
+    class Meta:
+        model = Moderator
+        fields = ("user", "role", "deputy_of")
+
+    def clean_user(self):
+        user = self.cleaned_data["user"]
+        if user.home_id or user.residence_id:
+            raise forms.ValidationError(
+                "Bearbeiter brauchen ein eigenes Konto ohne Orte. Bitte mit 'manage.py admin_anlegen' anlegen."
+            )
+        return user
+
+
 @admin.register(Moderator, site=admin_site)
-class ModeratorAdmin(admin.ModelAdmin):
+class ModeratorAdmin(AuditedAdmin):
+    audit_name = "moderator"
+    form = ModeratorForm
     list_display = ("user", "role", "deputy_of")
     raw_id_fields = ("user",)
 
@@ -234,7 +288,7 @@ class PlaceChangeRequestAdmin(ReadOnlyAdmin):
     list_display = ("user", "field", "old_place", "new_place", "created_at", "decision", "decided_at")
     list_filter = ("decision", "field")
     list_select_related = ("user", "old_place", "new_place")
-    ordering = ("decided_at", "created_at")
+    ordering = (F("decided_at").asc(nulls_first=True), "created_at")
     action_form = ReasonActionForm
     actions = ["approve", "reject"]
 
@@ -242,7 +296,7 @@ class PlaceChangeRequestAdmin(ReadOnlyAdmin):
         n = 0
         for req in queryset.filter(decided_at__isnull=True).select_related("user", "new_place"):
             with transaction.atomic():
-                user = User.objects.select_for_update().get(pk=req.user_id)
+                user = User.objects.select_for_update(no_key=True).get(pk=req.user_id)
                 if approved and user.status != "deleted":
                     setattr(user, req.field, req.new_place)
                     user.save(update_fields=[req.field])
@@ -310,7 +364,7 @@ class ReportAdmin(ReadOnlyAdmin):
         )
         return super().get_queryset(request).select_related("reported_user").annotate(
             incident_size=Subquery(size)
-        ).order_by("resolved_at", "-severity", "-incident_size", "created_at")
+        ).order_by(F("resolved_at").asc(nulls_first=True), "-severity", "-incident_size", "created_at")
 
     @admin.display(description="Vorfall")
     def vorfall(self, obj):
@@ -373,7 +427,8 @@ class AppealAdmin(ReadOnlyAdmin):
 
 # -- Einladungscodes, Kennzahlen, Audit, Orte ------------------------------------------
 @admin.register(InviteCode, site=admin_site)
-class InviteCodeAdmin(admin.ModelAdmin):
+class InviteCodeAdmin(AuditedAdmin):
+    audit_name = "invite_code"
     list_display = ("label", "code", "valid_until", "used_count", "max_uses", "created_by")
     readonly_fields = ("code", "used_count", "created_by", "created_at")
     fields = ("label", "valid_until", "max_uses", "code", "used_count", "created_by", "created_at")
@@ -382,7 +437,6 @@ class InviteCodeAdmin(admin.ModelAdmin):
         if not change:
             obj.created_by = request.user
         super().save_model(request, obj, form, change)
-        audit.log(request.user, "invite_code_changed" if change else "invite_code_created")
 
 
 @admin.register(DailyStat, site=admin_site)
@@ -411,5 +465,14 @@ class PlaceMergeAdmin(ReadOnlyAdmin):
     list_display = ("old_ags", "new_ags", "valid_from")
 
 
-admin_site.register(TOTPDevice, TOTPDeviceAdmin)
-admin_site.register(StaticDevice)
+class AuditedTOTPDeviceAdmin(AuditedAdmin, TOTPDeviceAdmin):
+    audit_name = "totp_device"
+
+
+class AuditedStaticDeviceAdmin(AuditedAdmin):
+    audit_name = "backup_codes"
+    raw_id_fields = ("user",)
+
+
+admin_site.register(TOTPDevice, AuditedTOTPDeviceAdmin)
+admin_site.register(StaticDevice, AuditedStaticDeviceAdmin)

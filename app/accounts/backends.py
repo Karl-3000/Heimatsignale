@@ -12,7 +12,7 @@ class ThrottledBackend(ModelBackend):
         if request is None or username is None or password is None:
             return None
         try:
-            user = check_credentials(request, username, password)
+            user = check_credentials(request, username, password, pow_exempt=True)
         except ApiError:
             return None
         return user if user.is_active else None

@@ -14,7 +14,7 @@ from .base import PASSWORD, RECKLINGHAUSEN, Api, BaseTest, make_user
 def in_state(state: str) -> User:
     now = timezone.now()
     if state == states.UNVERIFIED:
-        return make_user(status="pending", verified=False, residence=RECKLINGHAUSEN)
+        return make_user(status="pending", verified=False, residence=RECKLINGHAUSEN, created_at=now)
     if state == states.AWAITING_APPROVAL:
         return make_user(status="pending", approval_required=True, residence=RECKLINGHAUSEN)
     if state == states.ACTIVE:

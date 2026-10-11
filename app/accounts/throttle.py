@@ -9,6 +9,7 @@
 from datetime import timedelta
 
 from django.conf import settings
+from django.db import connection
 from django.utils import timezone
 
 from .models import LoginFailure
@@ -21,13 +22,31 @@ class LoginLocked(Exception):
         self.retry_after = max(1, retry_after)
 
 
-def _retry_after(queryset, needed: int, window: timedelta) -> int | None:
-    """Sekunden bis zum Ende der Sperre oder ``None``, wenn keine Sperre besteht."""
+def _retry_after(queryset, needed: int, lock: timedelta) -> int | None:
+    """Sekunden bis zum Ende der Sperre oder ``None``, wenn keine Sperre besteht.
+
+    Gesperrt ist, wer in der letzten Stunde mindestens ``needed`` Fehlversuche hat,
+    und zwar für die Dauer ``lock`` ab dem jüngsten Fehlversuch. Versuche während
+    der Sperre werden abgewiesen, bevor sie zählen, und verlängern sie deshalb nicht.
+    """
     now = timezone.now()
+    window = max(lock, timedelta(hours=1))
     stamps = list(queryset.filter(created_at__gt=now - window).order_by("-created_at").values_list("created_at", flat=True)[:needed])
-    if len(stamps) < needed:
+    if len(stamps) < needed or stamps[0] + lock <= now:
         return None
-    return int((stamps[-1] + window - now).total_seconds()) + 1
+    return int((stamps[0] + lock - now).total_seconds()) + 1
+
+
+def serialize(email: str, ip: str) -> None:
+    """Reiht gleichzeitige Anmeldeversuche für dasselbe Konto und dieselbe IP hintereinander.
+
+    Ohne das könnten viele parallele Versuche geprüft werden, bevor der erste
+    Fehlversuch gezählt ist. Gilt bis zum Ende der laufenden Transaktion.
+    """
+    keys = sorted({account_hash(email), ip_hash(ip)})
+    with connection.cursor() as cur:
+        for key in keys:
+            cur.execute("SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", [f"login:{key}"])
 
 
 def check(email: str, ip: str) -> bool:

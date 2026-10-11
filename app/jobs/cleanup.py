@@ -3,6 +3,8 @@
 from datetime import timedelta
 
 from django.conf import settings
+from django.contrib.admin.models import LogEntry
+from django.contrib.sessions.models import Session
 from django.db.models import Exists, OuterRef, Q
 from django.utils import timezone
 
@@ -65,8 +67,14 @@ def run(now=None) -> dict:
     # Meldungen mit Schnappschuss 12 Monate nach Abschluss, Einsprüche zusammen mit der Meldung.
     old_reports = Report.objects.filter(resolved_at__lte=now - _months(settings.REPORT_KEEP_MONTHS))
     out["appeals_deleted"] = Appeal.objects.filter(report__in=old_reports).delete()[0]
+    out["appeals_deleted"] += Appeal.objects.filter(
+        report__isnull=True, decided_at__lte=now - _months(settings.REPORT_KEEP_MONTHS)
+    ).delete()[0]
     out["reports_deleted"] = old_reports.delete()[0]
-    out["audit_deleted"] = AuditLog.objects.filter(created_at__lte=now - _months(settings.AUDIT_KEEP_MONTHS)).delete()[0]
+    audit_limit = now - _months(settings.AUDIT_KEEP_MONTHS)
+    out["audit_deleted"] = AuditLog.objects.filter(created_at__lte=audit_limit).delete()[0]
+    out["audit_deleted"] += LogEntry.objects.filter(action_time__lte=audit_limit).delete()[0]
+    Session.objects.filter(expire_date__lte=now).delete()
 
     # Bereinigung nach Kontolöschungen nachholen, danach verwaiste Grabsteine entfernen.
     purge_deleted_accounts()

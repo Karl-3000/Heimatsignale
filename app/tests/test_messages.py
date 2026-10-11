@@ -54,13 +54,33 @@ class ConversationTest(BaseTest):
         self.assertEqual(self.api_a.post(self.path, link).status_code, 201)
 
     @override_settings(MESSAGES_PER_HOUR=3)
-    def test_rate_limit_per_conversation(self):
-        self.assertEqual(self.api_a.post(self.path, {"body": "zwei"}).status_code, 201)
-        self.assertEqual(self.api_b.post(self.path, {"body": "drei"}).status_code, 201)
-        limited = self.api_a.post(self.path, {"body": "vier"})
+    def test_rate_limit_per_conversation_counts_sending_not_stock(self):
+        from accounts.models import RateCounter
+
+        first = self.api_a.post(self.path, {"body": "eins"})
+        self.assertEqual(first.status_code, 201)
+        self.assertEqual(self.api_b.post(self.path, {"body": "zwei"}).status_code, 201)
+        self.assertEqual(self.api_a.post(self.path, {"body": "drei"}).status_code, 201)
+        limited = self.api_b.post(self.path, {"body": "vier"})
         self.assertEqual((limited.status_code, limited.data["code"]), (429, "rate_limited"))
-        Message.objects.update(created_at=timezone.now() - timedelta(minutes=61))
+        # Löschen schafft keinen neuen Platz.
+        self.api_a.delete(f"/messages/{first.data['id']}")
+        self.assertEqual(self.api_a.post(self.path, {"body": "vier"}).status_code, 429)
+        RateCounter.objects.all().delete()  # nächste Stunde
         self.assertEqual(self.api_a.post(self.path, {"body": "vier"}).status_code, 201)
+
+    def test_links_need_messages_from_both_sides(self):
+        from contacts.models import Message as M
+
+        M.objects.filter(sender=self.a).delete()
+        c = make_user(residence=RECKLINGHAUSEN)
+        conv = contacts.accept_request(c, contacts.send_request(self.a, c.id, "Hallo")["request_id"])
+        path = f"/conversations/{conv.id}/messages"
+        for i in range(12):
+            self.api_a.post(path, {"body": f"einseitig {i}"})
+        self.assertEqual(self.api_a.post(path, {"body": "https://beispiel.de"}).status_code, 422)
+        Api(c).post(path, {"body": "Antwort"})
+        self.assertEqual(self.api_a.post(path, {"body": "https://beispiel.de"}).status_code, 201)
 
     def test_deleting_own_message_removes_it_for_both_and_is_journaled(self):
         since = timezone.now()

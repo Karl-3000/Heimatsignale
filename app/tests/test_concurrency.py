@@ -137,5 +137,7 @@ class ParallelRequestsTest(ParallelTest):
 
     def test_parallel_blocks_in_both_directions_do_not_deadlock(self):
         results = run_parallel([lambda: contacts.block(self.a, self.b.id), lambda: contacts.block(self.b, self.a.id)])
-        self.assertEqual(kinds(results), ["ok", "ok"], results)
-        self.assertEqual(Block.objects.count(), 2)
+        # Wer zuerst blockiert, macht sich für die andere Seite unsichtbar; deren Versuch
+        # endet dann sauber mit "nicht gefunden". Entscheidend: keine Verklemmung.
+        self.assertIn(kinds(results), (["ok", "ok"], ["not_found", "ok"]), results)
+        self.assertIn(Block.objects.count(), (1, 2))

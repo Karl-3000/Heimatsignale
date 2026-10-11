@@ -16,6 +16,10 @@
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		icon?: Component<any>;
 		testid?: string;
+		/** Nur für Links: rel="external" verlässt die App (z. B. zum Admin-Bereich). */
+		rel?: string;
+		/** Kennung des Formulars, falls der Button außerhalb davon steht. */
+		form?: string;
 		children?: Snippet;
 	}
 

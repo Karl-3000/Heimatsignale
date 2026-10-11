@@ -69,3 +69,25 @@ export function maskPolygon(center: LngLat, radiusKm: number): LngLat[][] {
 	const hole = circleRing(center, radiusKm).slice().reverse();
 	return [outer, hole];
 }
+
+/**
+ * Einfache ebene Projektion um einen Mittelpunkt. Für 20 km Umkreis genau genug;
+ * dient als Ersatzdarstellung, wenn die Kartenbibliothek nicht starten kann (kein WebGL).
+ */
+export function localProject(
+	point: LngLat,
+	center: LngLat,
+	pxPerKm: number,
+	width: number,
+	height: number
+): { x: number; y: number } {
+	const dxKm = (point[0] - center[0]) * 111.32 * Math.cos(center[1] * RAD);
+	const dyKm = (point[1] - center[1]) * 110.57;
+	return { x: width / 2 + dxKm * pxPerKm, y: height / 2 - dyKm * pxPerKm };
+}
+
+/** Pixel je Kilometer, bei denen der Kreis mit Rand genau in die Fläche passt. */
+export function fitPxPerKm(width: number, height: number, radiusKm: number, padding: number = 28): number {
+	const usable = Math.max(40, Math.min(width, height) - 2 * padding);
+	return usable / (2 * radiusKm);
+}

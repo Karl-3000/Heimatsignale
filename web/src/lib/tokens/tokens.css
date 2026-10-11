@@ -44,7 +44,9 @@
 
 	/* Netz */
 	--hs-node: #5f5b53;
+	--hs-on-node: #ffffff;
 	--hs-node-root: #24221f;
+	--hs-on-node-root: #f9f8f6;
 	--hs-edge: #6f6a61;
 	--hs-edge-opacity: 0.32;
 
@@ -142,7 +144,9 @@
 		--hs-success-soft: #1d3a24;
 
 		--hs-node: #b0aba1;
+		--hs-on-node: #1b1a18;
 		--hs-node-root: #ece9e3;
+		--hs-on-node-root: #1b1a18;
 		--hs-edge: #a19c92;
 		--hs-edge-opacity: 0.36;
 
@@ -191,7 +195,9 @@
 	--hs-success-soft: #1d3a24;
 
 	--hs-node: #b0aba1;
+	--hs-on-node: #1b1a18;
 	--hs-node-root: #ece9e3;
+	--hs-on-node-root: #1b1a18;
 	--hs-edge: #a19c92;
 	--hs-edge-opacity: 0.36;
 

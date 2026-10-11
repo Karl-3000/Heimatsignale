@@ -56,7 +56,7 @@ class User(AbstractBaseUser):
     last_activity_at = models.DateTimeField("Letzte Aktivität", null=True, blank=True)
     nickname_rerolls_left = models.SmallIntegerField(default=1)
     session_epoch = models.IntegerField(default=0)
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now, null=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     objects = UserManager()
@@ -81,7 +81,7 @@ class User(AbstractBaseUser):
                 condition=~Q(status="deleted")
                 | Q(
                     email__isnull=True, password__isnull=True, nickname__isnull=True, birth_year__isnull=True,
-                    home__isnull=True, residence__isnull=True, deleted_at__isnull=False,
+                    home__isnull=True, residence__isnull=True, created_at__isnull=True, deleted_at__isnull=False,
                 ),
                 name="users_tombstone_empty",
             ),

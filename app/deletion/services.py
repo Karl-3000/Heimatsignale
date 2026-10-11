@@ -7,7 +7,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
 
-from accounts.models import PlaceChangeRequest, User
+from accounts.models import Moderator, PlaceChangeRequest, RateCounter, User
 from contacts.models import Block, ContactRequest, Conversation, Message, RequestAttempt
 from jobs import stats
 from moderation.models import Appeal, Report
@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 def _tombstone(user_id) -> bool:
     """Schritt 1, eine Transaktion: Das Konto wird zum Grabstein und ist sofort unsichtbar."""
     with transaction.atomic():
-        user = User.objects.select_for_update().filter(pk=user_id).first()
+        user = User.objects.select_for_update(no_key=True).filter(pk=user_id).first()
         if user is None or user.status == User.Status.DELETED:
             return False
         user.status = User.Status.DELETED
@@ -38,8 +38,11 @@ def _tombstone(user_id) -> bool:
         user.approval_notice_sent_at = None
         user.muted_until = None
         user.last_activity_at = None
+        user.created_at = None
+        user.nickname_rerolls_left = 0
         user.session_epoch += 1  # macht alle Sitzungen ungültig
         user.save()
+        Moderator.objects.filter(user_id=user.pk).delete()
         stats.bump("deletions")
     return True
 
@@ -80,6 +83,9 @@ def purge_deleted_accounts(user_ids=None) -> dict:
         counts["reports_closed"] = Report.objects.filter(reported_user_id__in=ids, resolved_at__isnull=True).update(
             resolved_at=timezone.now(), outcome=Report.Outcome.ACCOUNT_DELETED
         )
+        Moderator.objects.filter(user_id__in=ids).delete()
+        for user_id in ids:
+            RateCounter.objects.filter(key__endswith=f":{user_id}").delete()
     for conv_id in conv_ids:
         journal.confirm("conversation", conv_id)
     _drop_sessions(ids)

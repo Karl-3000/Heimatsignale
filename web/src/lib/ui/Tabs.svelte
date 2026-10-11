@@ -1,3 +1,11 @@
+<script lang="ts" module>
+	export interface TabItem {
+		id: string;
+		label: string;
+		count?: number;
+	}
+</script>
+
 <script lang="ts">
 	/**
 	 * Reiterleiste nach dem ARIA-Muster "Tabs" mit automatischer Aktivierung:
@@ -5,12 +13,6 @@
 	 * Die zugehörigen Flächen zeichnet die aufrufende Seite mit
 	 * role="tabpanel", id="{idBase}-panel-{id}" und aria-labelledby="{idBase}-tab-{id}".
 	 */
-	export interface TabItem {
-		id: string;
-		label: string;
-		count?: number;
-	}
-
 	interface Props {
 		tabs: TabItem[];
 		value: string;

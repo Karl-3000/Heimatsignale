@@ -226,14 +226,20 @@ def _nearby_guard(request) -> None:
     if user.residence_id is None or user.home_id is None:
         raise ApiError(400, "no_places", "In deinem Konto fehlen Heimatort oder Wohnort.")
     _limit(f"nearby:{user.id}", settings.NEARBY_QUERIES_PER_HOUR)
+    _fix_nickname(user)
+
+
+def _fix_nickname(user) -> None:
+    """Wer im Umkreis unterwegs ist, behält seinen Nickname: Das Neuwürfeln verfällt."""
+    if user.nickname_rerolls_left > 0:
+        accounts.confirm_nickname(user)
+        user.nickname_rerolls_left = 0
 
 
 @api.get("/nearby/overview", auth=member)
 def nearby_overview(request):
     _nearby_guard(request)
     user = request.user
-    if user.nickname_rerolls_left > 0:
-        accounts.confirm_nickname(user)  # ab jetzt sichtbar unterwegs: der Nickname ist fest
     accounts.touch_activity(user)
     return nearby.overview(user)
 
@@ -253,6 +259,7 @@ def nearby_people(request, home: str, residence: str = "all", page: int = 1):
 @api.get("/users/{user_id}", auth=member)
 def user_profile(request, user_id: UUID):
     _limit(f"profile:{request.user.id}", 600)
+    _fix_nickname(request.user)
     return contacts.profile(request.user, user_id)
 
 
@@ -264,6 +271,7 @@ def requests_list(request):
 
 @api.post("/requests", auth=member, response={201: dict})
 def requests_create(request, data: schemas.RequestIn):
+    _fix_nickname(request.user)
     return 201, contacts.send_request(request.user, data.to_user_id, data.body)
 
 

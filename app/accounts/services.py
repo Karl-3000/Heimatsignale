@@ -41,6 +41,10 @@ def age_range(birth_year: int | None, today: date | None = None) -> str:
     return "65+"
 
 
+def _member_since(user: User) -> str:
+    return timezone.localtime(user.created_at).strftime("%Y-%m") if user.created_at else ""
+
+
 def public_user_json(user: User) -> dict:
     """Alles, was andere von einem Nutzer sehen. Mehr Felder gibt es nicht."""
     return {
@@ -49,7 +53,7 @@ def public_user_json(user: User) -> dict:
         "age_range": age_range(user.birth_year),
         "home": place_json(user.home),
         "residence": {"ags": user.residence.ags, "name": user.residence.name} if user.residence else None,
-        "member_since": timezone.localtime(user.created_at).strftime("%Y-%m"),
+        "member_since": _member_since(user),
     }
 
 
@@ -60,7 +64,7 @@ def me_json(user: User) -> dict:
         "age_range": age_range(user.birth_year),
         "home": place_json(user.home, with_point=True),
         "residence": place_json(user.residence, with_point=True),
-        "member_since": timezone.localtime(user.created_at).strftime("%Y-%m"),
+        "member_since": _member_since(user),
         "muted_until": user.muted_until if states.effective_state(user) == states.MUTED else None,
         "nickname_rerolls_left": user.nickname_rerolls_left,
         "is_staff": user.is_staff,
@@ -163,16 +167,26 @@ def register(request, *, email: str, password: str, birth_date: date, home_ags: 
         raise validation(fields)
 
     ip = client_ip(request)
-    over_limit = invite is None and ip_over_limit(ip)
-    try:
-        pow.verify(pow_payload, require_hard=over_limit)
-    except pow.PowError as exc:
-        raise ApiError(400, exc.code, "Die Sicherheitsprüfung ist abgelaufen. Bitte versuche es noch einmal.") from None
-
     with transaction.atomic():
+        # Registrierungen von derselben IP laufen nacheinander, damit das Limit
+        # nicht durch gleichzeitige Aufrufe unterlaufen wird.
+        with connection.cursor() as cur:
+            cur.execute("SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", [f"register:{ip_hash(ip)}"])
+        over_limit = invite is None and ip_over_limit(ip)
+        try:
+            pow.verify(pow_payload, require_hard=over_limit)
+        except pow.PowError as exc:
+            raise ApiError(400, exc.code, "Die Sicherheitsprüfung ist abgelaufen. Bitte versuche es noch einmal.") from None
+
         existing = User.objects.filter(email=email).first()
+        if existing is not None and _verification_expired(existing):
+            existing.delete()  # verfallene, nie bestätigte Registrierung
+            existing = None
         if existing is not None:
-            # Nach außen dieselbe Antwort; die Person erfährt es per E-Mail.
+            # Nach außen dieselbe Antwort und dieselbe Wirkung auf das IP-Limit;
+            # die Person erfährt es per E-Mail.
+            RegistrationIP.objects.create(ip_hash=ip_hash(ip))
+            User().set_password(password)
             if states.effective_state(existing) == states.UNVERIFIED:
                 mail.send(email, "verify", {"link": _verify_link(existing)})
             else:
@@ -209,8 +223,10 @@ def verify_email(request, token: str) -> User:
     except signing.BadSignature:
         raise invalid from None
     with transaction.atomic():
-        user = User.objects.select_for_update().filter(pk=data.get("u")).first()
+        user = User.objects.select_for_update(no_key=True).filter(pk=data.get("u")).first()
         if user is None or user.status != User.Status.PENDING or user.email_verified_at is not None:
+            raise invalid
+        if _verification_expired(user):
             raise invalid
         user.email_verified_at = timezone.now()
         states.apply_activation(user)
@@ -222,8 +238,14 @@ def verify_email(request, token: str) -> User:
 def resend_verification(email: str, pow_payload: str | None) -> None:
     _require_pow(pow_payload)
     user = User.objects.filter(email=(email or "").strip().lower()).first()
-    if user is not None and states.effective_state(user) == states.UNVERIFIED:
+    if user is not None and states.effective_state(user) == states.UNVERIFIED and not _verification_expired(user):
         mail.send(user.email, "verify", {"link": _verify_link(user)})
+
+
+def _verification_expired(user: User) -> bool:
+    """Unbestätigte Konten verfallen 48 Stunden nach der Registrierung, exakt nach Zeitstempel."""
+    limit = timezone.now() - timedelta(hours=settings.UNVERIFIED_TTL_HOURS)
+    return user.email_verified_at is None and user.created_at is not None and user.created_at <= limit
 
 
 def _require_pow(pow_payload: str | None) -> None:
@@ -234,38 +256,53 @@ def _require_pow(pow_payload: str | None) -> None:
 
 
 # -- Anmeldung ------------------------------------------------------------------
-def check_credentials(request, email: str, password: str, pow_payload: str | None = None) -> User:
-    """Prüft Zugangsdaten unter den Login-Regeln. Gemeinsam für App und Admin-Bereich."""
+def check_credentials(request, email: str, password: str, pow_payload: str | None = None, *,
+                      pow_exempt: bool = False) -> User:
+    """Prüft Zugangsdaten unter den Login-Regeln. Gemeinsam für App und Admin-Bereich.
+
+    ``pow_exempt``: Der Admin-Bereich kann keinen Proof-of-Work liefern und ist durch den
+    zweiten Faktor geschützt. Ohne die Ausnahme könnte jeder, der eine Admin-Adresse
+    kennt, die Anmeldung dort mit 20 Fehlversuchen pro Stunde dauerhaft verhindern.
+    """
     email = (email or "").strip().lower()
     ip = client_ip(request)
-    try:
-        needs_pow = throttle.check(email, ip)
-    except throttle.LoginLocked as exc:
-        raise ApiError(
-            429, "login_locked", "Zu viele Fehlversuche. Bitte warte einen Moment.", retry_after=exc.retry_after
-        ) from None
-    if needs_pow:
+    error: ApiError | None = None
+    user = None
+    with transaction.atomic():
+        throttle.serialize(email, ip)
         try:
-            pow.verify(pow_payload)
-        except pow.PowError:
-            raise ApiError(403, "pow_required", "Bitte löse zuerst die Sicherheitsprüfung.") from None
-
-    user = User.objects.filter(email=email).first() if email else None
-    if user is None or not user.password:
-        User().set_password(password)  # gleiche Rechenzeit wie bei einem echten Konto
-        ok = False
-    else:
-        ok = user.check_password(password)
-    if not ok:
-        throttle.record_failure(email, ip)
-        raise ApiError(401, "invalid_credentials", "E-Mail-Adresse oder Passwort stimmen nicht.")
-    throttle.clear(email, ip)
+            needs_pow = throttle.check(email, ip) and not pow_exempt
+            if needs_pow:
+                try:
+                    pow.verify(pow_payload)
+                except pow.PowError:
+                    raise ApiError(403, "pow_required", "Bitte löse zuerst die Sicherheitsprüfung.") from None
+            user = User.objects.filter(email=email).first() if email else None
+            if user is None or not user.password:
+                User().set_password(password)  # gleiche Rechenzeit wie bei einem echten Konto
+                ok = False
+            else:
+                ok = user.check_password(password)
+            if ok:
+                throttle.clear(email, ip)
+            else:
+                throttle.record_failure(email, ip)
+                raise ApiError(401, "invalid_credentials", "E-Mail-Adresse oder Passwort stimmen nicht.")
+        except throttle.LoginLocked as exc:
+            error = ApiError(429, "login_locked", "Zu viele Fehlversuche. Bitte warte einen Moment.",
+                             retry_after=exc.retry_after)
+        except ApiError as exc:
+            error = exc  # erst nach dem Commit werfen, damit der Fehlversuch gezählt bleibt
+    if error is not None:
+        raise error
     return user
 
 
 def login(request, email: str, password: str, pow_payload: str | None) -> User:
     user = check_credentials(request, email, password, pow_payload)
     state = states.effective_state(user)
+    if state == states.UNVERIFIED and _verification_expired(user):
+        raise ApiError(401, "invalid_credentials", "E-Mail-Adresse oder Passwort stimmen nicht.")
     if state == states.UNVERIFIED:
         raise ApiError(403, "unverified", "Bitte bestätige zuerst deine E-Mail-Adresse. Den Link haben wir dir geschickt.")
     if state == states.SUSPENDED:
@@ -325,7 +362,7 @@ def reroll_nickname(user: User) -> User:
     for _ in range(5):
         try:
             with transaction.atomic():
-                locked = User.objects.select_for_update().get(pk=user.pk)
+                locked = User.objects.select_for_update(no_key=True).get(pk=user.pk)
                 if locked.nickname_rerolls_left <= 0:
                     raise ApiError(409, "reroll_used", "Du hast bereits neu gewürfelt. Der Nickname ist jetzt fest.")
                 locked.nickname = _new_nickname()
