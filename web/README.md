@@ -42,61 +42,76 @@ static/                        manifest.webmanifest, icon.svg, theme.js
 
 Alle Module ohne `.svelte` im Namen sind frei von Framework-Code und haben Tests daneben.
 
-## Gestaltung: „Signale bei Nacht“
+## Gestaltung: „Morgenlicht“
 
-Heimatorte sind Leuchtfeuer, und wer weggezogen ist, bleibt ein Licht, das dorthin zeigt. Daraus folgt die eine
-auffällige Entscheidung: Die **Bühne** (Herkunftsnetz und Karte) liegt in beiden Themen auf tiefem Nachtblau.
-Alles darum herum ist ruhig, hell, großzügig und typografisch. Die Kühnheit steckt in der Bühne, der Rest hält
-sich zurück.
+Warm, pastellig, wohnlich. Die **Bühne** (Herkunftsnetz und Karte) ist ein weicher Himmel: am Tag ein Verlauf
+aus Aprikose, Rosé und einem Hauch Flieder mit drei großen, unbewegten Farbwolken, im dunklen Thema eine warme
+Abenddämmerung von tiefem Pflaumenton zu Malve. Darauf liegen die Orte als helle Scheiben mit weichem Schatten,
+die eigene Herkunft ist eine kleine Sonne. Alles darum herum steht ruhig auf warmem Creme. Nichts soll technisch
+wirken: keine Raster, keine Festbreitenschrift, kein kaltes Blau, kein Schwarz.
 
 `src/lib/tokens/tokens.css` ist die einzige Quelle für Farben, Typografie, Abstände, Radien, Schatten und
 Bewegung. `app.css` bildet sie über `@theme inline` in Tailwind ab (`bg-surface`, `text-ink-muted` ...);
 Komponenten greifen nur auf `var(--hs-...)` zu, nie auf feste Farbwerte.
 
-| Name        | Wert      | Verwendung                                                                                   |
-|-------------|-----------|----------------------------------------------------------------------------------------------|
-| Tinte       | `#0A1030` | Bühnengrund und Textfarbe auf Hell. Es gibt kein neutrales Grau als Schwarz                  |
-| Papier      | `#F3F5FA` | Seitengrund. Erhabene Flächen sind reines Weiß, ohne Rahmen, mit in Tinte getöntem Schatten  |
-| Fernblau    | `#2747F5` | die eine Farbe für Interaktion (`--hs-accent`). Auf der Bühne der helle Ton `#8FA5FF`        |
-| Heimatlicht | `#FFB31A` | nur „deine Herkunft“. Als Text auf Hell der Ockerton `#8F5300` (`--hs-origin`)               |
-| Mondweiß    | `#E9EDFF` | Knoten, Linien und Schrift auf der Bühne                                                     |
+| Name        | Wert      | Verwendung                                                                                        |
+|-------------|-----------|---------------------------------------------------------------------------------------------------|
+| Grund       | `#FFF8F1` | Seitengrund. Erhabene Flächen sind Weiß, ohne Rahmen, mit in Aubergine getöntem Schatten           |
+| Aubergine   | `#3B2A3E` | Text und dunkelster Ton. Gedämpfter Text `#685769`                                                |
+| Beere       | `#9A3B6A` | die eine Farbe für Interaktion (`--hs-accent`): Schaltflächen, Links, Fokus, eigene Nachrichten   |
+| Heimatlicht | `#F2A23A` | nur „deine Herkunft“. Als Text auf Hell Honigbraun `#8A5200` (`--hs-origin`), auf dem Himmel `#7A4700` |
+| Pastelle    | Aprikose `#FFD8C0`, Rosé `#F8D2DA`, Butter `#FFE9B5`, Salbei `#D5E5D2`, Flieder `#E4DAF4` | große weiche Flächen und Verläufe, nie als Akzent |
 
-- Dunkles Thema: Seite `#060918`, Flächen `#0E1430` und `#151C40`, Text `#EEF1FF`. Die Bühne ist dort eine Spur
-  heller als die Seite und bekommt eine Haarlinie. Wahl per System oder `data-theme` (gespeichert unter
-  `hs:theme`); `static/theme.js` setzt sie vor dem ersten Zeichnen, als Datei, weil die CSP Inline-Skripte verbietet.
+- Pastellflächen (`--hs-pastel-*`, eine Stufe heller als die Palette): Hinweise sind Zettel (Butter für Hinweise,
+  Rosé für Warnungen, Salbei für Erfolg), die drei Schritte der Startseite, die Nachrichten der anderen Person
+  (Flieder). Text darauf ist immer `--hs-ink` oder `--hs-ink-muted`.
+- Bühne (`.hs-stage`, `--hs-stage-*`): Himmel aus `--hs-stage-sky`. Knoten sind weiße Scheiben (`--hs-stage-node`)
+  mit einem Rand in Malve, der den Kontrast zum Himmel trägt, Zahlen und Namen in Aubergine mit hellem Hof.
+  Kanten in Aubergine mit wenig Deckkraft, der gewählte Pfad in Beere, der Pfad zur eigenen Herkunft in Honig.
+  Die eigene Herkunft hat zusätzlich Doppelring und den Vermerk „deine Herkunft“. Ringe sind nur gepunktete Bögen.
+- Dunkles Thema: Seite `#241A27`, Flächen `#2E2231` und `#3A2B3E`, Text `#F6ECF3`, Beere als Fläche `#B24E7F`,
+  als Schrift `#E79ABF`, Heimatlicht `#F5B04E`. Die Scheiben auf der Bühne sind dort cremefarben und haben einen
+  warmen Schein. Wahl per System oder `data-theme` (gespeichert unter `hs:theme`); `static/theme.js` setzt sie
+  vor dem ersten Zeichnen, als Datei, weil die CSP Inline-Skripte verbietet.
 - Schrift: **Bricolage Grotesque** (variabel, `--hs-font-display`) für Überschriften, große Zahlen, Nicknames und
   die Wortmarke; **Inter** für Fließtext und Bedienelemente, Tabellenziffern über `.hs-num`. Große Sprünge in der
   Skala (`--hs-text-hero`, `--hs-text-statement`), überall Satzschreibung.
-- Form: Radien mit Rangfolge (Bühne 30 px, Karte 20 px, Bedienelement 12 px, Pille rund). Karten nur dort, wo
-  etwas ein Gegenstand ist (Person, Anfrage, Gespräch, Personenliste); sonst gruppieren Abstand und Schrift.
+- Form: runde Radien mit Rangfolge (Bühne 36 px, Karte 26 px, Bedienelement 16 px, Pille rund). Karten nur dort,
+  wo etwas ein Gegenstand ist (Person, Anfrage, Gespräch, Personenliste); sonst gruppieren Abstand und Schrift.
+  Eingabefelder sind Weiß mit feinem Rand.
 - Segmentierte Auswahl (`.hs-seg` in `app.css`): Pillenspur mit gleitendem Daumen, für Reiter, Netz/Liste,
   20/100 km und das Farbschema.
 - Bewegung nur als Antwort auf eine Aktion, 150 bis 300 ms: Kanten zeichnen sich nach außen, Kinder wachsen aus
   dem Elternknoten, und wenn die eigene Herkunft erscheint, geht einmal ein Ring von ihr aus. Die Startseite hat
-  einen einzigen Auftakt (das Beispielnetz leuchtet von der Mitte nach außen auf). Nichts läuft in Schleife.
+  einen einzigen Auftakt (das Beispielnetz baut sich von der Mitte nach außen auf). Nichts läuft in Schleife.
   Bei `prefers-reduced-motion` entfällt alles.
 - Icons: Lucide, immer über `ui/Icon.svelte` (eine Strichstärke).
 
-Gemessene Kontraste (WCAG): Tinte auf Papier 17,0; gedämpfter Text `#454C6E` auf Papier 7,7; leiser Text `#5A6184`
-auf Papier 5,5; Fernblau auf Weiß 6,4 (Weiß auf Fernblau ebenso); Ocker auf Weiß 6,2; Mondweiß auf Tinte 16,0;
-gedämpfte Bühnenschrift `#A9B3DC` auf Tinte 9,0; Heimatlicht auf Tinte 10,4; Tinte auf Heimatlicht 10,4;
-dunkles Thema: Text 17,6, gedämpft 10,3, Links `#9DB0FF` 9,5.
+Gemessene Kontraste (WCAG), auf dem Himmel jeweils gegen die dunkelste Stelle des Verlaufs (`#F8D3D9`, im dunklen
+Thema gegen die hellste, `#62415D`): Aubergine auf Grund 12,6; gedämpft auf Grund 6,3, auf den Pastellflächen
+mindestens 5,5; leiser Text `#725F73` mindestens 4,7; Weiß auf Beere 6,6; Beere auf Grund 6,2, auf Rosé-Fläche 5,4;
+Honigbraun auf Grund 6,1. Himmel: Aubergine 9,7; gedämpft `#5F4D61` 5,6; Beere 4,8; „deine Herkunft“ `#7A4700` 5,6;
+Knotenrand 3,1; Herkunftsring 3,1; Zahl auf der Sonne 6,3. Dunkles Thema: Text 14,5; gedämpft 9,3; Weiß auf
+Beere 4,9; Links 6,1 auf erhabener Fläche; Dämmerung: Text 7,5, gedämpft 5,9, „deine Herkunft“ 5,6.
+Bewusste Ausnahme: Die honigfarbene Linie zur eigenen Herkunft hat am Tag nur 1,8 zum Himmel. Sie ist Schmuck;
+die Bedeutung tragen Doppelring (3,1) und der Vermerk am Knoten.
 
 ## Logo
 
-Das Zeichen ist ein H aus zwei Lichtern: unten links der Ort, an dem du jetzt wohnst, oben rechts frei schwebend
-das Heimatlicht, dazwischen eine geschwungene Linie in der Formensprache der Netzkanten. Es ist damit das kleinste
-mögliche Herkunftsnetz und zugleich der Anfangsbuchstabe.
+Das Zeichen ist ein kleines h, das zugleich ein Torbogen ist. Im Bogen steht das Heimatlicht wie eine aufgehende
+Sonne in einer Tür: Heimat als Ort, an dem Licht ist. Stamm und Bogen sind ein einziger runder Strich.
 
 - Dateien: `static/icon.svg` (Favicon, passt sich über `prefers-color-scheme` an), `static/app-icon.svg`
-  (App-Symbol, vollflächig und maskierbar: helles Zeichen auf Tinte), `ui/Brand.svelte` (Zeichen und Wortmarke;
-  `tone="stage"` für die Bühne, `markOnly` für enge Stellen).
+  (App-Symbol, vollflächig und maskierbar: cremefarbenes Zeichen auf Aubergine), `ui/Brand.svelte` (Zeichen und
+  Wortmarke; `tone="stage"` für die Bühne, `markOnly` für enge Stellen).
 - Wortmarke: gesetzter Text in Bricolage Grotesque, Gewicht 650, Laufweite -0,035 em.
-- Farben: Zeichen in Tinte (auf Hell) oder Mondweiß (auf der Bühne), das schwebende Licht in Heimatlicht.
-  Einfarbig ist das Zeichen ebenfalls zulässig.
-- Schutzraum: ringsum der Durchmesser des großen Lichts (ein Drittel der Zeichenhöhe). Mindestgröße 16 px.
-- Nicht erlaubt: das Licht mit dem Stamm verbinden, das Zeichen drehen, spiegeln oder verzerren, andere Farben
-  für das Licht, Schatten oder Verläufe auf dem Zeichen, die Wortmarke in einer anderen Schrift.
+- Farben: Zeichen in Aubergine (auf Hell und auf dem Himmel) oder im hellen Textton (im dunklen Thema), die Sonne
+  immer in Heimatlicht. Einfarbig ist das Zeichen ebenfalls zulässig; die Sonne bleibt durch den Abstand zum
+  Bogen lesbar.
+- Schutzraum: ringsum der Durchmesser der Sonne (rund ein Viertel der Zeichenhöhe). Mindestgröße 16 px.
+- Nicht erlaubt: die Sonne aus dem Bogen herausnehmen oder mit ihm verbinden, das Zeichen drehen, spiegeln oder
+  verzerren, andere Farben für die Sonne, Schatten oder Verläufe auf dem Zeichen, die Wortmarke in einer anderen
+  Schrift.
 
 ## Stabilitätsregel des Netzes
 

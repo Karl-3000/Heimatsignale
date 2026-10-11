@@ -6,8 +6,8 @@
 	"start_url": "/umkreis",
 	"scope": "/",
 	"display": "standalone",
-	"background_color": "#f3f5fa",
-	"theme_color": "#0a1030",
+	"background_color": "#fff8f1",
+	"theme_color": "#3b2a3e",
 	"icons": [
 		{
 			"src": "/app-icon.svg",

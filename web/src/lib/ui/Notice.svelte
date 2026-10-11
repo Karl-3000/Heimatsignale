@@ -65,16 +65,17 @@
 		margin-top: var(--hs-space-2);
 	}
 
+	/* Hinweise sind Pastellzettel: Butter für Hinweise, Rosé für Warnungen, Salbei für Erfolg. */
 	.notice-info {
-		background: var(--hs-accent-soft);
-	}
-
-	.notice-info .glyph {
-		color: var(--hs-accent-ink);
+		background: var(--hs-pastel-butter);
 	}
 
 	.notice-warning {
-		background: var(--hs-sunken);
+		background: var(--hs-pastel-rose);
+	}
+
+	.notice-warning .glyph {
+		color: var(--hs-accent-ink);
 	}
 
 	.notice-danger {

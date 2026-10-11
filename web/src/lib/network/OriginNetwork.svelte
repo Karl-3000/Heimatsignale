@@ -14,7 +14,7 @@
 	import type { NetworkView } from './view.svelte';
 
 	/**
-	 * Das Herkunftsnetz auf der Bühne: Lichter auf Nachtblau.
+	 * Das Herkunftsnetz auf der Bühne: helle Scheiben auf einem weichen Himmel.
 	 *
 	 * Die Komponente zeichnet nur, was NetworkView berechnet hat. Positionen sind eingefroren,
 	 * hier wird nichts simuliert. Beweglich ist allein die Kamera: Nach jeder Änderung passt sie
@@ -63,7 +63,7 @@
 	const depths = $derived(new Set(scene.nodes.map((n) => n.depth)));
 	const activeNode = $derived(activeId ? (nodeById.get(activeId) ?? null) : null);
 
-	/** Auf dem Bildschirm bleiben auch die kleinsten Lichter sichtbar und treffbar. */
+	/** Auf dem Bildschirm bleiben auch die kleinsten Scheiben sichtbar und treffbar. */
 	const minDot = $derived(3.2 / camera.k);
 	const minHit = $derived(11 / camera.k);
 
@@ -320,11 +320,11 @@
 	>
 		<defs>
 			<radialGradient id="{uid}-hof">
-				<stop offset="0.42" class="hof-a" />
+				<stop offset="0.55" class="hof-a" />
 				<stop offset="1" class="hof-b" />
 			</radialGradient>
 			<radialGradient id="{uid}-licht">
-				<stop offset="0.3" class="licht-a" />
+				<stop offset="0.28" class="licht-a" />
 				<stop offset="1" class="licht-b" />
 			</radialGradient>
 		</defs>
@@ -376,7 +376,7 @@
 					}}
 					onfocus={() => view.focus(ROOT_ID)}
 				>
-					<circle class="halo" r={ROOT_RADIUS * 2.1} fill="url(#{uid}-hof)" />
+					<circle class="halo" cy={ROOT_RADIUS * 0.25} r={ROOT_RADIUS * 1.55} fill="url(#{uid}-hof)" />
 					<circle class="focus-ring" r={ROOT_RADIUS + 6} stroke-width={2.5 / camera.k} />
 					<circle class="dot" r={ROOT_RADIUS} />
 					<text class="count hs-num" text-anchor="middle" dominant-baseline="central" font-size="13">{view.core.root.count}</text>
@@ -411,7 +411,7 @@
 						onpointerleave={() => (hoverId = null)}
 					>
 						<circle class="hit" r={hit} />
-						<circle class="halo" r={n.node.own ? r * 2.6 + 10 / camera.k : r * 1.9 + 3 / camera.k} fill="url(#{uid}-{n.node.own ? 'licht' : 'hof'})" />
+						<circle class="halo" cy={n.node.own ? 0 : r * 0.22 + 1 / camera.k} r={n.node.own ? r * 2.6 + 10 / camera.k : r * 1.45 + 2.5 / camera.k} fill="url(#{uid}-{n.node.own ? 'licht' : 'hof'})" />
 						{#if pulsing.has(n.id)}<circle class="pulse" r={r + 4 / camera.k} stroke-width={1.5 / camera.k} />{/if}
 						<circle class="focus-ring" r={hit} stroke-width={2.5 / camera.k} />
 						{#if n.node.own}<circle class="own-ring" r={r + 4 / camera.k} stroke-width={1.5 / camera.k} />{/if}
@@ -515,34 +515,37 @@
 		transition: none;
 	}
 
+	/* Weicher, warmer Schatten unter jeder Scheibe; im dunklen Thema ein warmer Schein. */
 	.hof-a {
-		stop-color: var(--hs-stage-ink);
-		stop-opacity: 0.2;
+		stop-color: var(--hs-stage-node-shadow);
 	}
 
 	.hof-b {
-		stop-color: var(--hs-stage-ink);
+		stop-color: var(--hs-stage-node-shadow);
 		stop-opacity: 0;
 	}
 
+	/* Der Hof der eigenen Herkunft: eine kleine Sonne. */
 	.licht-a {
-		stop-color: var(--hs-stage-origin);
-		stop-opacity: 0.55;
+		stop-color: var(--hs-stage-origin-glow);
 	}
 
 	.licht-b {
-		stop-color: var(--hs-stage-origin);
+		stop-color: var(--hs-stage-origin-glow);
 		stop-opacity: 0;
 	}
 
+	/* Ringe nur als kaum sichtbare, weich gepunktete Bögen. */
 	.guides circle {
 		fill: none;
 		stroke: var(--hs-stage-line);
-		stroke-width: 1;
+		stroke-width: 1.5;
+		stroke-linecap: round;
+		stroke-dasharray: 0.1 9;
 		vector-effect: non-scaling-stroke;
 	}
 
-	/* Kanten: Mondweiß mit wenig Deckkraft. pathLength="1" erlaubt das Zeichnen von innen nach außen. */
+	/* Kanten: Aubergine mit wenig Deckkraft. pathLength="1" erlaubt das Zeichnen von innen nach außen. */
 	.edges path {
 		fill: none;
 		stroke: var(--hs-stage-ink);
@@ -557,17 +560,17 @@
 	}
 
 	.edges path.own {
-		stroke: var(--hs-stage-origin);
-		stroke-opacity: 0.62;
+		stroke: var(--hs-stage-origin-path);
+		stroke-opacity: 0.95;
 	}
 
 	.edges path.highlight {
 		stroke: var(--hs-stage-accent);
-		stroke-opacity: 0.95;
+		stroke-opacity: 0.9;
 	}
 
 	.edges path.own.highlight {
-		stroke: var(--hs-stage-origin);
+		stroke: var(--hs-stage-origin-path);
 		stroke-opacity: 1;
 	}
 
@@ -584,7 +587,7 @@
 		fill: var(--hs-stage-ink);
 		font-weight: var(--hs-weight-regular);
 		paint-order: stroke;
-		stroke: var(--hs-stage-bg);
+		stroke: var(--hs-stage-halo);
 		stroke-linejoin: round;
 		pointer-events: none;
 		transition: opacity var(--hs-duration-slow) var(--hs-ease-standard);
@@ -606,7 +609,7 @@
 	}
 
 	.labels .sub {
-		fill: var(--hs-stage-origin);
+		fill: var(--hs-stage-origin-ink);
 		font-weight: var(--hs-weight-strong);
 	}
 
@@ -643,22 +646,39 @@
 		pointer-events: none;
 	}
 
+	/* Helle Scheibe mit sanftem Rand. Der Rand trägt den Kontrast zum Himmel. */
 	.dot {
+		fill: var(--hs-stage-node);
+		stroke: var(--hs-stage-node-rim);
+		stroke-width: 1.25;
+		vector-effect: non-scaling-stroke;
+		transition:
+			stroke var(--hs-duration-fast) var(--hs-ease-standard),
+			stroke-width var(--hs-duration-fast) var(--hs-ease-standard);
+	}
+
+	.node.root .dot {
 		fill: var(--hs-stage-ink);
-		transition: fill var(--hs-duration-fast) var(--hs-ease-standard);
+		stroke: none;
+	}
+
+	.node.root .count {
+		fill: var(--hs-stage-on-ink);
 	}
 
 	.node.own .dot {
 		fill: var(--hs-stage-origin);
+		stroke: var(--hs-stage-origin-line);
 	}
 
 	.node.on-path:not(.own):not(.root) .dot {
-		fill: var(--hs-stage-accent);
+		stroke: var(--hs-stage-accent);
+		stroke-width: 2.5;
 	}
 
 	.own-ring {
 		fill: none;
-		stroke: var(--hs-stage-origin);
+		stroke: var(--hs-stage-origin-line);
 	}
 
 	.selected-ring {
@@ -705,7 +725,7 @@
 	}
 
 	.count {
-		fill: var(--hs-stage-on-light);
+		fill: var(--hs-stage-on-node);
 		font-weight: var(--hs-weight-strong);
 		pointer-events: none;
 	}
@@ -719,11 +739,11 @@
 	}
 
 	.plate text {
-		fill: var(--hs-stage-on-light);
+		fill: var(--hs-stage-on-ink);
 		font-weight: var(--hs-weight-strong);
 	}
 
-	/* Gläserne Pille unten rechts. Die Kamera hält diese Ecke frei. */
+	/* Weiche weiße Pille unten rechts. Die Kamera hält diese Ecke frei. */
 	.controls {
 		position: absolute;
 		right: var(--hs-space-4);
@@ -732,7 +752,7 @@
 		padding: 3px;
 		border-radius: var(--hs-radius-full);
 		background: var(--hs-stage-glass);
-		box-shadow: inset 0 0 0 1px var(--hs-stage-line);
+		box-shadow: var(--hs-shadow-sm);
 		backdrop-filter: blur(12px);
 		-webkit-backdrop-filter: blur(12px);
 	}

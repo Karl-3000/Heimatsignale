@@ -406,7 +406,8 @@
 		padding: 0 var(--hs-space-4);
 		border: 0;
 		border-radius: var(--hs-radius-md);
-		background: var(--hs-sunken);
+		background: var(--hs-field);
+		box-shadow: inset 0 0 0 1px var(--hs-line-strong);
 		color: var(--hs-ink);
 		font-family: var(--hs-font-display);
 		font-weight: var(--hs-weight-display);

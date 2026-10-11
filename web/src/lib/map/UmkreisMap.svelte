@@ -388,17 +388,15 @@
 		border-radius: var(--hs-radius-stage);
 	}
 
-	/* Ersatzdarstellung ohne WebGL: derselbe Lichtring, außen dunkler. */
+	/* Ersatzdarstellung ohne WebGL: derselbe Kreis, außen ein heller Schleier. */
 	.fallback-circle {
 		position: absolute;
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
-		border: 1.25px dashed color-mix(in srgb, var(--hs-stage-ink) 75%, transparent);
+		border: 1.5px dashed color-mix(in srgb, var(--hs-stage-ink) 55%, transparent);
 		border-radius: 50%;
-		box-shadow:
-			0 0 0 100vmax color-mix(in srgb, var(--hs-stage-deep) 60%, transparent),
-			0 0 18px 2px color-mix(in srgb, var(--hs-stage-ink) 22%, transparent);
+		box-shadow: 0 0 0 100vmax var(--hs-stage-veil);
 	}
 
 	.overlay {
@@ -447,29 +445,34 @@
 			box-shadow var(--hs-duration-fast) var(--hs-ease-standard);
 	}
 
-	/* Ein Licht mit Zahl, wie die Knoten im Netz. */
+	/* Eine helle Scheibe mit Zahl, wie die Knoten im Netz. */
 	.marker-compact {
-		background: var(--hs-stage-ink);
-		color: var(--hs-stage-on-light);
-		box-shadow: 0 0 0 5px color-mix(in srgb, var(--hs-stage-ink) 14%, transparent);
+		background: var(--hs-stage-node);
+		color: var(--hs-stage-on-node);
+		box-shadow:
+			0 0 0 1.25px var(--hs-stage-node-rim),
+			0 4px 10px var(--hs-stage-node-shadow);
 	}
 
 	/* Sammelknoten: ein zweiter Ring zeigt, dass hier mehrere Gemeinden zusammengefasst sind. */
 	.marker-compact.multi {
 		box-shadow:
-			0 0 0 3px var(--hs-stage-bg),
-			0 0 0 4.5px var(--hs-stage-ink),
-			0 0 0 10px color-mix(in srgb, var(--hs-stage-ink) 12%, transparent);
+			0 0 0 1.25px var(--hs-stage-node-rim),
+			0 0 0 4px var(--hs-stage-halo),
+			0 0 0 5.25px var(--hs-stage-node-rim),
+			0 5px 12px 3px var(--hs-stage-node-shadow);
 	}
 
 	.marker:hover {
-		box-shadow: 0 0 0 7px color-mix(in srgb, var(--hs-stage-ink) 22%, transparent);
+		box-shadow:
+			0 0 0 1.25px var(--hs-stage-node-rim),
+			0 0 0 7px color-mix(in srgb, var(--hs-stage-accent) 20%, transparent);
 	}
 
 	.marker.selected {
 		box-shadow:
-			0 0 0 2px var(--hs-stage-bg),
-			0 0 0 4.5px var(--hs-stage-accent);
+			0 0 0 2.5px var(--hs-stage-accent),
+			0 0 0 7px color-mix(in srgb, var(--hs-stage-accent) 22%, transparent);
 	}
 
 	.marker:focus-visible {
@@ -492,7 +495,7 @@
 		padding: 3px;
 		border-radius: var(--hs-radius-full);
 		background: var(--hs-stage-glass);
-		box-shadow: inset 0 0 0 1px var(--hs-stage-line);
+		box-shadow: var(--hs-shadow-sm);
 		backdrop-filter: blur(12px);
 		-webkit-backdrop-filter: blur(12px);
 	}

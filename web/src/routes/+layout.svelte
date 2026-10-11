@@ -209,7 +209,7 @@
 		min-height: 100dvh;
 	}
 
-	/* Kopfzeile: durchscheinendes Papier mit Unschärfe und Haarlinie. */
+	/* Kopfzeile: durchscheinender Grund mit Unschärfe und feiner Linie. */
 	.top {
 		position: sticky;
 		top: 0;
@@ -220,7 +220,7 @@
 		border-bottom: 1px solid var(--hs-line);
 	}
 
-	/* Auf der Startseite liegt sie durchsichtig über der Bühne, mit heller Schrift. */
+	/* Auf der Startseite liegt sie durchsichtig über dem Himmel, in der Schriftfarbe der Bühne. */
 	.top.over-stage {
 		position: absolute;
 		left: 0;

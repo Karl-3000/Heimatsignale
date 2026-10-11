@@ -76,6 +76,7 @@
 		margin-top: 0.125rem;
 		border-radius: var(--hs-radius-sm);
 		background: var(--hs-stage-bg);
+		background-image: var(--hs-stage-sky);
 	}
 
 	.edge {
@@ -86,22 +87,29 @@
 	}
 
 	.node {
-		fill: var(--hs-stage-ink);
+		fill: var(--hs-stage-node);
+		stroke: var(--hs-stage-node-rim);
+		stroke-width: 1.25;
 	}
 
 	.ring {
 		fill: none;
 		stroke: var(--hs-stage-ink);
-		stroke-opacity: 0.4;
+		stroke-opacity: 0.5;
+		stroke-width: 1.25;
+		stroke-linecap: round;
+		stroke-dasharray: 0.1 3.5;
 	}
 
 	.own {
 		fill: var(--hs-stage-origin);
+		stroke: var(--hs-stage-origin-line);
+		stroke-width: 1;
 	}
 
 	.own-ring {
 		fill: none;
-		stroke: var(--hs-stage-origin);
+		stroke: var(--hs-stage-origin-line);
 		stroke-width: 1.25;
 	}
 

@@ -1,84 +1,122 @@
 /*
- * Design-Tokens von Heimatsignale: "Signale bei Nacht".
+ * Design-Tokens von Heimatsignale: "Morgenlicht".
  *
- * Die Bühne (Herkunftsnetz und Karte) liegt in beiden Themen auf tiefem Nachtblau, wie
- * Lichter über einer dunklen Landschaft. Alles darum herum ist ruhig, hell und typografisch.
+ * Warm, pastellig, wohnlich. Die Bühne (Herkunftsnetz und Karte) ist ein weicher Himmel:
+ * am Tag ein Verlauf aus Aprikose, Rosé und einem Hauch Flieder, im dunklen Thema eine warme
+ * Abenddämmerung. Darauf liegen die Orte als helle Scheiben, die eigene Herkunft als kleine Sonne.
  *
  * Palette
- *   Tinte       #0A1030  Nachtblau. Bühnengrund und Textfarbe auf hellen Flächen. Es gibt kein neutrales Grau als Schwarz.
- *   Papier      #F3F5FA  Seitengrund, kühl. Erhabene Flächen sind reines Weiß.
- *   Fernblau    #2747F5  die eine Farbe für Interaktion. Auf der Bühne als heller Ton (#8FA5FF).
- *   Heimatlicht #FFB31A  die eine Farbe für "deine Herkunft", sonst für nichts. Als Text auf Hell der Ockerton #8F5300.
- *   Mondweiß    #E9EDFF  Knoten, Linien und Schrift auf der Bühne.
+ *   Grund       #FFF8F1  Seitengrund, warmes Creme. Erhabene Flächen sind Weiß mit warm getöntem Schatten.
+ *   Aubergine   #3B2A3E  Text und dunkelster Ton. Es gibt kein Schwarz und kein Marineblau.
+ *   Pastelle    Aprikose #FFD8C0, Rosé #F8D2DA, Butter #FFE9B5, Salbei #D5E5D2, Flieder #E4DAF4.
+ *               Nur als große, weiche Flächen und Verläufe, nie als fünf konkurrierende Akzente.
+ *   Beere       #9A3B6A  die eine Farbe für Interaktion: Schaltflächen, Links, Fokus, eigene Nachrichten.
+ *   Heimatlicht #F2A23A  die eine Farbe für "deine Herkunft", sonst für nichts. Als Text auf Hell Honigbraun.
  *
  * Komponenten greifen nur auf diese Variablen zu, nie auf feste Farbwerte.
- * Kontraste sind gegen WCAG AA gemessen (Text mindestens 4,5:1, Grafik mindestens 3:1).
+ * Kontraste sind gegen WCAG AA gemessen (Text mindestens 4,5:1, Grafik mindestens 3:1), auf dem
+ * Himmel jeweils gegen die dunkelste Stelle des Verlaufs.
  */
 
 :root {
 	color-scheme: light;
 
 	/* Benannte Palette */
-	--hs-tinte: #0a1030;
-	--hs-papier: #f3f5fa;
-	--hs-fernblau: #2747f5;
-	--hs-heimatlicht: #ffb31a;
-	--hs-mondweiss: #e9edff;
+	--hs-grund: #fff8f1;
+	--hs-aubergine: #3b2a3e;
+	--hs-beere: #9a3b6a;
+	--hs-heimatlicht: #f2a23a;
+	--hs-aprikose: #ffd8c0;
+	--hs-rose: #f8d2da;
+	--hs-butter: #ffe9b5;
+	--hs-salbei: #d5e5d2;
+	--hs-flieder: #e4daf4;
 
 	/* Seite: Flächen, Linien, Text, Interaktion, Rückmeldungen */
-	--hs-bg: #f3f5fa;
+	--hs-bg: #fff8f1;
 	--hs-surface: #ffffff;
 	--hs-raised: #ffffff;
-	--hs-sunken: #e7ebf5;
-	--hs-seg-track: #e4e8f3;
+	--hs-sunken: #f6eadf;
+	--hs-field: #ffffff;
+	--hs-seg-track: #f3e4d9;
 	--hs-seg-thumb: #ffffff;
-	--hs-line: rgb(10 16 48 / 0.1);
-	--hs-line-strong: #7c84a6;
-	--hs-ink: #0a1030;
-	--hs-ink-muted: #454c6e;
-	--hs-ink-subtle: #5a6184;
-	--hs-accent: #2747f5;
-	--hs-accent-hover: #1b37d6;
-	--hs-accent-ink: #2747f5;
-	--hs-accent-soft: #e3e8ff;
+	--hs-line: rgb(59 42 62 / 0.11);
+	--hs-line-strong: #968497;
+	--hs-ink: #3b2a3e;
+	--hs-ink-muted: #685769;
+	--hs-ink-subtle: #725f73;
+	--hs-accent: #9a3b6a;
+	--hs-accent-hover: #832f59;
+	--hs-accent-ink: #9a3b6a;
+	--hs-accent-soft: #fbe3ea;
 	--hs-on-accent: #ffffff;
-	--hs-origin: #8f5300;
-	--hs-origin-soft: #fff0d2;
-	--hs-danger: #b4233c;
-	--hs-danger-soft: #fbe7eb;
-	--hs-success: #136b4c;
-	--hs-success-soft: #dff3ea;
-	--hs-stage-bg: #0a1030;
-	--hs-stage-border: rgb(10 16 48 / 0);
-	--hs-glass: rgb(243 245 250 / 0.78);
-	--hs-shadow-sm: 0 1px 2px rgb(10 16 48 / 0.06), 0 2px 8px -2px rgb(10 16 48 / 0.08);
-	--hs-shadow-md: 0 2px 4px rgb(10 16 48 / 0.04), 0 18px 40px -16px rgb(10 16 48 / 0.22);
-	--hs-shadow-lg: 0 4px 10px rgb(10 16 48 / 0.06), 0 40px 80px -28px rgb(10 16 48 / 0.38);
-	--hs-focus: #2747f5;
-	--hs-backdrop: rgb(10 16 48 / 0.45);
+	--hs-origin: #8a5200;
+	--hs-origin-soft: #fff1cf;
+	--hs-danger: #b23a2e;
+	--hs-danger-soft: #fbe4de;
+	--hs-success: #2f6b4a;
+	--hs-success-soft: #e2eedf;
+	--hs-glass: rgb(255 248 241 / 0.8);
+	--hs-shadow-sm: 0 1px 2px rgb(59 42 62 / 0.05), 0 3px 10px -3px rgb(59 42 62 / 0.1);
+	--hs-shadow-md: 0 2px 4px rgb(59 42 62 / 0.04), 0 18px 40px -18px rgb(59 42 62 / 0.2);
+	--hs-shadow-lg: 0 4px 10px rgb(59 42 62 / 0.05), 0 40px 80px -30px rgb(59 42 62 / 0.32);
+	--hs-focus: #9a3b6a;
+	--hs-backdrop: rgb(59 42 62 / 0.38);
 
-	/* Bühne: in beiden Themen dunkel. Nur Grund und Rand unterscheiden sich leicht. */
-	--hs-stage-lift: #1c2c74;
-	--hs-stage-deep: #060a20;
-	--hs-stage-ink: var(--hs-mondweiss);
-	--hs-stage-muted: #a9b3dc;
-	--hs-stage-accent: #8fa5ff;
-	--hs-stage-origin: var(--hs-heimatlicht);
-	--hs-stage-on-light: var(--hs-tinte);
-	--hs-stage-line: rgb(233 237 255 / 0.13);
-	--hs-stage-edge: rgb(233 237 255 / 0.26);
-	--hs-stage-glass: rgb(233 237 255 / 0.1);
-	--hs-stage-glass-strong: rgb(233 237 255 / 0.18);
-	--hs-stage-danger: #ff9aa9;
-	--hs-stage-success: #7fe0b5;
+	/* Pastellflächen: Zettel, Hinweise, ruhige Tafeln. Text darauf ist immer --hs-ink. */
+	--hs-pastel-aprikose: #ffe6d6;
+	--hs-pastel-rose: #fbe3ea;
+	--hs-pastel-butter: #fff1cf;
+	--hs-pastel-salbei: #e2eedf;
+	--hs-pastel-flieder: #eee7f8;
 
-	/* Karte: Nachtkarte in Tinte-Tönen, in beiden Themen. Land etwas heller als Wasser. */
-	--hs-map-land: #101842;
-	--hs-map-water: #070b24;
-	--hs-map-green: #121d48;
-	--hs-map-road: #2b3568;
-	--hs-map-boundary: #4b5688;
-	--hs-map-label: #a9b3dc;
+	/* Hinweise in der Mitte oben: Aubergine-Pille. */
+	--hs-toast-bg: #3b2a3e;
+	--hs-toast-ink: #fff8f1;
+	--hs-toast-accent: #f4b6d2;
+	--hs-toast-danger: #ffb4a8;
+	--hs-toast-success: #b5e0c2;
+	--hs-toast-line: rgb(255 248 241 / 0.16);
+
+	/*
+	 * Bühne: der Himmel. --hs-stage-sky ist der vollständige Hintergrund (Verlauf plus drei
+	 * große, unbewegte Farbwolken). --hs-stage-bg ist der mittlere Ton als Rückfall.
+	 * Die dunkelsten Stellen sind Aprikose, Rosé und Flieder; dagegen sind alle Paare gemessen.
+	 */
+	--hs-stage-bg: #fbdcd6;
+	--hs-stage-sky:
+		radial-gradient(52% 58% at 14% 10%, rgb(255 233 181 / 0.75) 0%, rgb(255 233 181 / 0) 70%),
+		radial-gradient(46% 56% at 88% 26%, rgb(248 210 218 / 0.85) 0%, rgb(248 210 218 / 0) 72%),
+		radial-gradient(58% 60% at 70% 104%, rgb(228 218 244 / 0.95) 0%, rgb(228 218 244 / 0) 72%),
+		linear-gradient(158deg, #ffe4d0 0%, #fbdad8 52%, #eee0f1 100%);
+	--hs-stage-border: rgb(59 42 62 / 0);
+	--hs-stage-ink: #3b2a3e;
+	--hs-stage-muted: #5f4d61;
+	--hs-stage-on-ink: #fff8f1;
+	--hs-stage-accent: #9a3b6a;
+	--hs-stage-origin: #f2a23a;
+	--hs-stage-origin-ink: #7a4700;
+	--hs-stage-origin-line: #b06a00;
+	--hs-stage-origin-path: #e3911f;
+	--hs-stage-origin-glow: rgb(242 162 58 / 0.6);
+	--hs-stage-node: #ffffff;
+	--hs-stage-node-rim: #9e6a8e;
+	--hs-stage-on-node: #3b2a3e;
+	--hs-stage-node-shadow: rgb(150 78 70 / 0.26);
+	--hs-stage-halo: rgb(255 248 241 / 0.86);
+	--hs-stage-line: rgb(59 42 62 / 0.2);
+	--hs-stage-edge: rgb(59 42 62 / 0.26);
+	--hs-stage-glass: rgb(255 255 255 / 0.74);
+	--hs-stage-glass-strong: #ffffff;
+	--hs-stage-veil: rgb(255 248 241 / 0.62);
+
+	/* Karte mit Kacheln: blasse, warme Pastellkarte. */
+	--hs-map-land: #fbf1e6;
+	--hs-map-water: #dcddf3;
+	--hs-map-green: #d9e8d4;
+	--hs-map-road: #dccfc9;
+	--hs-map-boundary: #b9a3b0;
+	--hs-map-label: #685769;
 
 	/* Typografie */
 	--hs-font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
@@ -116,10 +154,10 @@
 	--hs-space-9: 7rem;
 
 	/* Radien mit Rangfolge: Bühne, Karte, Bedienelement, Pille */
-	--hs-radius-sm: 0.5rem;
-	--hs-radius-md: 0.75rem;
-	--hs-radius-lg: 1.25rem;
-	--hs-radius-stage: 1.875rem;
+	--hs-radius-sm: 0.625rem;
+	--hs-radius-md: 1rem;
+	--hs-radius-lg: 1.625rem;
+	--hs-radius-stage: 2.25rem;
 	--hs-radius-full: 999px;
 
 	/* Bewegung: 150 bis 300 ms, zwei Kurven */
@@ -142,78 +180,160 @@
 	}
 }
 
-/* Dunkles Thema: per Systemeinstellung, solange nicht ausdrücklich "hell" gewählt ist. */
+/* Dunkles Thema, die warme Dämmerung: per Systemeinstellung, solange nicht ausdrücklich "hell" gewählt ist. */
 @media (prefers-color-scheme: dark) {
 	:root:not([data-theme='light']) {
 		color-scheme: dark;
-		--hs-bg: #060918;
-		--hs-surface: #0e1430;
-		--hs-raised: #151c40;
-		--hs-sunken: #1a2250;
-	--hs-seg-track: #0e1430;
-	--hs-seg-thumb: #2a3572;
-		--hs-seg-track: #0e1430;
-		--hs-seg-thumb: #2a3572;
-		--hs-line: rgb(233 237 255 / 0.12);
-		--hs-line-strong: #6b74a0;
-		--hs-ink: #eef1ff;
-		--hs-ink-muted: #b3badb;
-		--hs-ink-subtle: #939bc2;
-		--hs-accent: #2747f5;
-		--hs-accent-hover: #3d5bff;
-		--hs-accent-ink: #9db0ff;
-		--hs-accent-soft: #1a2459;
+		--hs-bg: #241a27;
+		--hs-surface: #2e2231;
+		--hs-raised: #3a2b3e;
+		--hs-sunken: #1e1521;
+		--hs-field: #1e1521;
+		--hs-seg-track: #1e1521;
+		--hs-seg-thumb: #4a3850;
+		--hs-line: rgb(246 236 243 / 0.12);
+		--hs-line-strong: #8b768c;
+		--hs-ink: #f6ecf3;
+		--hs-ink-muted: #cdbccb;
+		--hs-ink-subtle: #b9a7b8;
+		--hs-accent: #b24e7f;
+		--hs-accent-hover: #a0436f;
+		--hs-accent-ink: #e79abf;
+		--hs-accent-soft: #4a2c40;
 		--hs-on-accent: #ffffff;
-		--hs-origin: #ffb31a;
-		--hs-origin-soft: #3a2c0b;
-		--hs-danger: #ff8a9b;
-		--hs-danger-soft: #3d1420;
-		--hs-success: #6fd6a8;
-		--hs-success-soft: #0f3326;
-		--hs-stage-bg: #0c1233;
-		--hs-stage-border: rgb(233 237 255 / 0.14);
-		--hs-glass: rgb(6 9 24 / 0.72);
-		--hs-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-		--hs-shadow-md: 0 2px 4px rgb(0 0 0 / 0.3), 0 18px 40px -16px rgb(0 0 0 / 0.7);
-		--hs-shadow-lg: 0 4px 10px rgb(0 0 0 / 0.4), 0 40px 80px -28px rgb(0 0 0 / 0.85);
-		--hs-focus: #9db0ff;
-		--hs-backdrop: rgb(2 4 14 / 0.62);
+		--hs-origin: #f5b04e;
+		--hs-origin-soft: #4c3a2c;
+		--hs-danger: #ff9c8f;
+		--hs-danger-soft: #4e2a2a;
+		--hs-success: #9fd4b0;
+		--hs-success-soft: #2f3f35;
+		--hs-glass: rgb(36 26 39 / 0.78);
+		--hs-shadow-sm: 0 1px 2px rgb(18 10 20 / 0.4);
+		--hs-shadow-md: 0 2px 4px rgb(18 10 20 / 0.3), 0 18px 40px -16px rgb(18 10 20 / 0.7);
+		--hs-shadow-lg: 0 4px 10px rgb(18 10 20 / 0.4), 0 40px 80px -28px rgb(18 10 20 / 0.85);
+		--hs-focus: #e79abf;
+		--hs-backdrop: rgb(24 14 26 / 0.6);
+		--hs-pastel-aprikose: #4f3431;
+		--hs-pastel-rose: #51303f;
+		--hs-pastel-butter: #4c3a2c;
+		--hs-pastel-salbei: #2f3f35;
+		--hs-pastel-flieder: #3d3154;
+		--hs-toast-bg: #4a3850;
+		--hs-toast-ink: #f6ecf3;
+		--hs-toast-accent: #f4b6d2;
+		--hs-toast-danger: #ffb4a8;
+		--hs-toast-success: #b5e0c2;
+		--hs-toast-line: rgb(246 236 243 / 0.16);
+		--hs-stage-bg: #48304b;
+		--hs-stage-sky:
+			radial-gradient(50% 56% at 14% 8%, rgb(122 74 82 / 0.5) 0%, rgb(122 74 82 / 0) 70%),
+			radial-gradient(46% 56% at 90% 24%, rgb(106 71 99 / 0.75) 0%, rgb(106 71 99 / 0) 72%),
+			radial-gradient(58% 60% at 68% 106%, rgb(70 52 100 / 0.7) 0%, rgb(70 52 100 / 0) 72%),
+			linear-gradient(160deg, #3a2440 0%, #4a2f4c 55%, #5a3c58 100%);
+		--hs-stage-border: rgb(246 236 243 / 0.1);
+		--hs-stage-ink: #f6ecf3;
+		--hs-stage-muted: #e3d0df;
+		--hs-stage-on-ink: #2a1b2d;
+		--hs-stage-accent: #ffc3dc;
+		--hs-stage-origin: #f5b04e;
+		--hs-stage-origin-ink: #ffc670;
+		--hs-stage-origin-line: #f5b04e;
+		--hs-stage-origin-path: #f5b04e;
+		--hs-stage-origin-glow: rgb(245 176 78 / 0.55);
+		--hs-stage-node: #fff1e0;
+		--hs-stage-node-rim: #ffd8c0;
+		--hs-stage-on-node: #2a1b2d;
+		--hs-stage-node-shadow: rgb(255 216 192 / 0.4);
+		--hs-stage-halo: rgb(52 32 56 / 0.86);
+		--hs-stage-line: rgb(246 236 243 / 0.2);
+		--hs-stage-edge: rgb(246 236 243 / 0.3);
+		--hs-stage-glass: rgb(246 236 243 / 0.12);
+		--hs-stage-glass-strong: rgb(246 236 243 / 0.22);
+		--hs-stage-veil: rgb(36 26 39 / 0.6);
+		--hs-map-land: #35283b;
+		--hs-map-water: #2a2542;
+		--hs-map-green: #303b35;
+		--hs-map-road: #54445a;
+		--hs-map-boundary: #7c6782;
+		--hs-map-label: #cdbccb;
 	}
 }
 
 /* Dunkles Thema: ausdrücklich gewählt. Gleiche Werte wie oben. */
 :root[data-theme='dark'] {
 	color-scheme: dark;
-	--hs-bg: #060918;
-	--hs-surface: #0e1430;
-	--hs-raised: #151c40;
-	--hs-sunken: #1a2250;
-	--hs-seg-track: #0e1430;
-	--hs-seg-thumb: #2a3572;
-	--hs-line: rgb(233 237 255 / 0.12);
-	--hs-line-strong: #6b74a0;
-	--hs-ink: #eef1ff;
-	--hs-ink-muted: #b3badb;
-	--hs-ink-subtle: #939bc2;
-	--hs-accent: #2747f5;
-	--hs-accent-hover: #3d5bff;
-	--hs-accent-ink: #9db0ff;
-	--hs-accent-soft: #1a2459;
+	--hs-bg: #241a27;
+	--hs-surface: #2e2231;
+	--hs-raised: #3a2b3e;
+	--hs-sunken: #1e1521;
+	--hs-field: #1e1521;
+	--hs-seg-track: #1e1521;
+	--hs-seg-thumb: #4a3850;
+	--hs-line: rgb(246 236 243 / 0.12);
+	--hs-line-strong: #8b768c;
+	--hs-ink: #f6ecf3;
+	--hs-ink-muted: #cdbccb;
+	--hs-ink-subtle: #b9a7b8;
+	--hs-accent: #b24e7f;
+	--hs-accent-hover: #a0436f;
+	--hs-accent-ink: #e79abf;
+	--hs-accent-soft: #4a2c40;
 	--hs-on-accent: #ffffff;
-	--hs-origin: #ffb31a;
-	--hs-origin-soft: #3a2c0b;
-	--hs-danger: #ff8a9b;
-	--hs-danger-soft: #3d1420;
-	--hs-success: #6fd6a8;
-	--hs-success-soft: #0f3326;
-	--hs-stage-bg: #0c1233;
-	--hs-stage-border: rgb(233 237 255 / 0.14);
-	--hs-glass: rgb(6 9 24 / 0.72);
-	--hs-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-	--hs-shadow-md: 0 2px 4px rgb(0 0 0 / 0.3), 0 18px 40px -16px rgb(0 0 0 / 0.7);
-	--hs-shadow-lg: 0 4px 10px rgb(0 0 0 / 0.4), 0 40px 80px -28px rgb(0 0 0 / 0.85);
-	--hs-focus: #9db0ff;
-	--hs-backdrop: rgb(2 4 14 / 0.62);
+	--hs-origin: #f5b04e;
+	--hs-origin-soft: #4c3a2c;
+	--hs-danger: #ff9c8f;
+	--hs-danger-soft: #4e2a2a;
+	--hs-success: #9fd4b0;
+	--hs-success-soft: #2f3f35;
+	--hs-glass: rgb(36 26 39 / 0.78);
+	--hs-shadow-sm: 0 1px 2px rgb(18 10 20 / 0.4);
+	--hs-shadow-md: 0 2px 4px rgb(18 10 20 / 0.3), 0 18px 40px -16px rgb(18 10 20 / 0.7);
+	--hs-shadow-lg: 0 4px 10px rgb(18 10 20 / 0.4), 0 40px 80px -28px rgb(18 10 20 / 0.85);
+	--hs-focus: #e79abf;
+	--hs-backdrop: rgb(24 14 26 / 0.6);
+	--hs-pastel-aprikose: #4f3431;
+	--hs-pastel-rose: #51303f;
+	--hs-pastel-butter: #4c3a2c;
+	--hs-pastel-salbei: #2f3f35;
+	--hs-pastel-flieder: #3d3154;
+	--hs-toast-bg: #4a3850;
+	--hs-toast-ink: #f6ecf3;
+	--hs-toast-accent: #f4b6d2;
+	--hs-toast-danger: #ffb4a8;
+	--hs-toast-success: #b5e0c2;
+	--hs-toast-line: rgb(246 236 243 / 0.16);
+	--hs-stage-bg: #48304b;
+	--hs-stage-sky:
+		radial-gradient(50% 56% at 14% 8%, rgb(122 74 82 / 0.5) 0%, rgb(122 74 82 / 0) 70%),
+		radial-gradient(46% 56% at 90% 24%, rgb(106 71 99 / 0.75) 0%, rgb(106 71 99 / 0) 72%),
+		radial-gradient(58% 60% at 68% 106%, rgb(70 52 100 / 0.7) 0%, rgb(70 52 100 / 0) 72%),
+		linear-gradient(160deg, #3a2440 0%, #4a2f4c 55%, #5a3c58 100%);
+	--hs-stage-border: rgb(246 236 243 / 0.1);
+	--hs-stage-ink: #f6ecf3;
+	--hs-stage-muted: #e3d0df;
+	--hs-stage-on-ink: #2a1b2d;
+	--hs-stage-accent: #ffc3dc;
+	--hs-stage-origin: #f5b04e;
+	--hs-stage-origin-ink: #ffc670;
+	--hs-stage-origin-line: #f5b04e;
+	--hs-stage-origin-path: #f5b04e;
+	--hs-stage-origin-glow: rgb(245 176 78 / 0.55);
+	--hs-stage-node: #fff1e0;
+	--hs-stage-node-rim: #ffd8c0;
+	--hs-stage-on-node: #2a1b2d;
+	--hs-stage-node-shadow: rgb(255 216 192 / 0.4);
+	--hs-stage-halo: rgb(52 32 56 / 0.86);
+	--hs-stage-line: rgb(246 236 243 / 0.2);
+	--hs-stage-edge: rgb(246 236 243 / 0.3);
+	--hs-stage-glass: rgb(246 236 243 / 0.12);
+	--hs-stage-glass-strong: rgb(246 236 243 / 0.22);
+	--hs-stage-veil: rgb(36 26 39 / 0.6);
+	--hs-map-land: #35283b;
+	--hs-map-water: #2a2542;
+	--hs-map-green: #303b35;
+	--hs-map-road: #54445a;
+	--hs-map-boundary: #7c6782;
+	--hs-map-label: #cdbccb;
 }
 
 :root[data-theme='light'] {

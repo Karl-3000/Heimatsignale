@@ -401,13 +401,13 @@
 		justify-items: end;
 	}
 
-	/* Sprechblasen mit großzügigem Radius: eigene in Fernblau, die der anderen Person auf weicher Fläche. */
+	/* Sprechblasen mit großzügigem Radius: eigene in Beere, die der anderen Person auf Flieder. */
 	.bubble {
 		max-width: min(32rem, 86%);
 		padding: var(--hs-space-3) var(--hs-space-4);
 		border-radius: 1.375rem;
 		border-bottom-left-radius: var(--hs-radius-sm);
-		background: var(--hs-sunken);
+		background: var(--hs-pastel-flieder);
 	}
 
 	.mine .bubble {
@@ -424,7 +424,7 @@
 	}
 
 	.mine .who {
-		color: color-mix(in srgb, var(--hs-on-accent) 86%, var(--hs-accent));
+		color: var(--hs-on-accent);
 	}
 
 	.when {

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { NearbyOverview } from '$lib/api/types';
 
-	/** Gestalteter leerer Zustand: eine kleine Bühne mit einem einzelnen Heimatlicht, daneben die Erklärung. */
+	/** Gestalteter leerer Zustand: ein kleiner Himmel mit einer einzelnen kleinen Sonne, daneben die Erklärung. */
 	interface Props {
 		overview: NearbyOverview;
 		/** Größerer wählbarer Umkreis in km, falls es einen gibt. */
@@ -24,7 +24,7 @@
 			<circle r="104" class="ring" />
 			<circle r="68" class="ring" />
 			<circle r="32" class="ring" />
-			<circle r="46" fill="url(#{uid}-licht)" />
+			<circle r="58" fill="url(#{uid}-licht)" />
 			<circle r="9" class="own" />
 			<circle r="14" class="own-ring" />
 		</svg>
@@ -89,25 +89,29 @@
 	.ring {
 		fill: none;
 		stroke: var(--hs-stage-line);
+		stroke-width: 1.5;
+		stroke-linecap: round;
+		stroke-dasharray: 0.1 7;
 	}
 
 	.a {
-		stop-color: var(--hs-stage-origin);
-		stop-opacity: 0.5;
+		stop-color: var(--hs-stage-origin-glow);
 	}
 
 	.b {
-		stop-color: var(--hs-stage-origin);
+		stop-color: var(--hs-stage-origin-glow);
 		stop-opacity: 0;
 	}
 
 	.own {
 		fill: var(--hs-stage-origin);
+		stroke: var(--hs-stage-origin-line);
+		stroke-width: 1;
 	}
 
 	.own-ring {
 		fill: none;
-		stroke: var(--hs-stage-origin);
+		stroke: var(--hs-stage-origin-line);
 		stroke-width: 1.5;
 	}
 </style>

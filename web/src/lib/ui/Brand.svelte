@@ -4,14 +4,14 @@
 	/**
 	 * Das Zeichen von Heimatsignale mit Wortmarke.
 	 *
-	 * Das Zeichen ist ein H aus zwei Lichtern: unten links der Ort, an dem du jetzt wohnst,
-	 * oben rechts frei schwebend das Heimatlicht, dazwischen eine geschwungene Linie wie die
-	 * Kanten des Herkunftsnetzes. Die Wortmarke ist gesetzter Text in Bricolage Grotesque;
+	 * Das Zeichen ist ein kleines h, das zugleich ein Torbogen ist: Im Bogen steht das
+	 * Heimatlicht wie eine aufgehende Sonne in einer Tür. Der Stamm und der Bogen sind ein
+	 * einziger runder Strich. Die Wortmarke ist gesetzter Text in Bricolage Grotesque;
 	 * der Name kommt aus der Sitzung (site.name).
 	 */
 	interface Props {
 		href?: string | null;
-		/** "stage": helles Zeichen auf Nachtblau. */
+		/** "stage": Zeichen in der Schriftfarbe der Bühne, auf dem Himmel. */
 		tone?: 'page' | 'stage';
 		/** Nur das Zeichen, z. B. in engen Kopfzeilen. Der Name bleibt für Screenreader erhalten. */
 		markOnly?: boolean;
@@ -23,9 +23,8 @@
 
 {#snippet content()}
 	<svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-		<path class="lines" d="M19 8V44M45 29V56M19 39C32 39 32 30 45 30" />
-		<circle class="here" cx="19" cy="46" r="10.5" />
-		<circle class="home" cx="45" cy="13" r="7.5" />
+		<path class="lines" d="M17 8V55M17 40C17 24 47 24 47 40V55" />
+		<circle class="home" cx="32" cy="47" r="7.5" />
 	</svg>
 	<span class="word" class:hs-sr-only={markOnly}>{session.siteName}</span>
 {/snippet}
@@ -63,17 +62,14 @@
 	.lines {
 		fill: none;
 		stroke: var(--mark-ink);
-		stroke-width: 6.5;
+		stroke-width: 9;
 		stroke-linecap: round;
+		stroke-linejoin: round;
 	}
 
-	.here {
-		fill: var(--mark-ink);
-	}
-
-	/* Auf hellem Grund ein sattes Bernstein, damit das Licht als Grafik genug Kontrast hat. */
+	/* Der Lichtpunkt ist immer Heimatlicht, auf jedem Grund. */
 	.home {
-		fill: color-mix(in srgb, var(--hs-heimatlicht) 82%, var(--mark-light));
+		fill: var(--hs-heimatlicht);
 	}
 
 	.brand-stage .home {

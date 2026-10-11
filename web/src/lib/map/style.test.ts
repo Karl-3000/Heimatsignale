@@ -34,9 +34,28 @@ describe('buildMapStyle', () => {
 		expect(ohneKacheln.glyphs).toBeUndefined();
 	});
 
-	it('ist in beiden Themen eine Nachtkarte: gleiche Schlüssel, nur der Bühnengrund weicht ab', () => {
+	it('ist am Tag eine helle Pastellkarte und im dunklen Thema eine Dämmerung, mit denselben Schlüsseln', () => {
 		expect(Object.keys(DARK_MAP_COLORS).sort()).toEqual(Object.keys(LIGHT_MAP_COLORS).sort());
-		expect(DARK_MAP_COLORS.background).not.toBe(LIGHT_MAP_COLORS.background);
+		const helligkeit = (hex: string): number => {
+			const n = parseInt(hex.slice(1), 16);
+			return (0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255;
+		};
+		for (const key of ['land', 'water', 'green', 'road', 'mask'] as const) {
+			expect(helligkeit(LIGHT_MAP_COLORS[key])).toBeGreaterThan(0.8);
+			expect(helligkeit(DARK_MAP_COLORS[key])).toBeLessThan(0.35);
+		}
+		// Der Kreis und die Ortsnamen heben sich in beiden Themen vom Land ab.
+		expect(helligkeit(LIGHT_MAP_COLORS.circle)).toBeLessThan(0.3);
+		expect(helligkeit(DARK_MAP_COLORS.circle)).toBeGreaterThan(0.8);
+	});
+
+	it('kennt keine kalten Blautöne: Rot ist in keiner Kartenfarbe deutlich schwächer als Blau', () => {
+		for (const colors of [LIGHT_MAP_COLORS, DARK_MAP_COLORS]) {
+			for (const hex of Object.values(colors)) {
+				const n = parseInt(hex.slice(1), 16);
+				expect(((n >> 16) & 255) - (n & 255)).toBeGreaterThan(-32);
+			}
+		}
 	});
 });
 

@@ -156,11 +156,11 @@
 		background: color-mix(in srgb, var(--hs-danger-soft) 82%, var(--hs-danger));
 	}
 
-	/* Auf der Bühne: gläserne Pille mit heller Schrift. */
+	/* Auf dem Himmel: weiche weiße Pille. */
 	.btn-glass {
 		background: var(--hs-stage-glass);
 		color: var(--hs-stage-ink);
-		box-shadow: inset 0 0 0 1px var(--hs-stage-line);
+		box-shadow: var(--hs-shadow-sm);
 	}
 
 	.btn-glass:hover:not(:disabled) {

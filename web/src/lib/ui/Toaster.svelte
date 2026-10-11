@@ -39,7 +39,7 @@
 		pointer-events: none;
 	}
 
-	/* Dunkle Pille, in beiden Themen. */
+	/* Aubergine-Pille, in beiden Themen. */
 	.toast {
 		display: flex;
 		align-items: center;
@@ -47,9 +47,9 @@
 		max-width: 100%;
 		padding: var(--hs-space-2) var(--hs-space-2) var(--hs-space-2) var(--hs-space-4);
 		border-radius: 1.75rem;
-		border: 1px solid var(--hs-stage-line);
-		background: var(--hs-tinte);
-		color: var(--hs-stage-ink);
+		border: 1px solid var(--hs-toast-line);
+		background: var(--hs-toast-bg);
+		color: var(--hs-toast-ink);
 		box-shadow: var(--hs-shadow-lg);
 		font-size: var(--hs-text-sm);
 		pointer-events: auto;
@@ -66,15 +66,15 @@
 	.glyph {
 		display: inline-flex;
 		flex: none;
-		color: var(--hs-stage-accent);
+		color: var(--hs-toast-accent);
 	}
 
 	.toast-error .glyph {
-		color: var(--hs-stage-danger);
+		color: var(--hs-toast-danger);
 	}
 
 	.toast-success .glyph {
-		color: var(--hs-stage-success);
+		color: var(--hs-toast-success);
 	}
 
 	p {
@@ -92,16 +92,16 @@
 		flex: none;
 		border: 0;
 		border-radius: 50%;
-		background: var(--hs-stage-glass);
-		color: var(--hs-stage-ink);
+		background: var(--hs-toast-line);
+		color: var(--hs-toast-ink);
 		cursor: pointer;
 	}
 
 	button:hover {
-		background: var(--hs-stage-glass-strong);
+		background: color-mix(in srgb, var(--hs-toast-ink) 28%, transparent);
 	}
 
 	button:focus-visible {
-		outline-color: var(--hs-stage-accent);
+		outline-color: var(--hs-toast-accent);
 	}
 </style>

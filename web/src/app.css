@@ -167,19 +167,25 @@
 	}
 
 	/*
-	 * Die Bühne: tiefes Nachtblau mit einer ruhigen, unbewegten Tiefe. Ein weicher Lichthof
-	 * hinter der Mitte, sonst nichts. In beiden Themen dunkel.
+	 * Die Bühne: ein weicher Himmel. Ein Pastellverlauf mit drei großen, unbewegten
+	 * Farbwolken, ohne Raster und ohne Körnung. Im dunklen Thema eine warme Dämmerung.
 	 */
 	.hs-stage {
 		position: relative;
 		border-radius: var(--hs-radius-stage);
 		border: 1px solid var(--hs-stage-border);
-		background:
-			radial-gradient(120% 90% at 50% 46%, color-mix(in srgb, var(--hs-stage-lift) 62%, transparent) 0%, transparent 62%),
-			var(--hs-stage-bg);
+		background: var(--hs-stage-bg);
+		background-image: var(--hs-stage-sky);
 		color: var(--hs-stage-ink);
 		overflow: hidden;
 		isolation: isolate;
+	}
+
+	/* Ruhige Pastelltafel: abgerundet, ohne Rand. Sparsam einsetzen. */
+	.hs-panel {
+		border-radius: var(--hs-radius-stage);
+		background: var(--hs-pastel-butter);
+		color: var(--hs-ink);
 	}
 
 	/*
@@ -242,13 +248,14 @@
 		color: var(--hs-ink);
 	}
 
-	/* Auf der Bühne: gläserne Spur, heller Daumen. */
+	/* Auf der Bühne: weiche weiße Pille. */
 	.hs-seg-stage {
 		background: var(--hs-stage-glass);
+		box-shadow: var(--hs-shadow-sm);
 	}
 
 	.hs-seg-stage::before {
-		background: var(--hs-stage-ink);
+		background: var(--hs-accent);
 		box-shadow: none;
 	}
 
@@ -261,7 +268,7 @@
 	}
 
 	.hs-seg-stage .hs-seg-item[data-on='true'] {
-		color: var(--hs-stage-on-light);
+		color: var(--hs-on-accent);
 	}
 
 	/* Fließtext der Rechts- und Erklärseiten. */

@@ -67,8 +67,8 @@
 		padding: 0 var(--hs-space-4);
 		border: 0;
 		border-radius: var(--hs-radius-md);
-		background: var(--hs-sunken);
-		box-shadow: inset 0 0 0 1px transparent;
+		background: var(--hs-field);
+		box-shadow: inset 0 0 0 1px var(--hs-line-strong);
 		color: var(--hs-ink);
 		font: inherit;
 		transition:
@@ -81,12 +81,11 @@
 	}
 
 	input:hover {
-		box-shadow: inset 0 0 0 1px var(--hs-line-strong);
+		box-shadow: inset 0 0 0 1.5px var(--hs-ink-muted);
 	}
 
 	input:focus-visible {
 		outline: none;
-		background: var(--hs-raised);
 		box-shadow: inset 0 0 0 2px var(--hs-focus);
 	}
 

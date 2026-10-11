@@ -12,7 +12,7 @@
 	<meta name="description" content="Wer neu in eine Stadt zieht, findet hier andere Zugezogene aus der eigenen Heimatregion im Umkreis von 20 km, auf Wunsch bis 100 km. Nur für Deutschland, keine Dating-Plattform." />
 </svelte:head>
 
-<!-- Der Hero ist die Bühne: Nachtblau vom oberen Rand an, die Kopfzeile liegt durchsichtig darüber. -->
+<!-- Der Hero ist der Himmel: Pastell vom oberen Rand an, die Kopfzeile liegt durchsichtig darüber. -->
 <section class="hero" aria-labelledby="hero-titel">
 	<div class="hero-inner">
 		<div class="hero-text">
@@ -28,7 +28,7 @@
 		</div>
 		<div class="hero-stage">
 			<DemoNetwork hero height="clamp(24rem, 68dvh, 42rem)" />
-			<p class="hero-caption">Ein Beispiel mit erfundenen Daten. Wähle ein Licht, um die nächste Stufe zu öffnen.</p>
+			<p class="hero-caption">Ein Beispiel mit erfundenen Daten. Wähle einen Kreis, um die nächste Stufe zu öffnen.</p>
 		</div>
 	</div>
 </section>
@@ -95,11 +95,9 @@
 <style>
 	.hero {
 		position: relative;
-		background:
-			radial-gradient(70% 80% at 72% 58%, color-mix(in srgb, var(--hs-stage-lift) 70%, transparent) 0%, transparent 68%),
-			var(--hs-stage-bg);
+		background: var(--hs-stage-bg);
+		background-image: linear-gradient(to bottom, transparent 0%, transparent 78%, var(--hs-bg) 100%), var(--hs-stage-sky);
 		color: var(--hs-stage-ink);
-		border-bottom: 1px solid var(--hs-stage-border);
 		overflow: hidden;
 	}
 
@@ -212,8 +210,18 @@
 		display: grid;
 		gap: var(--hs-space-2);
 		align-content: start;
-		padding-top: var(--hs-space-4);
-		border-top: 1px solid var(--hs-line);
+		padding: var(--hs-space-5);
+		border-radius: var(--hs-radius-lg);
+		background: var(--hs-pastel-aprikose);
+	}
+
+	/* Drei Nachbarn aus dem Himmel: Aprikose, Rosé, Flieder. */
+	.steps li:nth-child(2) {
+		background: var(--hs-pastel-rose);
+	}
+
+	.steps li:nth-child(3) {
+		background: var(--hs-pastel-flieder);
 	}
 
 	/* Die Ziffer ist Teil einer echten Reihenfolge, deshalb darf sie groß sein. */
@@ -224,7 +232,7 @@
 		font-size: var(--hs-text-3xl);
 		line-height: 1;
 		letter-spacing: var(--hs-tracking-display);
-		color: var(--hs-accent-ink);
+		color: var(--hs-ink);
 		font-variant-numeric: tabular-nums;
 	}
 

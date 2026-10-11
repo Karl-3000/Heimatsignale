@@ -1,11 +1,12 @@
 /**
- * Eigener Kartenstil für MapLibre: eine Nachtkarte in Tinte-Tönen, in beiden Themen.
- * Die Karte ist Teil der Bühne; die Lichter (Wohnort-Knoten) bleiben der Vordergrund.
- * Land ist etwas heller als Wasser, Straßen sind dünn und blass, es gibt keine POI-Symbole.
+ * Eigener Kartenstil für MapLibre: eine blasse, warme Pastellkarte in der Sprache des Himmels.
+ * Die Karte ist Teil der Bühne; die hellen Scheiben (Wohnort-Knoten) bleiben der Vordergrund.
+ * Land ist warmes Creme, Wasser ein weiches Blaulila, Grünflächen Salbei, Straßen dünn und
+ * warmgrau, es gibt keine POI-Symbole. Im dunklen Thema dieselbe Karte in der Dämmerung.
  * Grundlage ist das Protomaps-Basemap-Schema v4 (Ebenen earth, water, landuse,
- * roads, boundaries, places). Ohne Kachel-URL besteht der Stil nur aus dem leuchtenden
- * Umkreis-Kreis und der Abdunklung außerhalb; der Grund bleibt durchsichtig, sodass die
- * Bühne darunter zu sehen ist. Die Karte funktioniert dann ohne jede Netzanfrage.
+ * roads, boundaries, places). Ohne Kachel-URL besteht der Stil nur aus dem Umkreis-Kreis
+ * und dem Schleier außerhalb; der Grund bleibt durchsichtig, sodass der Himmel der Bühne
+ * darunter zu sehen ist. Die Karte funktioniert dann ohne jede Netzanfrage.
  * Ortsnamen auf der Grundkarte gibt es nur, wenn eine Glyphen-URL gesetzt ist.
  */
 
@@ -26,23 +27,30 @@ export interface MapColors {
 
 /** Feste Farben für Umgebungen ohne DOM und als Rückfall. Entsprechen tokens.css. */
 export const LIGHT_MAP_COLORS: MapColors = {
-	background: '#0a1030',
-	land: '#101842',
-	water: '#070b24',
-	green: '#121d48',
-	road: '#2b3568',
-	boundary: '#4b5688',
-	label: '#a9b3dc',
-	halo: '#0a1030',
-	circle: '#e9edff',
-	mask: '#060a20'
+	background: '#fbdcd6',
+	land: '#fbf1e6',
+	water: '#dcddf3',
+	green: '#d9e8d4',
+	road: '#dccfc9',
+	boundary: '#b9a3b0',
+	label: '#685769',
+	halo: '#fbf1e6',
+	circle: '#3b2a3e',
+	mask: '#fff8f1'
 };
 
-/** Im dunklen Thema ist die Bühne eine Spur heller als die Seite. */
+/** Die Dämmerung: dieselbe Karte in tiefen, warmen Tönen. */
 export const DARK_MAP_COLORS: MapColors = {
-	...LIGHT_MAP_COLORS,
-	background: '#0c1233',
-	halo: '#0c1233'
+	background: '#48304b',
+	land: '#35283b',
+	water: '#2a2542',
+	green: '#303b35',
+	road: '#54445a',
+	boundary: '#7c6782',
+	label: '#cdbccb',
+	halo: '#35283b',
+	circle: '#f6ecf3',
+	mask: '#241a27'
 };
 
 /** Liest die Kartenfarben aus den Design-Tokens des gerade wirksamen Themas. */
@@ -58,9 +66,9 @@ export function readMapColors(fallback: MapColors = LIGHT_MAP_COLORS): MapColors
 		road: token('--hs-map-road', fallback.road),
 		boundary: token('--hs-map-boundary', fallback.boundary),
 		label: token('--hs-map-label', fallback.label),
-		halo: token('--hs-stage-bg', fallback.halo),
-		circle: token('--hs-mondweiss', fallback.circle),
-		mask: token('--hs-stage-deep', fallback.mask)
+		halo: token('--hs-map-land', fallback.halo),
+		circle: token('--hs-stage-ink', fallback.circle),
+		mask: token('--hs-bg', fallback.mask)
 	};
 }
 
@@ -151,7 +159,7 @@ export function buildMapStyle(options: StyleOptions, origin: string = ''): Json 
 				'source-layer': 'roads',
 				filter: ['in', ['get', 'kind'], ['literal', ['highway', 'major_road']]],
 				layout: { 'line-cap': 'round', 'line-join': 'round' },
-				paint: { 'line-color': c.road, 'line-width': ['interpolate', ['linear'], ['zoom'], 7, 0.6, 10, 1.4, 14, 3.2] }
+				paint: { 'line-color': c.road, 'line-width': ['interpolate', ['linear'], ['zoom'], 7, 0.5, 10, 1.1, 14, 2.6] }
 			},
 			{
 				id: 'grenzen',
@@ -179,21 +187,21 @@ export function buildMapStyle(options: StyleOptions, origin: string = ''): Json 
 		}
 	}
 
-	// Außerhalb des Umkreises wird es dunkler: Gezeigt wird nie mehr als der gewählte Umkreis.
-	// Der Kreis selbst ist ein weicher Lichtring mit einer feinen gestrichelten Linie darin.
+	// Außerhalb des Umkreises liegt ein Schleier in der Farbe des Seitengrunds: Gezeigt wird nie
+	// mehr als der gewählte Umkreis. Der Kreis selbst ist eine feine gestrichelte Linie mit weichem Hof.
 	layers.push(
-		{ id: 'maske', type: 'fill', source: MASK_SOURCE, paint: { 'fill-color': c.mask, 'fill-opacity': hasTiles ? 0.82 : 0.6 } },
+		{ id: 'maske', type: 'fill', source: MASK_SOURCE, paint: { 'fill-color': c.mask, 'fill-opacity': hasTiles ? 0.74 : 0.6 } },
 		{
 			id: 'umkreis-schein',
 			type: 'line',
 			source: CIRCLE_SOURCE,
-			paint: { 'line-color': c.circle, 'line-width': 9, 'line-blur': 9, 'line-opacity': 0.22 }
+			paint: { 'line-color': c.circle, 'line-width': 9, 'line-blur': 9, 'line-opacity': 0.12 }
 		},
 		{
 			id: 'umkreis-linie',
 			type: 'line',
 			source: CIRCLE_SOURCE,
-			paint: { 'line-color': c.circle, 'line-width': 1.25, 'line-dasharray': [2, 3], 'line-opacity': 0.75 }
+			paint: { 'line-color': c.circle, 'line-width': 1.5, 'line-dasharray': [2, 3], 'line-opacity': 0.6 }
 		}
 	);
 

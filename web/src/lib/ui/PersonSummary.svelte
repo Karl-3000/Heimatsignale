@@ -13,7 +13,7 @@
 		link?: boolean;
 		size?: 'md' | 'lg';
 		showMemberSince?: boolean;
-		/** Auf der Bühne: helle Schrift auf Nachtblau. */
+		/** Auf der Bühne: Schrift in den Farben des Himmels. */
 		onStage?: boolean;
 	}
 

@@ -52,24 +52,28 @@
 		display: block;
 		font-family: var(--hs-font-sans);
 		overflow: visible;
+		/* Die Scheibe ist in beiden Themen hell, die Schrift darauf also immer dunkel. */
+		--hs-miniature-muted: #5f4d61;
+		--hs-miniature-origin: #7a4700;
+		filter: drop-shadow(0 3px 6px var(--hs-stage-node-shadow));
 	}
 
-	/* Gläserne Scheibe auf der Bühne; die Lichter darin sind dieselben wie im Netz. */
+	/* Weiße Scheibe auf dem Himmel; das kleine Netz darin folgt denselben Regeln wie das große. */
 	.plate {
-		fill: var(--hs-stage-glass);
-		stroke: var(--hs-stage-line);
-		stroke-width: 1;
+		fill: var(--hs-stage-node);
+		stroke: var(--hs-stage-node-rim);
+		stroke-width: 1.25;
 	}
 
 	line {
-		stroke: var(--hs-stage-ink);
-		stroke-opacity: 0.32;
+		stroke: var(--hs-stage-on-node);
+		stroke-opacity: 0.3;
 		stroke-linecap: round;
 	}
 
 	line.own {
-		stroke: var(--hs-stage-origin);
-		stroke-opacity: 0.8;
+		stroke: var(--hs-stage-origin-path);
+		stroke-opacity: 0.9;
 	}
 
 	.rest-line {
@@ -77,46 +81,48 @@
 	}
 
 	.node {
-		fill: var(--hs-stage-ink);
+		fill: var(--hs-stage-node-rim);
 	}
 
 	.node.own {
 		fill: var(--hs-stage-origin);
+		stroke: var(--hs-stage-origin-line);
+		stroke-width: 1;
 	}
 
 	.own-ring {
 		fill: none;
-		stroke: var(--hs-stage-origin);
+		stroke: var(--hs-stage-origin-line);
 		stroke-width: 1.25;
 	}
 
 	.center {
-		fill: var(--hs-stage-ink);
+		fill: var(--hs-stage-on-node);
 	}
 
 	.total {
-		fill: var(--hs-stage-on-light);
+		fill: var(--hs-stage-node);
 		font-weight: var(--hs-weight-strong);
 	}
 
 	.state {
-		fill: var(--hs-stage-muted);
+		fill: var(--hs-miniature-muted);
 		font-size: 9px;
 		font-weight: var(--hs-weight-strong);
 	}
 
 	.state.own {
-		fill: var(--hs-stage-origin);
+		fill: var(--hs-miniature-origin);
 	}
 
 	.rest {
-		fill: var(--hs-stage-muted);
+		fill: var(--hs-miniature-muted);
 		font-size: 10px;
 		font-weight: var(--hs-weight-strong);
 	}
 
 	.caption {
-		fill: var(--hs-stage-ink);
+		fill: var(--hs-stage-on-node);
 		font-size: 10.5px;
 		font-weight: var(--hs-weight-strong);
 	}

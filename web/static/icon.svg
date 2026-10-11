@@ -1,15 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Heimatsignale">
 	<style>
-		.i { stroke: #0a1030; fill: none; stroke-width: 7; stroke-linecap: round; }
-		.h { fill: #0a1030; }
-		.l { fill: #e99a00; }
+		.i { stroke: #3b2a3e; fill: none; stroke-width: 9.5; stroke-linecap: round; stroke-linejoin: round; }
+		.l { fill: #f2a23a; }
 		@media (prefers-color-scheme: dark) {
-			.i { stroke: #e9edff; }
-			.h { fill: #e9edff; }
-			.l { fill: #ffb31a; }
+			.i { stroke: #f6ecf3; }
+			.l { fill: #f5b04e; }
 		}
 	</style>
-	<path class="i" d="M19 8V44M45 29V56M19 39C32 39 32 30 45 30"/>
-	<circle class="h" cx="19" cy="46" r="10.5"/>
-	<circle class="l" cx="45" cy="13" r="7.5"/>
+	<path class="i" d="M17 8V55M17 40C17 24 47 24 47 40V55"/>
+	<circle class="l" cx="32" cy="47.5" r="7"/>
 </svg>
