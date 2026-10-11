@@ -35,9 +35,11 @@ async function anmelden(page: Page, email: string, password: string) {
 	await expect(id(page, 'umkreis-page')).toBeVisible();
 }
 
-async function ortWaehlen(page: Page, feld: string, suche: string, name: string) {
+// Gleichnamige Gemeinden gibt es mehrfach (Marl liegt auch im Landkreis Diepholz),
+// deshalb wird die Option über den Landkreis gewählt.
+async function ortWaehlen(page: Page, feld: string, suche: string, name: string, kreis: string) {
 	await id(page, `${feld}-input`).fill(suche);
-	await page.getByTestId(`${feld}-option`).filter({ hasText: name }).first().click();
+	await page.getByTestId(`${feld}-option`).filter({ hasText: name }).filter({ hasText: kreis }).first().click();
 	await expect(id(page, `${feld}-selected`)).toContainText(name);
 }
 
@@ -68,14 +70,15 @@ test('Durchstich: Registrierung, Herkunftsnetz, Kontaktanfrage, Gespräch, Meldu
 	await id(page, 'register-year').fill('1994');
 	await id(page, 'register-next').click();
 	await expect(id(page, 'register-form')).toHaveAttribute('data-step', '3');
-	await ortWaehlen(page, 'register-home', 'Sonth', 'Sonthofen');
+	await ortWaehlen(page, 'register-home', 'Sonth', 'Sonthofen', 'Oberallgäu');
 	await bild(page, 'registrierung-heimatort');
 	await id(page, 'register-next').click();
 	await expect(id(page, 'register-form')).toHaveAttribute('data-step', '4');
-	await ortWaehlen(page, 'register-residence', 'Marl', 'Marl');
+	await ortWaehlen(page, 'register-residence', 'Marl', 'Marl', 'Recklinghausen');
 	await id(page, 'register-next').click();
 	await expect(id(page, 'register-form')).toHaveAttribute('data-step', '5');
 	await expect(id(page, 'register-summary')).toContainText('Sonthofen');
+	await expect(id(page, 'register-summary')).toContainText('Recklinghausen');
 	await expect(id(page, 'register-places-note')).toBeVisible();
 	await id(page, 'register-terms').check();
 	await bild(page, 'registrierung-zusammenfassung');
