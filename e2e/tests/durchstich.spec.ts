@@ -174,7 +174,8 @@ test('Durchstich: Registrierung, Herkunftsnetz, Kontaktanfrage, Gespräch, Meldu
 	await id(page, 'conversation-block').click();
 	await expect(id(page, 'block-dialog')).toBeVisible();
 	await id(page, 'block-ok').click();
-	await expect(id(page, 'umkreis-page')).toBeVisible();
+	await expect(id(page, 'conversations-page')).toBeVisible();
+	await expect(id(page, 'conversations-page')).toContainText('nicht mehr verfügbar');
 
 	// Für die blockierte Seite ist das Gespräch sofort beendet und das Profil verschwunden.
 	await demo.reload();
