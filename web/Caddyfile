@@ -1,0 +1,68 @@
+# Oberfläche und API unter derselben Origin (PROJEKT.md, Abschnitt 11).
+{$SITE_DOMAIN} {
+	encode zstd gzip
+
+	# Protokoll: IPs gekürzt (letztes Oktett entfernt), 7 Tage, keine Cookies, keine Token aus Links.
+	log {
+		output file /data/access.log {
+			roll_keep_for 168h
+		}
+		format filter {
+			wrap json
+			fields {
+				request>remote_ip ip_mask {
+					ipv4 24
+					ipv6 48
+				}
+				request>client_ip ip_mask {
+					ipv4 24
+					ipv6 48
+				}
+				request>uri query {
+					replace token GEKUERZT
+					replace uid GEKUERZT
+				}
+				request>headers delete
+			}
+		}
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "same-origin"
+		Permissions-Policy "geolocation=(self), camera=(), microphone=()"
+		# Die vollständige Content-Security-Policy der Oberfläche setzt SvelteKit selbst
+		# (mit Hashes für das Startskript, siehe svelte.config.js). Hier steht nur,
+		# was sich nicht per Meta-Element setzen lässt.
+		Content-Security-Policy "frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+	}
+
+	# API: nie zwischenspeichern, nie über ein CDN.
+	handle /api/* {
+		reverse_proxy app:8000
+	}
+
+	handle_path /{$ADMIN_PATH}/static/* {
+		root * /srv/static
+		file_server
+	}
+	handle /{$ADMIN_PATH}/* {
+		reverse_proxy app:8000
+	}
+
+	# Kartenkacheln (PMTiles) vom eigenen Server, mit Range-Anfragen.
+	handle_path /tiles/* {
+		root * /srv/tiles
+		file_server
+	}
+
+	handle {
+		root * /srv/web
+		@unveraenderlich path /_app/immutable/*
+		header @unveraenderlich Cache-Control "public, max-age=31536000, immutable"
+		try_files {path} /index.html
+		file_server
+	}
+}

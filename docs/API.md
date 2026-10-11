@@ -68,7 +68,7 @@ Immer 200. Setzt das CSRF-Cookie.
 ```json
 { "authenticated": true, "csrf_token": "…", "state": "active", "user": { /* Me */ },
   "site": { "name": "Heimatsignale", "radius_km": 20, "request_body_max": 500,
-            "message_body_max": 2000, "poll_seconds": 30 } }
+            "message_body_max": 2000, "poll_seconds": 30, "admin_path": "/verwaltung/" } }
 ```
 Nicht angemeldet: `authenticated: false`, `state: null`, `user: null`.
 
@@ -210,7 +210,8 @@ Feste Seitengröße 50.
 ```
 `outgoing_request`: `null` oder `{ "id": "…", "state": "open" | "expired", "expires_at": "…" }`.
 `request_blocked_reason`: `null`, `"muted"`, `"attempts_exhausted"`,
-`"already_requested"`, `"connected"`, `"quota_daily"`, `"quota_active"`.
+`"already_requested"`, `"connected"`, `"quota_daily"`, `"quota_active"`,
+`"not_visible"` (außerhalb deines Umkreises oder von dir blockiert).
 404, wenn der Nutzer nicht sichtbar ist.
 
 ## Kontaktanfragen

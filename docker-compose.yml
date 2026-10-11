@@ -1,0 +1,78 @@
+# Heimatsignale auf einem Server. Vor dem Start: .env.example nach .env kopieren und ausfüllen.
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-heimat}
+      POSTGRES_USER: ${DB_USER:-heimat}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD in .env setzen}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: ./app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DELETION_JOURNAL_PATH: /data/journal/loeschjournal.sqlite3
+      STATIC_ROOT: /data/static
+      TRUSTED_PROXY_COUNT: "1"
+    volumes:
+      # Das Löschjournal liegt bewusst auf einem eigenen Volume (eigenes Backup, 60 Tage).
+      - journal:/data/journal
+      - static:/data/static
+      - ./data:/daten:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+  jobs:
+    build: ./app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DELETION_JOURNAL_PATH: /data/journal/loeschjournal.sqlite3
+    volumes:
+      - journal:/data/journal
+      - ./ops/jobs.sh:/jobs.sh:ro
+    command: ["sh", "/jobs.sh"]
+    depends_on:
+      - app
+
+  web:
+    build:
+      context: ./web
+      args:
+        PUBLIC_TILES_URL: ${PUBLIC_TILES_URL:-}
+        PUBLIC_GLYPHS_URL: ${PUBLIC_GLYPHS_URL:-}
+    restart: unless-stopped
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:?SITE_DOMAIN in .env setzen}
+      ADMIN_PATH: ${ADMIN_PATH:-verwaltung}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - static:/srv/static:ro
+      - ./data/tiles:/srv/tiles:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+volumes:
+  pgdata:
+  journal:
+  static:
+  caddy_data:
+  caddy_config:
