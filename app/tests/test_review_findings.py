@@ -46,7 +46,7 @@ class BlockIsNoBackdoorTest(BaseTest):
 
     def test_only_known_accounts_can_be_blocked(self):
         api = Api(self.a)
-        far = make_user(residence=MUENSTER)
+        far = make_user(residence=LEIPZIG)
         others = [far, make_user(status="pending", verified=False), make_user(status="pending", approval_required=True),
                   make_user(status="suspended"), make_admin()]
         for other in others:

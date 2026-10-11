@@ -67,7 +67,7 @@ Immer 200. Setzt das CSRF-Cookie.
 
 ```json
 { "authenticated": true, "csrf_token": "…", "state": "active", "user": { /* Me */ },
-  "site": { "name": "Heimatsignale", "radius_km": 20, "request_body_max": 500,
+  "site": { "name": "Heimatsignale", "radius_km": 20, "radius_options": [20, 100], "request_body_max": 500,
             "message_body_max": 2000, "poll_seconds": 30, "admin_path": "/verwaltung/" } }
 ```
 Nicht angemeldet: `authenticated: false`, `state: null`, `user: null`.
@@ -165,10 +165,16 @@ Die Koordinaten werden weder gespeichert noch protokolliert.
 
 ## Umkreis und Herkunft
 
-Suchmitte ist immer der gespeicherte Wohnort. Grundmenge sind alle
-sichtbaren Nutzer im 20-km-Radius (ohne einen selbst), nach Abzug der
-Blockierungen in beide Richtungen. Zusammen höchstens 120 Aufrufe pro
-Stunde (429 `rate_limited`).
+Suchmitte ist immer der gespeicherte Wohnort. Die drei Aufrufe nehmen den
+optionalen Parameter `radius_km` an. Erlaubt sind nur die Werte aus
+`site.radius_options` (20 und 100), Standard ist `site.radius_km` (20);
+jeder andere Wert ergibt 422. Grundmenge sind alle sichtbaren Nutzer im
+gewählten Umkreis (ohne einen selbst), nach Abzug der Blockierungen in
+beide Richtungen. Zusammen höchstens 120 Aufrufe pro Stunde (429
+`rate_limited`).
+
+Profile, Kontaktanfragen, Blockieren und Melden gelten unabhängig von der
+gewählten Ansicht für alle im größten Umkreis (100 km).
 
 ### `GET /api/nearby/overview`
 ```json

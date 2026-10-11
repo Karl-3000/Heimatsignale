@@ -29,7 +29,15 @@ def _residence_filter(residence: str) -> tuple[str, dict]:
     return " AND u.residence_ags = %(residence)s", {"residence": residence}
 
 
-def overview(viewer: User) -> dict:
+def check_radius(radius_km: int) -> int:
+    """Der Client darf nur zwischen den festen Stufen wählen, nie einen freien Radius."""
+    if radius_km not in settings.RADIUS_OPTIONS_KM:
+        raise validation({"radius_km": "Diesen Umkreis gibt es nicht."})
+    return radius_km
+
+
+def overview(viewer: User, radius_km: int) -> dict:
+    radius_km = check_radius(radius_km)
     with connection.cursor() as cur:
         cur.execute(
             f"""
@@ -38,7 +46,7 @@ def overview(viewer: User) -> dict:
             GROUP BY rp.ags, rp.name, rp.lat, rp.lon, hp.state_code, me.home_ags
             ORDER BY rp.ags, n DESC, hp.state_code
             """,
-            params(viewer),
+            params(viewer, radius_km),
         )
         rows = cur.fetchall()
     residences: dict[str, dict] = {}
@@ -48,14 +56,15 @@ def overview(viewer: User) -> dict:
         node["states"].append({"state_code": state_code, "count": count, "distance_km": km})
     items = sorted(residences.values(), key=lambda r: (-r["total"], r["name"]))
     return {
-        "radius_km": settings.RADIUS_METERS // 1000,
+        "radius_km": radius_km,
         "me": {"residence": place_json(viewer.residence, with_point=True), "home": place_json(viewer.home, with_point=True)},
         "total": sum(r["total"] for r in items),
         "residences": items,
     }
 
 
-def origins(viewer: User, residence: str, level: str, parent: str | None) -> dict:
+def origins(viewer: User, residence: str, level: str, parent: str | None, radius_km: int) -> dict:
+    radius_km = check_radius(radius_km)
     where, extra = _residence_filter(residence)
     if level == "state":
         key, name, parent = "hp.state_code", "hp.state_code", None
@@ -79,7 +88,7 @@ def origins(viewer: User, residence: str, level: str, parent: str | None) -> dic
             GROUP BY {key}, me.home_ags
             ORDER BY n DESC, name
             """,
-            params(viewer, parent=parent, **extra),
+            params(viewer, radius_km, parent=parent, **extra),
         )
         rows = cur.fetchall()
     return {
@@ -92,7 +101,8 @@ def origins(viewer: User, residence: str, level: str, parent: str | None) -> dic
     }
 
 
-def people(viewer: User, residence: str, home: str, page: int) -> dict:
+def people(viewer: User, residence: str, home: str, page: int, radius_km: int) -> dict:
+    radius_km = check_radius(radius_km)
     where, extra = _residence_filter(residence)
     if not Place.objects.filter(pk=home).exists():
         raise validation({"home": "Unbekannter Ort."})
@@ -105,7 +115,7 @@ def people(viewer: User, residence: str, home: str, page: int) -> dict:
             SELECT u.id {VISIBLE_FROM} {where} AND u.home_ags = %(home)s
             ORDER BY u.nickname LIMIT %(limit)s OFFSET %(offset)s
             """,
-            params(viewer, home=home, limit=size + 1, offset=(page - 1) * size, **extra),
+            params(viewer, radius_km, home=home, limit=size + 1, offset=(page - 1) * size, **extra),
         )
         ids = [row[0] for row in cur.fetchall()]
     has_more = len(ids) > size

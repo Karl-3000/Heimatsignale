@@ -11,7 +11,7 @@ from jobs import cleanup
 from moderation import services as moderation
 from moderation.models import Appeal, Report
 
-from .base import MUENSTER, RECKLINGHAUSEN, Api, BaseTest, make_admin, make_user
+from .base import LEIPZIG, RECKLINGHAUSEN, Api, BaseTest, make_admin, make_user
 
 
 class ReportTest(BaseTest):
@@ -62,9 +62,9 @@ class ReportTest(BaseTest):
         self.assertEqual((report.reported_user_id, report.snapshot["text"]), (c.id, "Na du, Single?"))
 
     def test_only_accessible_targets_can_be_reported(self):
-        far = make_user(residence=MUENSTER)
+        far = make_user(residence=LEIPZIG)
         self.assertEqual(self.report(target_id=str(far.id)).status_code, 404)
-        stranger = Api(make_user(residence=MUENSTER))
+        stranger = Api(make_user(residence=LEIPZIG))
         own = Message.objects.filter(sender=self.b).first()
         self.assertEqual(self.report(api=stranger, target_type="message", target_id=str(own.id),
                                      conversation_id=str(self.conv.id)).status_code, 404)

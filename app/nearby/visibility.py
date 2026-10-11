@@ -1,7 +1,8 @@
 """Sichtbarkeit: eine einzige Definition für Umkreis, Profile und Anfragen.
 
 Grundmenge sind Nutzer mit ``status = 'active'`` (wirksam aktiv oder
-stummgeschaltet) im Radius um den gespeicherten Wohnort des Betrachters,
+stummgeschaltet) im Radius um den gespeicherten Wohnort des Betrachters
+(Ansicht wahlweise 20 oder 100 km; Profile und Anfragen bis 100 km),
 abzüglich Blockierungen in beide Richtungen. Erst auf dieser Menge wird
 gezählt (PROJEKT.md, Abschnitt 11).
 """
@@ -27,8 +28,10 @@ VISIBLE_FROM = """
 """
 
 
-def params(viewer, **extra) -> dict:
-    return {"viewer_id": viewer.id, "radius": settings.RADIUS_METERS, **extra}
+def params(viewer, radius_km: int | None = None, **extra) -> dict:
+    """Ohne Angabe gilt der größte wählbare Umkreis: Wer dort wohnt, ist sichtbar und anfragbar."""
+    radius = radius_km * 1000 if radius_km else settings.RADIUS_METERS
+    return {"viewer_id": viewer.id, "radius": radius, **extra}
 
 
 def is_visible(viewer, user_id) -> bool:

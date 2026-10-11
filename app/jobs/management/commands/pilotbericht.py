@@ -46,7 +46,7 @@ class Command(BaseCommand):
                 ))
                 FROM active a
                 """,
-                [timezone.now() - timedelta(days=30), settings.RADIUS_METERS],
+                [timezone.now() - timedelta(days=30), settings.RADIUS_DEFAULT_KM * 1000],
             )
             active, with_match = cur.fetchone()
 

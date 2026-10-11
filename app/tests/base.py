@@ -29,6 +29,8 @@ PLACES = [
     ("99000001", "Mitte", "Testkreis", 51.00000, 9.00000),
     ("99000002", "Knappdrin", "Testkreis", 51.17800, 9.00000),   # ca. 19,8 km
     ("99000003", "Knappdraussen", "Testkreis", 51.18200, 9.00000),  # ca. 20,2 km
+    ("99000004", "Fasthundert", "Testkreis", 51.89400, 9.00000),    # ca. 99,5 km
+    ("99000005", "Ueberhundert", "Testkreis", 51.90500, 9.00000),   # ca. 100,7 km
 ]
 
 MARL, RECKLINGHAUSEN, DORSTEN, HALTERN, MUENSTER = "05562024", "05562032", "05562012", "05562016", "05515000"
@@ -36,6 +38,7 @@ SONTHOFEN, IMMENSTADT, ROSENHEIM, HOHENSTEIN, LEIPZIG, MAGDEBURG = (
     "09780139", "09780124", "09163000", "14524120", "14713000", "15003000",
 )
 MITTE, KNAPP_DRIN, KNAPP_DRAUSSEN = "99000001", "99000002", "99000003"
+FAST_100, UEBER_100 = "99000004", "99000005"
 
 PASSWORD = "ein-langes-testpasswort"
 _counter = itertools.count(1)

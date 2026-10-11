@@ -161,7 +161,11 @@ DELETION_JOURNAL_PATH = env("DELETION_JOURNAL_PATH", str(BASE_DIR.parent / "var"
 # ---------------------------------------------------------------------------
 # Fachliche Festlegungen aus PROJEKT.md. Bewusst an einer Stelle.
 # ---------------------------------------------------------------------------
-RADIUS_METERS = 20_000
+# Umkreis: Standardansicht 20 km, umschaltbar auf 100 km. Sichtbar und anfragbar ist,
+# wer im größten wählbaren Umkreis wohnt (RADIUS_METERS).
+RADIUS_OPTIONS_KM = (20, 100)
+RADIUS_DEFAULT_KM = 20
+RADIUS_METERS = max(RADIUS_OPTIONS_KM) * 1000
 MINIMUM_AGE = 18
 UNVERIFIED_TTL_HOURS = 48
 APPROVAL_NOTICE_DAYS = 14

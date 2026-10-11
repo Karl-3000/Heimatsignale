@@ -52,7 +52,7 @@ umfasst wirksam aktive und stummgeschaltete Konten, genau wie in der Tabelle.
 
 Es gibt eine einzige Definition (`nearby/visibility.py`), die Umkreis,
 Profile, Anfragen und Meldungen verwenden: Konten mit `status = 'active'`,
-deren Wohnort höchstens 20.000 m vom gespeicherten Wohnort des Betrachters
+deren Wohnort höchstens 100 km vom gespeicherten Wohnort des Betrachters
 entfernt ist (`ST_DWithin` auf `geography(Point, 4326)`), ohne den
 Betrachter selbst, abzüglich Blockierungen in beide Richtungen. Gezählt wird
 erst auf dieser Menge. Der Client übergibt weder Suchmitte noch Radius.
@@ -85,6 +85,26 @@ Siehe [WIEDERHERSTELLUNG.md](WIEDERHERSTELLUNG.md). Schritt 1 (Grabstein,
 eine Transaktion) macht das Konto sofort unsichtbar; eine
 Datenbankbedingung verbietet Grabsteine mit Kontodaten. Schritt 2 läuft
 direkt danach und zusätzlich stündlich und ist beliebig wiederholbar.
+
+## Abweichung vom Plan: Umkreis umschaltbar auf 100 km
+
+Der Plan nennt in Abschnitt 2 einen Sichtradius von höchstens 20 km als
+nicht verhandelbar. Auf Wunsch des Auftraggebers (11.10.2026) können Nutzer
+die Ansicht zwischen 20 km (Standard) und 100 km umschalten; im gewählten
+Umkreis ist alles sichtbar, auch Personen, und Kontaktanfragen sind möglich.
+
+- Der Server kennt nur die festen Stufen `RADIUS_OPTIONS_KM = (20, 100)`.
+  Einen freien Radius oder eine andere Suchmitte kann der Client weiterhin
+  nicht übergeben.
+- Weil jeder die 100-km-Ansicht wählen kann, gilt für Profile, Anfragen,
+  Blockieren und Melden einheitlich der größte Umkreis. Wer selbst bei 20 km
+  bleibt, ist trotzdem für andere bis 100 km sichtbar und anfragbar.
+- Folgen, die vor dem Pilot zu bewerten sind: Das Restrisiko, in kleinen
+  Orten erkennbar zu sein, betrifft einen deutlich größeren Personenkreis.
+  Die Pilot-Kennzahl "sieht jemanden aus demselben Landkreis" rechnet der
+  Bericht weiter mit 20 km. Die Lastannahmen gelten für 20 km; bei 100 km
+  liefert die Übersicht mehr Wohnorte je Aufruf.
+- PROJEKT.md wurde nicht geändert und beschreibt weiterhin 20 km.
 
 ## Entscheidungen, die der Plan offen ließ
 

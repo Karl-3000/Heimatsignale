@@ -45,7 +45,8 @@ dass das Kontomodell keines dieser Felder kennt.
 
 Nickname, ungefähre Altersspanne, Heimatort mit Landkreis und Bundesland,
 Wohnort (Gemeinde), Mitglied seit (Monat). Nur für angemeldete Konten im
-Umkreis von 20 km, nach Abzug der Blockierungen.
+Umkreis von bis zu 100 km (Standardansicht 20 km, umschaltbar), nach Abzug
+der Blockierungen. Das weicht vom Plan ab, der 20 km als Obergrenze nennt.
 
 **Restrisiko**: Genauer Heimatort, Altersspanne und Wohnort-Gemeinde können
 in kleinen Orten auf eine Person hinweisen. Die Vorschau-Seite zeigt das vor

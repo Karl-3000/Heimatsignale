@@ -77,7 +77,8 @@ def _session_json(request) -> dict:
         "user": accounts.me_json(user) if user else None,
         "site": {
             "name": settings.SITE_NAME,
-            "radius_km": settings.RADIUS_METERS // 1000,
+            "radius_km": settings.RADIUS_DEFAULT_KM,
+            "radius_options": list(settings.RADIUS_OPTIONS_KM),
             "request_body_max": settings.REQUEST_BODY_MAX,
             "message_body_max": settings.MESSAGE_BODY_MAX,
             "poll_seconds": settings.POLL_SECONDS,
@@ -237,23 +238,25 @@ def _fix_nickname(user) -> None:
 
 
 @api.get("/nearby/overview", auth=member)
-def nearby_overview(request):
+def nearby_overview(request, radius_km: int = settings.RADIUS_DEFAULT_KM):
     _nearby_guard(request)
     user = request.user
     accounts.touch_activity(user)
-    return nearby.overview(user)
+    return nearby.overview(user, radius_km)
 
 
 @api.get("/nearby/origins", auth=member)
-def nearby_origins(request, residence: str = "all", level: str = "state", parent: str | None = None):
+def nearby_origins(request, residence: str = "all", level: str = "state", parent: str | None = None,
+                   radius_km: int = settings.RADIUS_DEFAULT_KM):
     _nearby_guard(request)
-    return nearby.origins(request.user, residence, level, parent)
+    return nearby.origins(request.user, residence, level, parent, radius_km)
 
 
 @api.get("/nearby/people", auth=member)
-def nearby_people(request, home: str, residence: str = "all", page: int = 1):
+def nearby_people(request, home: str, residence: str = "all", page: int = 1,
+                  radius_km: int = settings.RADIUS_DEFAULT_KM):
     _nearby_guard(request)
-    return nearby.people(request.user, residence, home, page)
+    return nearby.people(request.user, residence, home, page, radius_km)
 
 
 @api.get("/users/{user_id}", auth=member)

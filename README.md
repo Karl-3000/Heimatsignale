@@ -1,7 +1,7 @@
 # Heimatsignale
 
 Zugezogene aus dem eigenen Heimatort finden. Wer in eine neue Stadt zieht,
-sieht andere Zugezogene im Umkreis von 20 km um den eigenen Wohnort und
+sieht andere Zugezogene im Umkreis von 20 km um den eigenen Wohnort (umschaltbar auf 100 km) und
 erkennt Schritt für Schritt, woher sie stammen: Bundesland, Landkreis, Ort.
 
 Der Dienst gilt nur für Deutschland, ist **keine Dating-Plattform** und so

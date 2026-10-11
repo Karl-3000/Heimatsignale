@@ -4,36 +4,65 @@ from django.test import override_settings
 from contacts import services as contacts
 
 from .base import (
-    DORSTEN, HOHENSTEIN, IMMENSTADT, KNAPP_DRAUSSEN, KNAPP_DRIN, LEIPZIG, MARL, MITTE, MUENSTER, RECKLINGHAUSEN,
+    DORSTEN, FAST_100, HOHENSTEIN, IMMENSTADT, KNAPP_DRAUSSEN, KNAPP_DRIN, UEBER_100, LEIPZIG, MARL, MITTE, MUENSTER, RECKLINGHAUSEN,
     ROSENHEIM, SONTHOFEN, Api, BaseTest, make_user,
 )
 
 
 class RadiusTest(BaseTest):
-    def test_boundary_is_20_km_between_municipality_centres(self):
+    def distances(self, *targets):
         with connection.cursor() as cur:
             cur.execute(
-                "SELECT ST_Distance(a.center, b.center) FROM places a, places b WHERE a.ags = %s AND b.ags IN (%s, %s) ORDER BY b.ags",
-                [MITTE, KNAPP_DRIN, KNAPP_DRAUSSEN],
+                "SELECT b.ags, ST_Distance(a.center, b.center) FROM places a, places b WHERE a.ags = %s AND b.ags = ANY(%s)",
+                [MITTE, list(targets)],
             )
-            inside, outside = (row[0] for row in cur.fetchall())
-        self.assertTrue(19_000 < inside < 20_000 < outside < 21_000, (inside, outside))
+            return dict(cur.fetchall())
 
+    def test_default_view_ends_at_20_km_between_municipality_centres(self):
+        d = self.distances(KNAPP_DRIN, KNAPP_DRAUSSEN)
+        self.assertTrue(19_000 < d[KNAPP_DRIN] < 20_000 < d[KNAPP_DRAUSSEN] < 21_000, d)
         viewer = make_user(residence=MITTE)
-        near = make_user(residence=KNAPP_DRIN)
-        far = make_user(residence=KNAPP_DRAUSSEN)
+        make_user(residence=KNAPP_DRIN)
+        make_user(residence=KNAPP_DRAUSSEN)
         api = Api(viewer)
         overview = api.get("/nearby/overview").data
-        self.assertEqual([r["ags"] for r in overview["residences"]], [KNAPP_DRIN])
-        self.assertEqual(api.get(f"/users/{near.id}").status_code, 200)
-        self.assertEqual(api.get(f"/users/{far.id}").status_code, 404)
-        # Auch eine Anfrage kann den Radius nicht überschreiten.
-        self.assertEqual(api.post("/requests", {"to_user_id": str(far.id), "body": "Hallo"}).status_code, 404)
+        self.assertEqual((overview["radius_km"], [r["ags"] for r in overview["residences"]]), (20, [KNAPP_DRIN]))
+        self.assertEqual(api.get("/nearby/origins", level="state").data["items"][0]["count"], 1)
+        self.assertEqual(len(api.get("/nearby/people", home=SONTHOFEN).data["items"]), 1)
+
+    def test_wide_view_ends_at_100_km_and_so_do_profiles_and_requests(self):
+        d = self.distances(FAST_100, UEBER_100)
+        self.assertTrue(99_000 < d[FAST_100] < 100_000 < d[UEBER_100] < 101_000, d)
+        viewer = make_user(residence=MITTE)
+        mid = make_user(residence=KNAPP_DRAUSSEN)
+        near_edge = make_user(residence=FAST_100)
+        beyond = make_user(residence=UEBER_100)
+        api = Api(viewer)
+        overview = api.get("/nearby/overview", radius_km=100).data
+        self.assertEqual(overview["radius_km"], 100)
+        self.assertEqual({r["ags"] for r in overview["residences"]}, {KNAPP_DRAUSSEN, FAST_100})
+        self.assertEqual(api.get("/nearby/origins", level="state", radius_km=100).data["items"][0]["count"], 2)
+        ids = {p["id"] for p in api.get("/nearby/people", home=SONTHOFEN, radius_km=100).data["items"]}
+        self.assertEqual(ids, {str(mid.id), str(near_edge.id)})
+        # Profile und Anfragen gelten bis 100 km, gleich welche Ansicht gewählt ist.
+        self.assertEqual(api.get(f"/users/{near_edge.id}").status_code, 200)
+        self.assertEqual(api.post("/requests", {"to_user_id": str(near_edge.id), "body": "Hallo"}).status_code, 201)
+        self.assertEqual(api.get(f"/users/{beyond.id}").status_code, 404)
+        self.assertEqual(api.post("/requests", {"to_user_id": str(beyond.id), "body": "Hallo"}).status_code, 404)
+        self.assertEqual(api.post("/blocks", {"user_id": str(beyond.id)}).status_code, 404)
+
+    def test_only_the_fixed_radius_steps_exist(self):
+        api = Api(make_user(residence=MITTE))
+        for value in (21, 99, 101, 500, 0, -20):
+            for path, extra in (("/nearby/overview", {}), ("/nearby/origins", {"level": "state"}), ("/nearby/people", {"home": SONTHOFEN})):
+                response = api.get(path, radius_km=value, **extra)
+                self.assertEqual((response.status_code, value), (422, value), path)
+        self.assertEqual(api.get("/session").data["site"]["radius_options"], [20, 100])
 
     def test_client_cannot_move_the_search_centre_or_widen_the_radius(self):
         viewer = make_user(residence=MARL)
-        make_user(residence=MUENSTER)
-        data = Api(viewer).get("/nearby/overview", lat=51.96, lon=7.62, radius=100000, residence=MUENSTER).data
+        make_user(residence=LEIPZIG)
+        data = Api(viewer).get("/nearby/overview", lat=51.34, lon=12.37, radius=1000000, residence=LEIPZIG).data
         self.assertEqual((data["total"], data["radius_km"]), (0, 20))
         self.assertEqual(data["me"]["residence"]["ags"], MARL)
 

@@ -32,7 +32,7 @@ class Command(BaseCommand):
         with connection.cursor() as cur:
             cur.execute(
                 "SELECT b.ags FROM places a, places b WHERE a.ags = %s AND ST_DWithin(a.center, b.center, %s)",
-                [wohnort, settings.RADIUS_METERS],
+                [wohnort, settings.RADIUS_DEFAULT_KM * 1000],
             )
             residences = [row[0] for row in cur.fetchall()]
         same_district = list(Place.objects.filter(district_ags=home.district_ags).values_list("ags", flat=True))
