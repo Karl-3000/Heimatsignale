@@ -82,7 +82,7 @@ export interface SizedCluster extends Cluster {
 
 /** Wunschgröße einer Miniatur: wächst mit jeder Zoomstufe über dem kleinsten Zoom. */
 export function desiredMiniatureRadius(zoom: number, minZoom: number): number {
-	const r = 44 + (zoom - minZoom) * 26;
+	const r = 60 + (zoom - minZoom) * 22;
 	return Math.max(MINIATURE_MIN_RADIUS, Math.min(MINIATURE_MAX_RADIUS, r));
 }
 

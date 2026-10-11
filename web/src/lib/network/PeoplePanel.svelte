@@ -27,7 +27,7 @@
 			<div>
 				<h3>Aus {node.name}</h3>
 				<p class="meta">
-					{#if parent}{parent.name}, {/if}<span class="hs-num">{personen(node.count)}</span>
+					<span class="hs-num">{parent ? `${parent.name}, ${personen(node.count)}` : personen(node.count)}</span>
 					{#if node.own}<span class="own">deine Herkunft</span>{/if}
 				</p>
 			</div>

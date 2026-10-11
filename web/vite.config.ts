@@ -17,6 +17,8 @@ export default defineConfig({
 	},
 	test: {
 		environment: 'node',
+		// Die Layout-Tests klappen 300 Knoten Schritt für Schritt auf; auf langsamen CI-Rechnern braucht das Luft.
+		testTimeout: 30000,
 		include: ['src/**/*.test.ts'],
 		exclude: ['node_modules/**', 'build/**', '.svelte-kit/**', 'tests/**', 'e2e/**']
 	}

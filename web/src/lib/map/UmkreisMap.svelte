@@ -205,16 +205,18 @@
 		let protocolAdded = false;
 		let removeProtocol: ((name: string) => void) | null = null;
 
-		size = { width: el.clientWidth, height: el.clientHeight };
+		// Gemessen wird der Rahmen, nicht die Zeichenfläche: Die ist in der Ersatzdarstellung ausgeblendet.
+		const frameEl = el.parentElement ?? el;
+		size = { width: frameEl.clientWidth, height: frameEl.clientHeight };
 		const observer = new ResizeObserver(() => {
-			size = { width: el.clientWidth, height: el.clientHeight };
+			size = { width: frameEl.clientWidth, height: frameEl.clientHeight };
 			if (map && ready) {
 				map.resize();
 				applyZoomLimits(false);
 			}
 			frame += 1;
 		});
-		observer.observe(el);
+		observer.observe(frameEl);
 
 		void (async () => {
 			try {

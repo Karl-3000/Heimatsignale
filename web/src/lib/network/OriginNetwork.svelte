@@ -83,10 +83,7 @@
 		return `translate(${n.x}px, ${n.y}px)`;
 	}
 
-	/** Verschiebt den Ausschnitt so wenig wie nötig, bis die genannten Knoten sichtbar sind. */
-	function reveal(ids: readonly string[], smooth: boolean): void {
-		const el = scroller;
-		if (!el || ids.length === 0) return;
+	function boundsOf(ids: readonly string[]): { x0: number; y0: number; x1: number; y1: number } | null {
 		let x0 = Infinity;
 		let y0 = Infinity;
 		let x1 = -Infinity;
@@ -99,13 +96,32 @@
 			x1 = Math.max(x1, n.x + n.hit);
 			y1 = Math.max(y1, n.y + n.hit);
 		}
-		if (!Number.isFinite(x0)) return;
-		const pad = 56;
+		return Number.isFinite(x0) ? { x0, y0, x1, y1 } : null;
+	}
+
+	/**
+	 * Holt die genannten Knoten in den Ausschnitt. Passt das ganze Netz hinein, wird es
+	 * mittig gezeigt; sonst wird nur so weit verschoben wie nötig.
+	 */
+	function reveal(ids: readonly string[], smooth: boolean): void {
+		const el = scroller;
+		if (!el || ids.length === 0) return;
 		const z = view.zoom;
-		const left = (x0 + HALF_EXTENT) * z - pad;
-		const right = (x1 + HALF_EXTENT) * z + pad;
-		const top = (y0 + HALF_EXTENT) * z - pad;
-		const bottom = (y1 + HALF_EXTENT) * z + pad;
+		const pad = 56;
+		const behavior: ScrollBehavior = smooth && !reducedMotion() ? 'smooth' : 'auto';
+		const all = boundsOf([ROOT_ID, ...scene.nodes.map((n) => n.id)]);
+		if (all && (all.x1 - all.x0) * z + 2 * pad <= el.clientWidth && (all.y1 - all.y0) * z + 2 * pad <= el.clientHeight) {
+			const cx = ((all.x0 + all.x1) / 2 + HALF_EXTENT) * z;
+			const cy = ((all.y0 + all.y1) / 2 + HALF_EXTENT) * z;
+			el.scrollTo({ left: cx - el.clientWidth / 2, top: cy - el.clientHeight / 2, behavior });
+			return;
+		}
+		const box = boundsOf(ids);
+		if (!box) return;
+		const left = (box.x0 + HALF_EXTENT) * z - pad;
+		const right = (box.x1 + HALF_EXTENT) * z + pad;
+		const top = (box.y0 + HALF_EXTENT) * z - pad;
+		const bottom = (box.y1 + HALF_EXTENT) * z + pad;
 		let targetLeft = el.scrollLeft;
 		let targetTop = el.scrollTop;
 		if (right - left > el.clientWidth) targetLeft = (left + right) / 2 - el.clientWidth / 2;
@@ -115,7 +131,7 @@
 		else if (top < el.scrollTop) targetTop = top;
 		else if (bottom > el.scrollTop + el.clientHeight) targetTop = bottom - el.clientHeight;
 		if (targetLeft === el.scrollLeft && targetTop === el.scrollTop) return;
-		el.scrollTo({ left: targetLeft, top: targetTop, behavior: smooth && !reducedMotion() ? 'smooth' : 'auto' });
+		el.scrollTo({ left: targetLeft, top: targetTop, behavior });
 	}
 
 	function center(smooth: boolean): void {

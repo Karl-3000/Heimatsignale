@@ -90,7 +90,7 @@ export function miniatureGeometry(selection: MiniatureSelection, radius: number)
 	const labelRoom = withLabels ? 11 : 0;
 	const rMax = Math.max(4, Math.min(radius * 0.17, 13));
 	const max = selection.shown.reduce((m, s) => Math.max(m, s.count), 1);
-	const orbit = radius - rMax - labelRoom - 1;
+	const orbit = radius - rMax - labelRoom - 4;
 	const nodes: MiniatureNode[] = selection.shown.map((s, i) => {
 		const angle = -Math.PI / 2 + (i / Math.max(slots, 1)) * Math.PI * 2;
 		const r = Math.max(2.5, rMax * Math.sqrt(s.count / max));

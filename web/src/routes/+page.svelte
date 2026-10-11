@@ -96,6 +96,8 @@
 		counter-increment: schritt;
 		display: grid;
 		grid-template-columns: 2.25rem minmax(0, 1fr);
+		grid-template-rows: auto 1fr;
+		align-items: start;
 		column-gap: var(--hs-space-3);
 		row-gap: var(--hs-space-1);
 	}
@@ -117,6 +119,12 @@
 	.steps h3,
 	.steps p {
 		grid-column: 2;
+	}
+
+	.steps h3 {
+		min-height: 2.25rem;
+		display: flex;
+		align-items: center;
 	}
 
 	.steps p,
