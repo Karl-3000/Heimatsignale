@@ -81,9 +81,122 @@ jobs:
           name: out-frontend
           path: /tmp/out
           if-no-files-found: ignore
+  e2e:
+    # Senkrechter Durchstich im Browser gegen das echte Backend mit PostGIS.
+    runs-on: ubuntu-24.04
+    services:
+      db:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_USER: heimat
+          POSTGRES_PASSWORD: heimat
+          POSTGRES_DB: heimat
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U heimat" --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DEBUG: "1"
+      DB_HOST: 127.0.0.1
+      DB_PORT: "5432"
+      SITE_URL: http://localhost:4173
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      EMAIL_BACKEND: django.core.mail.backends.filebased.EmailBackend
+      EMAIL_FILE_PATH: /tmp/heimatsignale-mails
+      POW_MAXNUMBER: "3000"
+      DELETION_JOURNAL_PATH: /tmp/journal/loeschjournal.sqlite3
+      E2E_OUT: /tmp/out/e2e
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: app/requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Backend starten
+        working-directory: app
+        run: |
+          mkdir -p /tmp/out/e2e /tmp/heimatsignale-mails
+          pip install -r requirements.txt 2>&1 | tail -1
+          python manage.py migrate --no-input > /dev/null
+          python manage.py orte_importieren ../data/places/gemeinden.csv
+          python manage.py demo_daten --anzahl 90
+          nohup python manage.py runserver 127.0.0.1:8000 --noreload > /tmp/out/e2e/backend.log 2>&1 &
+      - name: Oberfläche bauen und ausliefern
+        working-directory: web
+        run: |
+          npm ci > /dev/null 2>&1
+          npm run build > /tmp/out/e2e/build.log 2>&1
+          nohup npm run preview -- --port 4173 --strictPort > /tmp/out/e2e/preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://localhost:4173/api/session > /dev/null && break; sleep 1; done
+          curl -s http://localhost:4173/api/session | head -c 300
+      - name: Durchstich
+        working-directory: e2e
+        run: |
+          npm install > /dev/null 2>&1
+          npx playwright install --with-deps chromium > /dev/null 2>&1
+          set -o pipefail
+          npx playwright test 2>&1 | tee /tmp/out/e2e/ergebnis.txt
+      - if: always()
+        run: find /tmp/out/e2e -name '*.zip' -delete; find /tmp/out/e2e -name '*.png' -size +1500k -delete; ls -la /tmp/out/e2e | head -50
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: out-e2e
+          path: /tmp/out
+  betrieb:
+    # Baut die Docker-Images und startet den ganzen Dienst wie auf einem Server.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Starten
+        run: |
+          mkdir -p /tmp/out
+          cat > .env <<EOF
+          SITE_DOMAIN=localhost
+          SITE_URL=https://localhost
+          ALLOWED_HOSTS=localhost
+          SECRET_KEY=$(openssl rand -hex 32)
+          DB_PASSWORD=$(openssl rand -hex 12)
+          EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+          DEBUG=0
+          EOF
+          sed -i 's/^ *//' .env
+          set -o pipefail
+          docker compose up -d --build 2>&1 | tail -30 | tee /tmp/out/betrieb-build.txt
+      - name: Prüfen
+        run: |
+          set -x
+          ok=0
+          for i in $(seq 1 60); do
+            if curl -skf https://localhost/api/session > /tmp/out/betrieb-session.json; then ok=1; break; fi
+            sleep 3
+          done
+          docker compose ps | tee /tmp/out/betrieb-ps.txt
+          docker compose logs --tail 60 app web jobs > /tmp/out/betrieb-logs.txt 2>&1 || true
+          test "$ok" = 1
+          grep -q '"authenticated": false' /tmp/out/betrieb-session.json
+          curl -skf https://localhost/ | grep -qi "<html"
+          curl -skf https://localhost/umkreis | grep -qi "<html"
+          curl -sk -o /dev/null -w '%{http_code}\n' https://localhost/verwaltung/login/ | grep -q 200
+          curl -skf https://localhost/verwaltung/static/admin/css/base.css | head -c 50 > /dev/null
+          curl -sk "https://localhost/api/places/search?q=marl" | grep -q '"Marl"'
+          curl -skI https://localhost/api/session | grep -i "cache-control: private, no-store"
+          curl -skI https://localhost/ | grep -i "content-security-policy"
+          docker compose exec -T -e ADMIN_EMAIL=admin@example.org -e ADMIN_PASSWORD=$(openssl rand -hex 12) app python manage.py admin_anlegen --ohne-rueckfragen | grep -c "otpauth://" | tee /tmp/out/betrieb-admin.txt
+          docker compose exec -T app python manage.py aufraeumen | tee -a /tmp/out/betrieb-admin.txt
+          docker compose exec -T app python manage.py check --deploy 2>&1 | tail -15 | tee /tmp/out/betrieb-check.txt
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: out-betrieb
+          path: /tmp/out
+          if-no-files-found: ignore
   ergebnisse:
     # Legt die Protokolle auf den Zweig ci-results, damit sie ohne Anmeldung per git lesbar sind.
-    needs: [backend, frontend]
+    needs: [backend, frontend, e2e, betrieb]
     if: always() && github.event_name == 'push'
     runs-on: ubuntu-24.04
     steps:
@@ -92,7 +205,7 @@ jobs:
           path: /tmp/all
       - run: |
           cd /tmp/all
-          echo "$GITHUB_SHA backend=${{ needs.backend.result }} frontend=${{ needs.frontend.result }}" > STATUS.txt
+          echo "$GITHUB_SHA backend=${{ needs.backend.result }} frontend=${{ needs.frontend.result }} e2e=${{ needs.e2e.result }} betrieb=${{ needs.betrieb.result }}" > STATUS.txt
           git init -q -b ci-results
           git config user.name "ci"; git config user.email "ci@users.noreply.github.com"
           git add -A && git commit -q -m "CI-Ergebnisse für $GITHUB_SHA"
