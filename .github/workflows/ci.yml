@@ -5,17 +5,94 @@ on:
   pull_request:
 permissions:
   contents: write
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  probe:
+  backend:
+    runs-on: ubuntu-24.04
+    services:
+      db:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_USER: heimat
+          POSTGRES_PASSWORD: heimat
+          POSTGRES_DB: heimat
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U heimat" --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: "5432"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: app/requirements.txt
+      - name: Abhängigkeiten
+        run: pip install -r app/requirements.txt 2>&1 | tail -3
+      - name: Tests
+        working-directory: app
+        run: |
+          mkdir -p /tmp/out
+          set -o pipefail
+          python manage.py test tests --settings=heimatsignale.settings_test 2>&1 | tee /tmp/out/backend-tests.txt
+      - name: Migrationen vollständig
+        working-directory: app
+        run: DEBUG=1 python manage.py makemigrations --check --dry-run 2>&1 | tee /tmp/out/backend-migrations.txt
+      - name: Wiederherstellungstest mit pg_dump
+        run: |
+          sudo apt-get install -y postgresql-client >/dev/null 2>&1 || true
+          set -o pipefail
+          if [ -x ops/wiederherstellungstest.sh ]; then PGPASSWORD=heimat ops/wiederherstellungstest.sh 2>&1 | tee /tmp/out/backend-restore.txt; fi
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: out-backend
+          path: /tmp/out
+  frontend:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - run: |
-          mkdir -p /tmp/out && echo "ok $GITHUB_SHA $(date -u +%FT%TZ)" > /tmp/out/probe.txt
-      - name: Ergebnisse veröffentlichen
-        if: always()
+      - id: has
+        run: test -f web/package.json && echo "web=1" >> "$GITHUB_OUTPUT" || echo "web=0" >> "$GITHUB_OUTPUT"
+      - if: steps.has.outputs.web == '1'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - if: steps.has.outputs.web == '1'
+        name: Installieren, prüfen, testen, bauen
+        working-directory: web
         run: |
-          cd /tmp/out
+          mkdir -p /tmp/out
+          run() { name=$1; shift; echo "== $name" ; ( "$@" > /tmp/out/frontend-$name.txt 2>&1 ); code=$?; echo "$name exit $code" | tee -a /tmp/out/frontend-summary.txt; tail -n 60 /tmp/out/frontend-$name.txt; return $code; }
+          fail=0
+          if [ -f package-lock.json ]; then run install npm ci || fail=1; else run install npm install || fail=1; fi
+          cp package-lock.json /tmp/out/package-lock.json 2>/dev/null || true
+          run check npm run check || fail=1
+          run unit npm run test:unit || fail=1
+          run build npm run build || fail=1
+          exit $fail
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: out-frontend
+          path: /tmp/out
+          if-no-files-found: ignore
+  ergebnisse:
+    # Legt die Protokolle auf den Zweig ci-results, damit sie ohne Anmeldung per git lesbar sind.
+    needs: [backend, frontend]
+    if: always() && github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: /tmp/all
+      - run: |
+          cd /tmp/all
+          echo "$GITHUB_SHA backend=${{ needs.backend.result }} frontend=${{ needs.frontend.result }}" > STATUS.txt
           git init -q -b ci-results
           git config user.name "ci"; git config user.email "ci@users.noreply.github.com"
           git add -A && git commit -q -m "CI-Ergebnisse für $GITHUB_SHA"
