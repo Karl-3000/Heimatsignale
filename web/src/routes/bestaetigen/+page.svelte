@@ -7,7 +7,6 @@
 	import { confirmNickname, rerollNickname, verifyEmail } from '$lib/api/endpoints';
 	import { session } from '$lib/api/session.svelte';
 	import Button from '$lib/ui/Button.svelte';
-	import Card from '$lib/ui/Card.svelte';
 	import FormPage from '$lib/ui/FormPage.svelte';
 	import Notice from '$lib/ui/Notice.svelte';
 
@@ -93,11 +92,12 @@
 	</FormPage>
 {:else if phase === 'nickname' && user}
 	<FormPage title="Dein Nickname" lead="Deine E-Mail-Adresse ist bestätigt. Unter diesem Namen sehen dich andere. Er wird automatisch vergeben, damit niemand sich inszenieren muss.">
-		<Card padding="lg" testid="nickname-card">
+		<div class="hs-stage beacon" data-testid="nickname-card">
+			<span class="beacon-dot" aria-hidden="true"></span>
 			<p class="nick" data-testid="nickname" aria-live="polite">{user.nickname}</p>
-		</Card>
+		</div>
 		{#if failure}<Notice tone="danger" live testid="nickname-error"><p>{failure}</p></Notice>{/if}
-		<p class="text-sm text-ink-muted">
+		<p class="quiet">
 			{#if rerollsLeft > 0}
 				Gefällt er dir nicht, kannst du genau einmal neu würfeln. Danach ist der Nickname fest und lässt sich nicht mehr ändern.
 			{:else}
@@ -134,10 +134,37 @@
 {/if}
 
 <style>
+	/* Der Nickname wird wie ein Leuchtfeuer angezündet: groß, auf einer kleinen Bühne. */
+	.beacon {
+		display: grid;
+		gap: var(--hs-space-4);
+		justify-items: start;
+		padding: var(--hs-space-7) var(--hs-space-6);
+	}
+
+	.beacon-dot {
+		width: 0.875rem;
+		height: 0.875rem;
+		border-radius: 50%;
+		background: var(--hs-stage-origin);
+		box-shadow:
+			0 0 0 5px color-mix(in srgb, var(--hs-stage-origin) 22%, transparent),
+			0 0 28px 6px color-mix(in srgb, var(--hs-stage-origin) 45%, transparent);
+	}
+
 	.nick {
-		font-size: var(--hs-text-2xl);
-		font-weight: var(--hs-weight-strong);
-		letter-spacing: -0.015em;
+		font-family: var(--hs-font-display);
+		font-weight: var(--hs-weight-display);
+		font-size: clamp(1.75rem, 5.4vw, 2.5rem);
+		text-wrap: balance;
+		line-height: 1.04;
+		letter-spacing: var(--hs-tracking-display);
+		color: var(--hs-stage-ink);
 		overflow-wrap: anywhere;
+	}
+
+	.quiet {
+		font-size: var(--hs-text-sm);
+		color: var(--hs-ink-muted);
 	}
 </style>

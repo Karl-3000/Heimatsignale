@@ -50,7 +50,15 @@
 	}
 </script>
 
-<div class="tabs" role="tablist" aria-label={label} bind:this={list} data-testid={testid}>
+<div
+	class="hs-seg"
+	role="tablist"
+	aria-label={label}
+	bind:this={list}
+	data-testid={testid}
+	style:--seg-count={tabs.length}
+	style:--seg-index={Math.max(0, tabs.findIndex((t) => t.id === value))}
+>
 	{#each tabs as tab (tab.id)}
 		<button
 			type="button"
@@ -61,7 +69,8 @@
 			tabindex={tab.id === value ? 0 : -1}
 			data-tab={tab.id}
 			data-testid={testid ? `${testid}-${tab.id}` : undefined}
-			class:selected={tab.id === value}
+			class="hs-seg-item"
+			data-on={tab.id === value ? 'true' : 'false'}
 			onclick={() => select(tab.id, false)}
 			onkeydown={handleKey}
 		>
@@ -72,48 +81,10 @@
 </div>
 
 <style>
-	.tabs {
-		display: inline-flex;
-		gap: 2px;
-		padding: 3px;
-		border-radius: var(--hs-radius-md);
-		background: var(--hs-sunken);
-		max-width: 100%;
-		overflow-x: auto;
-	}
-
-	button {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--hs-space-2);
-		min-height: 2.375rem;
-		padding: 0 var(--hs-space-4);
-		border: 1px solid transparent;
-		border-radius: calc(var(--hs-radius-md) - 3px);
-		background: transparent;
-		color: var(--hs-ink-muted);
-		font: inherit;
-		font-size: var(--hs-text-sm);
-		font-weight: var(--hs-weight-strong);
-		white-space: nowrap;
-		cursor: pointer;
-		transition: background-color var(--hs-duration-fast) var(--hs-ease-standard);
-	}
-
-	button:hover {
-		color: var(--hs-ink);
-	}
-
-	button.selected {
-		background: var(--hs-raised);
-		border-color: var(--hs-line-strong);
-		color: var(--hs-ink);
-		box-shadow: var(--hs-shadow-sm);
-	}
-
 	button:focus-visible {
 		outline: 2px solid var(--hs-focus);
-		outline-offset: 1px;
+		outline-offset: 2px;
+		border-radius: var(--hs-radius-full);
 	}
 
 	.count {
@@ -121,7 +92,7 @@
 		padding: 0 0.375rem;
 		border-radius: var(--hs-radius-full);
 		background: var(--hs-accent-soft);
-		color: var(--hs-ink);
+		color: var(--hs-accent-ink);
 		font-size: var(--hs-text-xs);
 		line-height: 1.375rem;
 		text-align: center;

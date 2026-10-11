@@ -1,9 +1,11 @@
 /**
- * Eigener, gedämpfter Kartenstil für MapLibre (Projektplan, Abschnitt 5):
- * wenige Farben, keine POI-Symbole, damit das Netz der Vordergrund ist.
+ * Eigener Kartenstil für MapLibre: eine Nachtkarte in Tinte-Tönen, in beiden Themen.
+ * Die Karte ist Teil der Bühne; die Lichter (Wohnort-Knoten) bleiben der Vordergrund.
+ * Land ist etwas heller als Wasser, Straßen sind dünn und blass, es gibt keine POI-Symbole.
  * Grundlage ist das Protomaps-Basemap-Schema v4 (Ebenen earth, water, landuse,
- * roads, boundaries, places). Ohne Kachel-URL besteht der Stil nur aus Hintergrund,
- * Umkreis-Kreis und Maske; die Karte funktioniert dann ohne jede Netzanfrage.
+ * roads, boundaries, places). Ohne Kachel-URL besteht der Stil nur aus dem leuchtenden
+ * Umkreis-Kreis und der Abdunklung außerhalb; der Grund bleibt durchsichtig, sodass die
+ * Bühne darunter zu sehen ist. Die Karte funktioniert dann ohne jede Netzanfrage.
  * Ortsnamen auf der Grundkarte gibt es nur, wenn eine Glyphen-URL gesetzt ist.
  */
 
@@ -24,29 +26,23 @@ export interface MapColors {
 
 /** Feste Farben für Umgebungen ohne DOM und als Rückfall. Entsprechen tokens.css. */
 export const LIGHT_MAP_COLORS: MapColors = {
-	background: '#efeeeb',
-	land: '#e9e7e2',
-	water: '#cfd9db',
-	green: '#dfe3d6',
-	road: '#f9f8f6',
-	boundary: '#b2ada3',
-	label: '#56524b',
-	halo: '#efeeeb',
-	circle: '#56524b',
-	mask: '#efeeeb'
+	background: '#0a1030',
+	land: '#101842',
+	water: '#070b24',
+	green: '#121d48',
+	road: '#2b3568',
+	boundary: '#4b5688',
+	label: '#a9b3dc',
+	halo: '#0a1030',
+	circle: '#e9edff',
+	mask: '#060a20'
 };
 
+/** Im dunklen Thema ist die Bühne eine Spur heller als die Seite. */
 export const DARK_MAP_COLORS: MapColors = {
-	background: '#1b1a18',
-	land: '#232220',
-	water: '#1a2a2e',
-	green: '#252a22',
-	road: '#33312d',
-	boundary: '#6a665f',
-	label: '#bab5ab',
-	halo: '#1b1a18',
-	circle: '#bab5ab',
-	mask: '#1b1a18'
+	...LIGHT_MAP_COLORS,
+	background: '#0c1233',
+	halo: '#0c1233'
 };
 
 /** Liest die Kartenfarben aus den Design-Tokens des gerade wirksamen Themas. */
@@ -55,16 +51,16 @@ export function readMapColors(fallback: MapColors = LIGHT_MAP_COLORS): MapColors
 	const style = getComputedStyle(document.documentElement);
 	const token = (name: string, otherwise: string): string => style.getPropertyValue(name).trim() || otherwise;
 	return {
-		background: token('--hs-bg', fallback.background),
+		background: token('--hs-stage-bg', fallback.background),
 		land: token('--hs-map-land', fallback.land),
 		water: token('--hs-map-water', fallback.water),
 		green: token('--hs-map-green', fallback.green),
 		road: token('--hs-map-road', fallback.road),
 		boundary: token('--hs-map-boundary', fallback.boundary),
 		label: token('--hs-map-label', fallback.label),
-		halo: token('--hs-bg', fallback.halo),
-		circle: token('--hs-ink-muted', fallback.circle),
-		mask: token('--hs-bg', fallback.mask)
+		halo: token('--hs-stage-bg', fallback.halo),
+		circle: token('--hs-mondweiss', fallback.circle),
+		mask: token('--hs-stage-deep', fallback.mask)
 	};
 }
 
@@ -118,7 +114,8 @@ export function buildMapStyle(options: StyleOptions, origin: string = ''): Json 
 		}
 	};
 
-	const layers: Json[] = [{ id: 'hintergrund', type: 'background', paint: { 'background-color': hasTiles ? c.background : c.land } }];
+	// Ohne Kacheln gibt es keinen Hintergrund: Die Zeichenfläche bleibt durchsichtig und zeigt die Bühne.
+	const layers: Json[] = hasTiles ? [{ id: 'hintergrund', type: 'background', paint: { 'background-color': c.water } }] : [];
 
 	if (hasTiles) {
 		sources[BASEMAP_SOURCE] = {
@@ -134,7 +131,7 @@ export function buildMapStyle(options: StyleOptions, origin: string = ''): Json 
 				source: BASEMAP_SOURCE,
 				'source-layer': 'landuse',
 				filter: ['in', ['get', 'kind'], ['literal', ['park', 'forest', 'wood', 'nature_reserve', 'national_park', 'protected_area', 'grassland', 'meadow', 'cemetery']]],
-				paint: { 'fill-color': c.green, 'fill-opacity': 0.8 }
+				paint: { 'fill-color': c.green, 'fill-opacity': 0.9 }
 			},
 			{ id: 'wasser', type: 'fill', source: BASEMAP_SOURCE, 'source-layer': 'water', filter: ['==', ['geometry-type'], 'Polygon'], paint: { 'fill-color': c.water } },
 			{
@@ -161,7 +158,7 @@ export function buildMapStyle(options: StyleOptions, origin: string = ''): Json 
 				type: 'line',
 				source: BASEMAP_SOURCE,
 				'source-layer': 'boundaries',
-				paint: { 'line-color': c.boundary, 'line-width': 0.8, 'line-dasharray': [3, 2], 'line-opacity': 0.7 }
+				paint: { 'line-color': c.boundary, 'line-width': 0.7, 'line-dasharray': [3, 2], 'line-opacity': 0.6 }
 			}
 		);
 		if (hasGlyphs) {
@@ -182,14 +179,21 @@ export function buildMapStyle(options: StyleOptions, origin: string = ''): Json 
 		}
 	}
 
-	// Außerhalb des Umkreises wird die Karte abgedeckt: Gezeigt wird nie mehr als der gewählte Umkreis.
+	// Außerhalb des Umkreises wird es dunkler: Gezeigt wird nie mehr als der gewählte Umkreis.
+	// Der Kreis selbst ist ein weicher Lichtring mit einer feinen gestrichelten Linie darin.
 	layers.push(
-		{ id: 'maske', type: 'fill', source: MASK_SOURCE, paint: { 'fill-color': c.mask, 'fill-opacity': 0.92 } },
+		{ id: 'maske', type: 'fill', source: MASK_SOURCE, paint: { 'fill-color': c.mask, 'fill-opacity': hasTiles ? 0.82 : 0.6 } },
+		{
+			id: 'umkreis-schein',
+			type: 'line',
+			source: CIRCLE_SOURCE,
+			paint: { 'line-color': c.circle, 'line-width': 9, 'line-blur': 9, 'line-opacity': 0.22 }
+		},
 		{
 			id: 'umkreis-linie',
 			type: 'line',
 			source: CIRCLE_SOURCE,
-			paint: { 'line-color': c.circle, 'line-width': 1.5, 'line-dasharray': [2, 2.5], 'line-opacity': 0.9 }
+			paint: { 'line-color': c.circle, 'line-width': 1.25, 'line-dasharray': [2, 3], 'line-opacity': 0.75 }
 		}
 	);
 

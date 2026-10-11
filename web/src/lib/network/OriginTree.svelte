@@ -196,10 +196,11 @@
 </div>
 
 <style>
+	/* Die Liste ist ein Gegenstand auf der Seite: eine erhabene Fläche, Zeilen ohne Linien. */
 	.tree {
-		border: 1px solid var(--hs-line);
 		border-radius: var(--hs-radius-lg);
 		background: var(--hs-surface);
+		box-shadow: var(--hs-shadow-md);
 		padding: var(--hs-space-2);
 	}
 
@@ -208,7 +209,7 @@
 		grid-template-columns: 1.25rem minmax(0, 1fr) auto;
 		align-items: center;
 		column-gap: var(--hs-space-2);
-		min-height: 2.75rem;
+		min-height: 3rem;
 		padding: var(--hs-space-2) var(--hs-space-3);
 		padding-left: calc(var(--hs-space-3) + var(--depth, 0) * 1.25rem);
 		border-radius: var(--hs-radius-md);
@@ -222,25 +223,31 @@
 	.row:focus-visible {
 		outline: 2px solid var(--hs-focus);
 		outline-offset: -2px;
+		border-radius: var(--hs-radius-md);
 	}
 
 	.row.selected {
 		background: var(--hs-accent-soft);
-		box-shadow: inset 3px 0 0 var(--hs-accent);
 	}
 
 	.row.level-root {
 		cursor: default;
-		font-weight: var(--hs-weight-strong);
 	}
 
 	.row.level-root:hover {
 		background: transparent;
 	}
 
+	.row.level-root .name {
+		font-family: var(--hs-font-display);
+		font-weight: var(--hs-weight-display);
+		font-size: var(--hs-text-lg);
+		letter-spacing: -0.02em;
+	}
+
 	.chevron {
 		display: inline-flex;
-		color: var(--hs-ink-muted);
+		color: var(--hs-ink-subtle);
 	}
 
 	.main {
@@ -255,10 +262,7 @@
 		overflow-wrap: anywhere;
 	}
 
-	.row.own .name {
-		font-weight: var(--hs-weight-strong);
-	}
-
+	.row.own .name,
 	.row.level-state .name {
 		font-weight: var(--hs-weight-strong);
 	}
@@ -283,9 +287,10 @@
 
 	.person .name,
 	.link {
-		color: var(--hs-accent);
+		color: var(--hs-accent-ink);
+		font-weight: var(--hs-weight-strong);
 		text-decoration: underline;
 		text-decoration-thickness: 1px;
-		text-underline-offset: 0.18em;
+		text-underline-offset: 0.2em;
 	}
 </style>

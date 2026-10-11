@@ -54,22 +54,22 @@
 		overflow: visible;
 	}
 
+	/* Gläserne Scheibe auf der Bühne; die Lichter darin sind dieselben wie im Netz. */
 	.plate {
-		fill: var(--hs-raised);
-		fill-opacity: 0.94;
-		stroke: var(--hs-line-strong);
+		fill: var(--hs-stage-glass);
+		stroke: var(--hs-stage-line);
 		stroke-width: 1;
 	}
 
 	line {
-		stroke: var(--hs-edge);
-		stroke-opacity: 0.45;
+		stroke: var(--hs-stage-ink);
+		stroke-opacity: 0.32;
 		stroke-linecap: round;
 	}
 
 	line.own {
-		stroke: var(--hs-origin);
-		stroke-opacity: 0.7;
+		stroke: var(--hs-stage-origin);
+		stroke-opacity: 0.8;
 	}
 
 	.rest-line {
@@ -77,46 +77,46 @@
 	}
 
 	.node {
-		fill: var(--hs-node);
+		fill: var(--hs-stage-ink);
 	}
 
 	.node.own {
-		fill: var(--hs-origin);
+		fill: var(--hs-stage-origin);
 	}
 
 	.own-ring {
 		fill: none;
-		stroke: var(--hs-origin);
+		stroke: var(--hs-stage-origin);
 		stroke-width: 1.25;
 	}
 
 	.center {
-		fill: var(--hs-node-root);
+		fill: var(--hs-stage-ink);
 	}
 
 	.total {
-		fill: var(--hs-on-node-root);
+		fill: var(--hs-stage-on-light);
 		font-weight: var(--hs-weight-strong);
 	}
 
 	.state {
-		fill: var(--hs-ink-muted);
+		fill: var(--hs-stage-muted);
 		font-size: 9px;
 		font-weight: var(--hs-weight-strong);
 	}
 
 	.state.own {
-		fill: var(--hs-origin);
+		fill: var(--hs-stage-origin);
 	}
 
 	.rest {
-		fill: var(--hs-ink-muted);
+		fill: var(--hs-stage-muted);
 		font-size: 10px;
 		font-weight: var(--hs-weight-strong);
 	}
 
 	.caption {
-		fill: var(--hs-ink);
+		fill: var(--hs-stage-ink);
 		font-size: 10.5px;
 		font-weight: var(--hs-weight-strong);
 	}

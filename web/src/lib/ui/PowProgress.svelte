@@ -23,8 +23,8 @@
 	}
 
 	.bar {
-		height: 6px;
-		margin-top: var(--hs-space-2);
+		height: 4px;
+		margin-top: var(--hs-space-3);
 		border-radius: var(--hs-radius-full);
 		background: var(--hs-sunken);
 		overflow: hidden;

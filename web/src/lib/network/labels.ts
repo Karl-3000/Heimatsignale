@@ -14,7 +14,6 @@ export const LABEL_FONT_SIZE = 12.5;
 export const LABEL_SUB_FONT_SIZE = 11;
 export const LABEL_LINE_HEIGHT = 15;
 const LABEL_GAP = 5;
-const LABEL_PADDING = 2;
 
 const NARROW = new Set([...'iljI.,:;|!\'’ '].map((c) => c));
 const SEMI = new Set([...'ftr-()/1'].map((c) => c));
@@ -116,12 +115,26 @@ export interface LabelPlacement {
 	y: number;
 	anchor: LabelAnchor;
 	box: Box | null;
+	/** Schriftgrößen und Zeilenhöhe in Netzeinheiten (auf dem Bildschirm konstant). */
+	fontSize: number;
+	subFontSize: number;
+	lineHeight: number;
 }
 
 export interface PlaceLabelsOptions {
 	/** Zusätzliche Hindernisse, z. B. der Wohnort in der Mitte samt seiner Beschriftung. */
 	obstacles?: Box[];
 	halfExtent?: number;
+	/**
+	 * Sichtbarer Ausschnitt in Netzkoordinaten. Beschriftungen, die darüber hinausragen würden,
+	 * wechseln die Seite, werden gekürzt oder ausgeblendet, statt abgeschnitten zu werden.
+	 */
+	bounds?: Box;
+	/**
+	 * Bildschirm-Pixel je Netzeinheit. Die Schrift bleibt auf dem Bildschirm gleich groß;
+	 * in Netzeinheiten braucht sie beim Herauszoomen deshalb mehr Platz.
+	 */
+	scale?: number;
 }
 
 function intersects(a: Box, b: Box): boolean {
@@ -143,10 +156,11 @@ interface Candidate {
 	box: Box;
 }
 
-function candidates(n: LabelInput, width: number, lines: number): Candidate[] {
-	const h = lines * LABEL_LINE_HEIGHT;
-	const off = n.r + LABEL_GAP;
-	const half = LABEL_LINE_HEIGHT / 2;
+function candidates(n: LabelInput, width: number, lines: number, k: number): Candidate[] {
+	const LABEL_PADDING = 2 * k;
+	const h = lines * LABEL_LINE_HEIGHT * k;
+	const off = n.r + LABEL_GAP * k;
+	const half = (LABEL_LINE_HEIGHT * k) / 2;
 	const right: Candidate = {
 		x: n.x + off,
 		y: n.y,
@@ -192,6 +206,10 @@ export function placeLabels(
 	options: PlaceLabelsOptions = {}
 ): Map<string, LabelPlacement> {
 	const half = options.halfExtent ?? Number.POSITIVE_INFINITY;
+	const bounds = options.bounds ?? null;
+	// k: Netzeinheiten je Bildschirm-Pixel.
+	const k = options.scale && options.scale > 0 ? 1 / options.scale : 1;
+	const sizes = { fontSize: LABEL_FONT_SIZE * k, subFontSize: LABEL_SUB_FONT_SIZE * k, lineHeight: LABEL_LINE_HEIGHT * k };
 	const placed: Box[] = [...(options.obstacles ?? [])];
 	const result = new Map<string, LabelPlacement>();
 	const order = [...inputs].sort((a, b) => b.priority - a.priority || a.id.localeCompare(b.id));
@@ -200,17 +218,18 @@ export function placeLabels(
 		const suffix = n.suffix ?? '';
 		const sub = n.sub ?? '';
 		const lines = sub ? 2 : 1;
-		const subWidth = sub ? estimateTextWidth(sub, LABEL_SUB_FONT_SIZE) : 0;
+		const subWidth = sub ? estimateTextWidth(sub, LABEL_SUB_FONT_SIZE) * k : 0;
 		const variants: Array<{ variant: LabelVariant; text: string }> = [{ variant: 'full', text: n.full }];
 		if (n.short && n.short !== n.full) variants.push({ variant: 'short', text: n.short });
 
 		let chosen: LabelPlacement | null = null;
 		for (const v of variants) {
-			const main = estimateTextWidth(suffix ? `${v.text} ${suffix}` : v.text);
+			const main = estimateTextWidth(suffix ? `${v.text} ${suffix}` : v.text) * k;
 			const width = Math.max(main, subWidth);
-			for (const c of candidates(n, width, lines)) {
+			for (const c of candidates(n, width, lines, k)) {
 				const b = c.box;
 				if (b.x0 < -half || b.x1 > half || b.y0 < -half || b.y1 > half) continue;
+				if (bounds && (b.x0 < bounds.x0 || b.x1 > bounds.x1 || b.y0 < bounds.y0 || b.y1 > bounds.y1)) continue;
 				let free = true;
 				for (const p of placed) {
 					if (intersects(b, p)) {
@@ -227,7 +246,7 @@ export function placeLabels(
 					}
 				}
 				if (!free) continue;
-				chosen = { id: n.id, variant: v.variant, text: v.text, suffix, sub, x: c.x, y: c.y, anchor: c.anchor, box: b };
+				chosen = { id: n.id, variant: v.variant, text: v.text, suffix, sub, x: c.x, y: c.y, anchor: c.anchor, box: b, ...sizes };
 				break;
 			}
 			if (chosen) break;
@@ -237,7 +256,7 @@ export function placeLabels(
 			placed.push(chosen.box);
 			result.set(n.id, chosen);
 		} else {
-			result.set(n.id, { id: n.id, variant: 'hidden', text: n.full, suffix, sub, x: n.x, y: n.y, anchor: 'middle', box: null });
+			result.set(n.id, { id: n.id, variant: 'hidden', text: n.full, suffix, sub, x: n.x, y: n.y, anchor: 'middle', box: null, ...sizes });
 		}
 	}
 	return result;

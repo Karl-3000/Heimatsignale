@@ -14,10 +14,10 @@
 <aside class="legend" aria-label="Legende" data-testid="network-legend">
 	<ul>
 		<li>
-			<svg viewBox="0 0 56 20" width="56" height="20" aria-hidden="true">
-				<path d="M4,15 Q28,2 52,10" class="edge" stroke-width="4" />
-				<circle cx="4" cy="15" r="3.5" class="node" />
-				<circle cx="52" cy="10" r="6" class="node" />
+			<svg viewBox="0 0 44 28" width="44" height="28" aria-hidden="true">
+				<path d="M9,19 Q22,6 34,12" class="edge" stroke-width="3" />
+				<circle cx="9" cy="19" r="3" class="node" />
+				<circle cx="34" cy="12" r="5" class="node" />
 			</svg>
 			<p>
 				Eine Linie bedeutet: So viele Personen, die {residenceName ? `in ${residenceName}` : 'im Umkreis'} leben, stammen aus dieser Herkunft. Je dicker
@@ -25,17 +25,17 @@
 			</p>
 		</li>
 		<li>
-			<svg viewBox="0 0 56 20" width="56" height="20" aria-hidden="true">
-				<circle cx="28" cy="10" r="9" class="ring" />
-				<circle cx="28" cy="10" r="5.5" class="ring" />
-				<circle cx="28" cy="10" r="2" class="node" />
+			<svg viewBox="0 0 44 28" width="44" height="28" aria-hidden="true">
+				<circle cx="22" cy="14" r="10.5" class="ring" />
+				<circle cx="22" cy="14" r="6" class="ring" />
+				<circle cx="22" cy="14" r="2" class="node" />
 			</svg>
 			<p>Die Lage der Knoten ist schematisch, nicht geografisch. Innen stehen Bundesländer, dann Landkreise, außen Orte.</p>
 		</li>
 		<li>
-			<svg viewBox="0 0 56 20" width="56" height="20" aria-hidden="true">
-				<circle cx="28" cy="10" r="5" class="own" />
-				<circle cx="28" cy="10" r="8.5" class="own-ring" />
+			<svg viewBox="0 0 44 28" width="44" height="28" aria-hidden="true">
+				<circle cx="22" cy="14" r="5" class="own" />
+				<circle cx="22" cy="14" r="8.5" class="own-ring" />
 			</svg>
 			<p>Farbe und Doppelring mit dem Vermerk <strong class="own-text">deine Herkunft</strong> markieren deinen Heimatort, deinen Landkreis und dein Bundesland.</p>
 		</li>
@@ -43,8 +43,10 @@
 </aside>
 
 <style>
+	/* Die Legende ist leiser Kleintext unter der Bühne, kein Kasten. */
 	.legend {
 		font-size: var(--hs-text-sm);
+		line-height: 1.5;
 		color: var(--hs-ink-muted);
 	}
 
@@ -59,46 +61,48 @@
 	@media (min-width: 900px) {
 		ul {
 			grid-template-columns: repeat(3, minmax(0, 1fr));
-			gap: var(--hs-space-5);
+			gap: var(--hs-space-6);
 		}
 	}
 
 	li {
 		display: grid;
-		grid-template-columns: 56px minmax(0, 1fr);
+		grid-template-columns: 44px minmax(0, 1fr);
 		gap: var(--hs-space-3);
 		align-items: start;
 	}
 
 	svg {
 		margin-top: 0.125rem;
+		border-radius: var(--hs-radius-sm);
+		background: var(--hs-stage-bg);
 	}
 
 	.edge {
 		fill: none;
-		stroke: var(--hs-edge);
-		stroke-opacity: 0.5;
+		stroke: var(--hs-stage-ink);
+		stroke-opacity: 0.45;
 		stroke-linecap: round;
 	}
 
 	.node {
-		fill: var(--hs-node);
+		fill: var(--hs-stage-ink);
 	}
 
 	.ring {
 		fill: none;
-		stroke: var(--hs-line-strong);
-		stroke-dasharray: 2 3;
+		stroke: var(--hs-stage-ink);
+		stroke-opacity: 0.4;
 	}
 
 	.own {
-		fill: var(--hs-origin);
+		fill: var(--hs-stage-origin);
 	}
 
 	.own-ring {
 		fill: none;
-		stroke: var(--hs-origin);
-		stroke-width: 1.5;
+		stroke: var(--hs-stage-origin);
+		stroke-width: 1.25;
 	}
 
 	.own-text {

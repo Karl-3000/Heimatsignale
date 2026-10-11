@@ -23,9 +23,10 @@
 		border-radius: var(--hs-radius-lg);
 	}
 
+	/* Erhabene Fläche: Weiß ohne Rahmen, mit weichem, in Tinte getöntem Schatten. */
 	.card-raised {
 		background: var(--hs-surface);
-		border: 1px solid var(--hs-line);
+		box-shadow: var(--hs-shadow-md);
 	}
 
 	.card-sunken {
@@ -37,7 +38,7 @@
 	}
 
 	.pad-md {
-		padding: var(--hs-space-4);
+		padding: var(--hs-space-5);
 	}
 
 	.pad-lg {

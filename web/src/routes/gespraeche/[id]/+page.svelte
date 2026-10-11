@@ -208,7 +208,7 @@
 </svelte:head>
 
 <div class="page" data-testid="conversation-page">
-	<p><Button href="/gespraeche" variant="ghost" size="sm" icon={ArrowLeft} testid="conversation-back">Alle Gespräche</Button></p>
+	<p class="back"><Button href="/gespraeche" variant="ghost" size="sm" icon={ArrowLeft} testid="conversation-back">Alle Gespräche</Button></p>
 
 	{#if loading}
 		<p role="status" class="text-ink-muted">Gespräch wird geladen.</p>
@@ -226,11 +226,11 @@
 					{#if partner}<a href="/profil/{partner.id}" data-testid="conversation-partner">{partner.nickname}</a>{:else}Gespräch{/if}
 				</h1>
 				{#if partner}
-					<p class="text-sm text-ink-muted">aus {partner.home.name} ({partner.home.district_name}), wohnt in {partner.residence.name}</p>
+					<p class="sub">aus {partner.home.name} ({partner.home.district_name}), wohnt in {partner.residence.name}</p>
 				{/if}
 			</div>
 			{#if partner && available}
-				<Button size="sm" onclick={() => (blockOpen = true)} testid="conversation-block">Blockieren</Button>
+				<Button size="sm" variant="ghost" onclick={() => (blockOpen = true)} testid="conversation-block">Blockieren</Button>
 			{/if}
 		</header>
 
@@ -291,7 +291,7 @@
 						hideLabel
 						bind:value={draft}
 						max={session.site.message_body_max}
-						rows={3}
+						rows={2}
 						placeholder="Nachricht schreiben"
 						error={draftError}
 						testid="message-input"
@@ -299,14 +299,14 @@
 				</div>
 				{#if sendError}<Notice tone="danger" live testid="message-error"><p>{sendError}</p></Notice>{/if}
 				<div class="send-row">
-					<p class="text-sm text-ink-muted" data-testid="links-hint">
+					<p class="hint" data-testid="links-hint">
 						{#if linksAllowed}
 							Reiner Text. Links sind in diesem Gespräch erlaubt.
 						{:else}
 							Reiner Text. Links sind erst möglich, wenn ihr zusammen 10 Nachrichten ausgetauscht habt und beide geschrieben haben.
 						{/if}
 					</p>
-					<Button type="submit" variant="primary" icon={Send} loading={sending} disabled={draft.trim().length === 0} testid="message-send">Senden</Button>
+					<Button type="submit" variant="primary" round icon={Send} loading={sending} disabled={draft.trim().length === 0} aria-label="Senden" testid="message-send" />
 				</div>
 			</form>
 		{/if}
@@ -330,8 +330,13 @@
 <style>
 	.page {
 		display: grid;
-		gap: var(--hs-space-4);
+		gap: var(--hs-space-5);
 		max-width: 44rem;
+	}
+
+	.back {
+		margin-bottom: calc(var(--hs-space-4) * -1);
+		margin-left: calc(var(--hs-space-3) * -1);
 	}
 
 	.head {
@@ -342,22 +347,29 @@
 	}
 
 	.title {
-		font-size: var(--hs-text-xl);
+		font-size: clamp(1.75rem, 4vw, 2.25rem);
 		overflow-wrap: anywhere;
 	}
 
 	.title a {
 		color: var(--hs-ink);
+		text-decoration-color: color-mix(in srgb, currentColor 28%, transparent);
+	}
+
+	.sub {
+		margin-top: var(--hs-space-1);
+		font-size: var(--hs-text-sm);
+		color: var(--hs-ink-muted);
 	}
 
 	.messages {
-		height: min(58dvh, 34rem);
+		height: min(56dvh, 34rem);
 		min-height: 14rem;
 		overflow-y: auto;
-		padding: var(--hs-space-4);
-		border: 1px solid var(--hs-line);
-		border-radius: var(--hs-radius-lg);
+		padding: var(--hs-space-5);
+		border-radius: var(--hs-radius-stage);
 		background: var(--hs-surface);
+		box-shadow: var(--hs-shadow-sm);
 		overscroll-behavior: contain;
 	}
 
@@ -373,7 +385,7 @@
 
 	ol {
 		display: grid;
-		gap: var(--hs-space-3);
+		gap: var(--hs-space-4);
 		list-style: none;
 		margin: 0;
 		padding: 0;
@@ -389,23 +401,30 @@
 		justify-items: end;
 	}
 
+	/* Sprechblasen mit großzügigem Radius: eigene in Fernblau, die der anderen Person auf weicher Fläche. */
 	.bubble {
-		max-width: min(34rem, 88%);
-		padding: var(--hs-space-2) var(--hs-space-3);
-		border: 1px solid var(--hs-line);
-		border-radius: var(--hs-radius-md);
-		background: var(--hs-raised);
+		max-width: min(32rem, 86%);
+		padding: var(--hs-space-3) var(--hs-space-4);
+		border-radius: 1.375rem;
+		border-bottom-left-radius: var(--hs-radius-sm);
+		background: var(--hs-sunken);
 	}
 
 	.mine .bubble {
-		background: var(--hs-accent-soft);
-		border-color: transparent;
+		background: var(--hs-accent);
+		color: var(--hs-on-accent);
+		border-bottom-left-radius: 1.375rem;
+		border-bottom-right-radius: var(--hs-radius-sm);
 	}
 
 	.who {
 		font-size: var(--hs-text-xs);
 		font-weight: var(--hs-weight-strong);
 		color: var(--hs-ink-muted);
+	}
+
+	.mine .who {
+		color: color-mix(in srgb, var(--hs-on-accent) 86%, var(--hs-accent));
 	}
 
 	.when {
@@ -422,43 +441,52 @@
 		min-height: 1.75rem;
 		padding: 0 var(--hs-space-2);
 		border: 0;
-		border-radius: var(--hs-radius-sm);
+		border-radius: var(--hs-radius-full);
 		background: transparent;
-		color: var(--hs-ink-muted);
+		color: var(--hs-ink-subtle);
 		font: inherit;
 		font-size: var(--hs-text-xs);
-		text-decoration: underline;
-		text-underline-offset: 0.18em;
 		cursor: pointer;
 	}
 
 	.action:hover {
 		color: var(--hs-ink);
-		background: var(--hs-sunken);
+		text-decoration: underline;
 	}
 
+	/* Das Schreibfeld bleibt unten im Blick. */
 	.composer {
+		position: sticky;
+		bottom: calc(var(--hs-toast-offset, 0px) + var(--hs-space-3));
+		z-index: 5;
 		display: grid;
 		gap: var(--hs-space-2);
+		padding: var(--hs-space-3);
+		border-radius: var(--hs-radius-stage);
+		background: var(--hs-surface);
+		box-shadow: var(--hs-shadow-md);
 	}
 
 	.send-row {
 		display: flex;
-		flex-wrap: wrap;
 		align-items: center;
 		justify-content: space-between;
 		gap: var(--hs-space-3);
+		padding-left: var(--hs-space-2);
 	}
 
-	.send-row p {
-		flex: 1 1 16rem;
+	.hint {
+		flex: 1;
+		font-size: var(--hs-text-xs);
+		line-height: 1.4;
+		color: var(--hs-ink-subtle);
 	}
 
 	.quote {
 		margin: var(--hs-space-3) 0 0;
-		padding: var(--hs-space-2) var(--hs-space-3);
-		border-left: 3px solid var(--hs-line-strong);
-		background: var(--hs-raised);
+		padding: var(--hs-space-3) var(--hs-space-4);
+		border-radius: var(--hs-radius-md);
+		background: var(--hs-sunken);
 		white-space: pre-wrap;
 		overflow-wrap: anywhere;
 		max-height: 8rem;

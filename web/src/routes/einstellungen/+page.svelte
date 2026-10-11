@@ -212,9 +212,9 @@
 	<section aria-labelledby="profil-titel">
 		<h2 id="profil-titel">So sehen dich andere</h2>
 		{#if asOthersSee}
-			<Card padding="lg" testid="settings-profile">
+			<div class="person-card" data-testid="settings-profile">
 				<PersonSummary user={asOthersSee} size="lg" showMemberSince />
-			</Card>
+			</div>
 		{/if}
 		<p class="note">
 			Mehr ist von dir nicht sichtbar. Der Nickname ist fest. Was niemand sieht, steht in der <a href="/vorschau">Vorschau</a>.
@@ -370,18 +370,20 @@
 <style>
 	.page {
 		display: grid;
-		gap: var(--hs-space-7);
-		max-width: 44rem;
+		gap: var(--hs-space-8);
+		max-width: 42rem;
 	}
 
 	section {
 		display: grid;
-		gap: var(--hs-space-3);
+		gap: var(--hs-space-4);
 	}
 
-	section + section {
-		padding-top: var(--hs-space-6);
-		border-top: 1px solid var(--hs-line);
+	.person-card {
+		padding: var(--hs-space-6);
+		border-radius: var(--hs-radius-stage);
+		background: var(--hs-surface);
+		box-shadow: var(--hs-shadow-md);
 	}
 
 	.note,
@@ -400,9 +402,6 @@
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		border: 1px solid var(--hs-line);
-		border-radius: var(--hs-radius-lg);
-		background: var(--hs-surface);
 	}
 
 	.rows li {
@@ -411,11 +410,12 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: var(--hs-space-3);
-		padding: var(--hs-space-3) var(--hs-space-4);
+		padding: var(--hs-space-4) 0;
+		border-top: 1px solid var(--hs-line);
 	}
 
-	.rows li + li {
-		border-top: 1px solid var(--hs-line);
+	.rows li:last-child {
+		border-bottom: 1px solid var(--hs-line);
 	}
 
 	.nick {
@@ -427,5 +427,6 @@
 		gap: var(--hs-space-2);
 		padding-left: 1.25rem;
 		list-style: disc;
+		color: var(--hs-ink-muted);
 	}
 </style>

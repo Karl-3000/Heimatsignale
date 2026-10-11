@@ -13,13 +13,14 @@
 	let { options, value, disabled = false, onchange }: Props = $props();
 
 	const uid = $props.id();
+	const index = $derived(value === null ? -1 : options.indexOf(value));
 </script>
 
 <fieldset class="radius" data-testid="radius-toggle" {disabled}>
 	<legend>Umkreis</legend>
-	<div class="options">
+	<div class="hs-seg" style:--seg-count={options.length} style:--seg-index={Math.max(0, index)} data-seg-index={index}>
 		{#each options as option (option)}
-			<label class:checked={value === option}>
+			<label class="hs-seg-item" data-on={value === option ? 'true' : 'false'}>
 				<input
 					type="radio"
 					name="{uid}-radius"
@@ -53,39 +54,8 @@
 		color: var(--hs-ink-muted);
 	}
 
-	.options {
-		display: inline-flex;
-		gap: 2px;
-		padding: 3px;
-		border-radius: var(--hs-radius-md);
-		background: var(--hs-sunken);
-	}
-
 	label {
-		position: relative;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		min-height: 2.375rem;
-		min-width: 4.25rem;
-		padding: 0 var(--hs-space-3);
-		border: 1px solid transparent;
-		border-radius: calc(var(--hs-radius-md) - 3px);
-		color: var(--hs-ink-muted);
-		font-size: var(--hs-text-sm);
-		font-weight: var(--hs-weight-strong);
-		cursor: pointer;
-	}
-
-	label:hover {
-		color: var(--hs-ink);
-	}
-
-	label.checked {
-		background: var(--hs-raised);
-		border-color: var(--hs-line-strong);
-		color: var(--hs-ink);
-		box-shadow: var(--hs-shadow-sm);
+		min-width: 4.75rem;
 	}
 
 	input {
@@ -98,7 +68,7 @@
 
 	label:has(input:focus-visible) {
 		outline: 2px solid var(--hs-focus);
-		outline-offset: 1px;
+		outline-offset: 2px;
 	}
 
 	.radius:disabled label {

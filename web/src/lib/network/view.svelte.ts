@@ -1,5 +1,6 @@
 import { errorMessage, isApiError } from '../api/client';
 import { formatRetryAfter } from '../util/format';
+import type { Camera } from './camera';
 import { NetworkCore, type NetworkCoreOptions, type PeopleState } from './core';
 import type { KeyRow } from './keyboard';
 import type { TreeRow, TreeSnapshot } from './model';
@@ -56,10 +57,8 @@ export class NetworkView {
 	errors = $state.raw<ReadonlyMap<string, string>>(new Map());
 	/** Letzte Ansage für Screenreader. */
 	announcement = $state('');
-	/** Zoomfaktor der Netzansicht. */
-	zoom = $state(1);
-	/** Zuletzt gezeigter Ausschnitt; bleibt erhalten, wenn man von einem Profil zurückkommt. */
-	scroll: { left: number; top: number } | null = null;
+	/** Zuletzt gezeigter Ausschnitt der Netzansicht; bleibt erhalten, wenn man von einem Profil zurückkommt. */
+	camera: Camera | null = null;
 
 	constructor(options: NetworkCoreOptions) {
 		this.core = new NetworkCore(options);

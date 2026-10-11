@@ -6,6 +6,7 @@
 	import { session } from '$lib/api/session.svelte';
 	import type { Place } from '$lib/api/types';
 	import { PowRun } from '$lib/pow/run.svelte';
+	import Brand from '$lib/ui/Brand.svelte';
 	import Button from '$lib/ui/Button.svelte';
 	import Card from '$lib/ui/Card.svelte';
 	import Field from '$lib/ui/Field.svelte';
@@ -184,7 +185,8 @@
 
 {#if sent}
 	<FormPage title="E-Mail unterwegs" wide>
-		<div class="grid gap-4" data-testid="register-sent">
+		<div class="grid gap-5" data-testid="register-sent">
+			<div class="hs-stage sent-stage" aria-hidden="true"><Brand href={null} tone="stage" markOnly size="lg" /></div>
 			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 			<p tabindex="-1" bind:this={heading} class="outline-none">
 				Wir haben einen Bestätigungslink an <strong class="break-all">{email.trim()}</strong> geschickt. Öffne ihn, um dein Konto zu aktivieren. Danach
@@ -206,7 +208,7 @@
 		</div>
 	</FormPage>
 {:else}
-	<FormPage title="Registrieren" wide>
+	<FormPage title="Registrieren" wide quietTitle>
 		<p class="progress hs-num" data-testid="register-progress">Schritt {step} von {STEPS.length}</p>
 		<ol class="dots" aria-hidden="true">
 			{#each STEPS as name, index (name)}
@@ -215,7 +217,7 @@
 		</ol>
 
 		<form class="grid gap-5" onsubmit={next} novalidate data-testid="register-form" data-step={step}>
-			<h2 tabindex="-1" bind:this={heading} class="outline-none" data-testid="register-step-title">{STEPS[step - 1]}</h2>
+			<h2 tabindex="-1" bind:this={heading} class="step-title" data-testid="register-step-title">{STEPS[step - 1]}</h2>
 
 			{#if step === 1}
 				<Field label="E-Mail-Adresse" type="email" bind:value={email} autocomplete="email" inputmode="email" required error={errors.email} hint="Nur für Anmeldung und Benachrichtigungen. Niemand sonst sieht sie." testid="register-email" />
@@ -288,11 +290,11 @@
 					</div>
 					<div>
 						<dt>Heimatort</dt>
-						<dd>{home?.name} <span class="text-ink-muted">({home?.district_name}, {home?.state_name})</span></dd>
+						<dd>{home?.name} <span class="quiet">({home?.district_name}, {home?.state_name})</span></dd>
 					</div>
 					<div>
 						<dt>Wohnort</dt>
-						<dd>{residence?.name} <span class="text-ink-muted">({residence?.district_name}, {residence?.state_name})</span></dd>
+						<dd>{residence?.name} <span class="quiet">({residence?.district_name}, {residence?.state_name})</span></dd>
 					</div>
 				</dl>
 				<Notice tone="warning" title="Heimatort und Wohnort legst du einmal fest" testid="register-places-note">
@@ -334,9 +336,10 @@
 	.progress {
 		font-size: var(--hs-text-sm);
 		color: var(--hs-ink-muted);
-		margin-bottom: calc(var(--hs-space-3) * -1);
+		margin-bottom: calc(var(--hs-space-4) * -1);
 	}
 
+	/* Dünne Fortschrittslinie in fünf Abschnitten. */
 	.dots {
 		display: grid;
 		grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -347,22 +350,27 @@
 	}
 
 	.dots li {
-		height: 4px;
+		height: 3px;
 		border-radius: var(--hs-radius-full);
-		background: var(--hs-line);
+		background: var(--hs-sunken);
+		transition: background-color var(--hs-duration-base) var(--hs-ease-standard);
 	}
 
-	.dots li.done {
-		background: var(--hs-ink-muted);
-	}
-
+	.dots li.done,
 	.dots li.current {
 		background: var(--hs-accent);
 	}
 
+	.step-title {
+		font-size: clamp(2rem, 5vw, 2.75rem);
+		line-height: var(--hs-leading-display);
+		letter-spacing: var(--hs-tracking-display);
+		outline: none;
+	}
+
 	.date {
 		display: grid;
-		gap: var(--hs-space-2);
+		gap: var(--hs-space-3);
 		border: 0;
 		margin: 0;
 		padding: 0;
@@ -382,35 +390,38 @@
 
 	.date-fields label {
 		display: grid;
-		gap: var(--hs-space-1);
-		width: 4.5rem;
+		gap: var(--hs-space-2);
+		width: 5rem;
 		font-size: var(--hs-text-sm);
+		color: var(--hs-ink-muted);
 	}
 
 	.date-fields label.year {
-		width: 6.5rem;
+		width: 7.5rem;
 	}
 
 	.date-fields input {
-		min-height: var(--hs-control-height);
+		min-height: 3.5rem;
 		width: 100%;
-		padding: 0 var(--hs-space-3);
-		border: 1px solid var(--hs-line-strong);
+		padding: 0 var(--hs-space-4);
+		border: 0;
 		border-radius: var(--hs-radius-md);
-		background: var(--hs-raised);
+		background: var(--hs-sunken);
 		color: var(--hs-ink);
-		font: inherit;
+		font-family: var(--hs-font-display);
+		font-weight: var(--hs-weight-display);
+		font-size: var(--hs-text-xl);
 		font-variant-numeric: tabular-nums;
 	}
 
 	.date-fields input:focus-visible {
-		outline: 2px solid var(--hs-focus);
-		outline-offset: 1px;
+		outline: none;
+		background: var(--hs-raised);
+		box-shadow: inset 0 0 0 2px var(--hs-focus);
 	}
 
 	.date-fields input[aria-invalid='true'] {
-		border-color: var(--hs-danger);
-		border-width: 2px;
+		box-shadow: inset 0 0 0 2px var(--hs-danger);
 	}
 
 	.field-error {
@@ -419,31 +430,43 @@
 		font-weight: var(--hs-weight-strong);
 	}
 
+	/* Zusammenfassung als saubere Definitionsliste, ohne Kasten. */
 	.summary {
 		display: grid;
-		gap: var(--hs-space-3);
-		padding: var(--hs-space-4);
-		border: 1px solid var(--hs-line);
-		border-radius: var(--hs-radius-lg);
-		background: var(--hs-surface);
+	}
+
+	.summary > div {
+		display: grid;
+		gap: 0.125rem;
+		padding: var(--hs-space-4) 0;
+		border-top: 1px solid var(--hs-line);
+	}
+
+	.summary > div:last-child {
+		border-bottom: 1px solid var(--hs-line);
 	}
 
 	.summary dt {
 		font-size: var(--hs-text-sm);
-		color: var(--hs-ink-subtle);
+		color: var(--hs-ink-muted);
+	}
+
+	.summary dd {
+		font-size: var(--hs-text-lg);
+		font-weight: var(--hs-weight-strong);
 	}
 
 	.check {
 		display: grid;
-		grid-template-columns: 1.25rem minmax(0, 1fr);
+		grid-template-columns: 1.375rem minmax(0, 1fr);
 		gap: var(--hs-space-3);
 		align-items: start;
 		cursor: pointer;
 	}
 
 	.check input {
-		width: 1.25rem;
-		height: 1.25rem;
+		width: 1.375rem;
+		height: 1.375rem;
 		margin-top: 0.15rem;
 		accent-color: var(--hs-accent);
 	}
@@ -452,5 +475,17 @@
 		display: flex;
 		justify-content: space-between;
 		gap: var(--hs-space-3);
+		padding-top: var(--hs-space-2);
+	}
+
+	/* Der Moment nach dem Absenden: ein kleines Bühnenbild mit dem Zeichen. */
+	.sent-stage {
+		display: grid;
+		place-items: center;
+		min-height: 11rem;
+	}
+
+	.quiet {
+		color: var(--hs-ink-muted);
 	}
 </style>

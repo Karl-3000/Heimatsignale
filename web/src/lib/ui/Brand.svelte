@@ -1,67 +1,108 @@
 <script lang="ts">
 	import { session } from '$lib/api/session.svelte';
 
-	/** Wortmarke mit kleinem Netz-Zeichen. Der Name kommt aus der Sitzung (site.name). */
-	let { href = '/' }: { href?: string } = $props();
+	/**
+	 * Das Zeichen von Heimatsignale mit Wortmarke.
+	 *
+	 * Das Zeichen ist ein H aus zwei Lichtern: unten links der Ort, an dem du jetzt wohnst,
+	 * oben rechts frei schwebend das Heimatlicht, dazwischen eine geschwungene Linie wie die
+	 * Kanten des Herkunftsnetzes. Die Wortmarke ist gesetzter Text in Bricolage Grotesque;
+	 * der Name kommt aus der Sitzung (site.name).
+	 */
+	interface Props {
+		href?: string | null;
+		/** "stage": helles Zeichen auf Nachtblau. */
+		tone?: 'page' | 'stage';
+		/** Nur das Zeichen, z. B. in engen Kopfzeilen. Der Name bleibt für Screenreader erhalten. */
+		markOnly?: boolean;
+		size?: 'md' | 'lg';
+	}
+
+	let { href = '/', tone = 'page', markOnly = false, size = 'md' }: Props = $props();
 </script>
 
-<a class="brand" {href} data-testid="brand">
-	<svg viewBox="0 0 28 28" width="28" height="28" aria-hidden="true" focusable="false">
-		<g class="edges">
-			<path d="M14 14 Q11 9 6 7" stroke-width="2" />
-			<path d="M14 14 Q19 11 23 8" stroke-width="1.25" />
-			<path d="M14 14 Q16 20 21 22" stroke-width="2.75" />
-			<path d="M14 14 Q9 17 6 21" stroke-width="1" />
-		</g>
-		<circle class="node" cx="6" cy="7" r="2.5" />
-		<circle class="node" cx="23" cy="8" r="1.75" />
-		<circle class="node" cx="6" cy="21" r="1.5" />
-		<circle class="own" cx="21" cy="22" r="3" />
-		<circle class="own-ring" cx="21" cy="22" r="5" />
-		<circle class="center" cx="14" cy="14" r="3.5" />
+{#snippet content()}
+	<svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+		<path class="lines" d="M19 8V44M45 29V56M19 39C32 39 32 30 45 30" />
+		<circle class="here" cx="19" cy="46" r="10.5" />
+		<circle class="home" cx="45" cy="13" r="7.5" />
 	</svg>
-	<span>{session.siteName}</span>
-</a>
+	<span class="word" class:hs-sr-only={markOnly}>{session.siteName}</span>
+{/snippet}
+
+{#if href}
+	<a class="brand brand-{tone} brand-{size}" {href} data-testid="brand">{@render content()}</a>
+{:else}
+	<span class="brand brand-{tone} brand-{size}" data-testid="brand">{@render content()}</span>
+{/if}
 
 <style>
 	.brand {
+		--mark-ink: var(--hs-ink);
+		--mark-light: var(--hs-origin);
 		display: inline-flex;
 		align-items: center;
-		gap: var(--hs-space-2);
+		gap: 0.5rem;
 		min-height: 2.75rem;
 		color: var(--hs-ink);
-		font-weight: var(--hs-weight-strong);
-		font-size: var(--hs-text-lg);
-		letter-spacing: -0.015em;
 		text-decoration: none;
 	}
 
-	.brand:hover {
-		color: var(--hs-ink);
+	.brand-stage {
+		--mark-ink: var(--hs-stage-ink);
+		--mark-light: var(--hs-stage-origin);
+		color: var(--hs-stage-ink);
 	}
 
-	.edges path {
+	.mark {
+		width: 2rem;
+		height: 2rem;
+		flex: none;
+	}
+
+	.lines {
 		fill: none;
-		stroke: var(--hs-edge);
-		stroke-opacity: 0.6;
+		stroke: var(--mark-ink);
+		stroke-width: 6.5;
 		stroke-linecap: round;
 	}
 
-	.node {
-		fill: var(--hs-node);
+	.here {
+		fill: var(--mark-ink);
 	}
 
-	.center {
-		fill: var(--hs-node-root);
+	/* Auf hellem Grund ein sattes Bernstein, damit das Licht als Grafik genug Kontrast hat. */
+	.home {
+		fill: color-mix(in srgb, var(--hs-heimatlicht) 82%, var(--mark-light));
 	}
 
-	.own {
-		fill: var(--hs-origin);
+	.brand-stage .home {
+		fill: var(--hs-stage-origin);
 	}
 
-	.own-ring {
-		fill: none;
-		stroke: var(--hs-origin);
-		stroke-width: 1;
+	.word {
+		font-family: var(--hs-font-display);
+		font-weight: 650;
+		font-size: 1.3125rem;
+		letter-spacing: -0.035em;
+		line-height: 1;
+	}
+
+	.brand-lg .mark {
+		width: 3rem;
+		height: 3rem;
+	}
+
+	.brand-lg .word {
+		font-size: 1.875rem;
+	}
+
+	a.brand:focus-visible {
+		outline-offset: 4px;
+		border-radius: var(--hs-radius-md);
+	}
+
+	.brand-stage:focus-visible {
+		outline-color: var(--hs-stage-accent);
 	}
 </style>

@@ -1,79 +1,108 @@
 /*
- * Design-Tokens von Heimatsignale.
- * Alles in der Oberfläche leitet sich aus diesen Variablen ab; app.css bildet sie
- * in das Tailwind-Theme ab. Farben: warmes Grau als Grundsystem, eine Akzentfarbe
- * für Interaktion (Petrol), eine zweite nur für die eigene Herkunft im Netz (Bernstein).
- * Bundesländer bekommen keine eigenen Farben.
- * Kontraste sind gegen WCAG AA geprüft (Text mindestens 4,5:1, Grafik mindestens 3:1).
+ * Design-Tokens von Heimatsignale: "Signale bei Nacht".
+ *
+ * Die Bühne (Herkunftsnetz und Karte) liegt in beiden Themen auf tiefem Nachtblau, wie
+ * Lichter über einer dunklen Landschaft. Alles darum herum ist ruhig, hell und typografisch.
+ *
+ * Palette
+ *   Tinte       #0A1030  Nachtblau. Bühnengrund und Textfarbe auf hellen Flächen. Es gibt kein neutrales Grau als Schwarz.
+ *   Papier      #F3F5FA  Seitengrund, kühl. Erhabene Flächen sind reines Weiß.
+ *   Fernblau    #2747F5  die eine Farbe für Interaktion. Auf der Bühne als heller Ton (#8FA5FF).
+ *   Heimatlicht #FFB31A  die eine Farbe für "deine Herkunft", sonst für nichts. Als Text auf Hell der Ockerton #8F5300.
+ *   Mondweiß    #E9EDFF  Knoten, Linien und Schrift auf der Bühne.
+ *
+ * Komponenten greifen nur auf diese Variablen zu, nie auf feste Farbwerte.
+ * Kontraste sind gegen WCAG AA gemessen (Text mindestens 4,5:1, Grafik mindestens 3:1).
  */
 
 :root {
 	color-scheme: light;
 
-	/* Flächen */
-	--hs-bg: #efeeeb;
-	--hs-surface: #f9f8f6;
-	--hs-raised: #fdfcfb;
-	--hs-sunken: #e5e3de;
+	/* Benannte Palette */
+	--hs-tinte: #0a1030;
+	--hs-papier: #f3f5fa;
+	--hs-fernblau: #2747f5;
+	--hs-heimatlicht: #ffb31a;
+	--hs-mondweiss: #e9edff;
 
-	/* Linien */
-	--hs-line: #d5d2cb;
-	--hs-line-strong: #8c877d;
-
-	/* Text */
-	--hs-ink: #24221f;
-	--hs-ink-muted: #56524b;
-	--hs-ink-subtle: #69645b;
-
-	/* Interaktion */
-	--hs-accent: #0b5c6b;
-	--hs-accent-hover: #084855;
-	--hs-accent-soft: #d6e6e8;
+	/* Seite: Flächen, Linien, Text, Interaktion, Rückmeldungen */
+	--hs-bg: #f3f5fa;
+	--hs-surface: #ffffff;
+	--hs-raised: #ffffff;
+	--hs-sunken: #e7ebf5;
+	--hs-seg-track: #e4e8f3;
+	--hs-seg-thumb: #ffffff;
+	--hs-line: rgb(10 16 48 / 0.1);
+	--hs-line-strong: #7c84a6;
+	--hs-ink: #0a1030;
+	--hs-ink-muted: #454c6e;
+	--hs-ink-subtle: #5a6184;
+	--hs-accent: #2747f5;
+	--hs-accent-hover: #1b37d6;
+	--hs-accent-ink: #2747f5;
+	--hs-accent-soft: #e3e8ff;
 	--hs-on-accent: #ffffff;
+	--hs-origin: #8f5300;
+	--hs-origin-soft: #fff0d2;
+	--hs-danger: #b4233c;
+	--hs-danger-soft: #fbe7eb;
+	--hs-success: #136b4c;
+	--hs-success-soft: #dff3ea;
+	--hs-stage-bg: #0a1030;
+	--hs-stage-border: rgb(10 16 48 / 0);
+	--hs-glass: rgb(243 245 250 / 0.78);
+	--hs-shadow-sm: 0 1px 2px rgb(10 16 48 / 0.06), 0 2px 8px -2px rgb(10 16 48 / 0.08);
+	--hs-shadow-md: 0 2px 4px rgb(10 16 48 / 0.04), 0 18px 40px -16px rgb(10 16 48 / 0.22);
+	--hs-shadow-lg: 0 4px 10px rgb(10 16 48 / 0.06), 0 40px 80px -28px rgb(10 16 48 / 0.38);
+	--hs-focus: #2747f5;
+	--hs-backdrop: rgb(10 16 48 / 0.45);
 
-	/* Eigene Herkunft im Netz */
-	--hs-origin: #a85507;
-	--hs-origin-soft: #f5e2c6;
-	--hs-on-origin: #ffffff;
+	/* Bühne: in beiden Themen dunkel. Nur Grund und Rand unterscheiden sich leicht. */
+	--hs-stage-lift: #1c2c74;
+	--hs-stage-deep: #060a20;
+	--hs-stage-ink: var(--hs-mondweiss);
+	--hs-stage-muted: #a9b3dc;
+	--hs-stage-accent: #8fa5ff;
+	--hs-stage-origin: var(--hs-heimatlicht);
+	--hs-stage-on-light: var(--hs-tinte);
+	--hs-stage-line: rgb(233 237 255 / 0.13);
+	--hs-stage-edge: rgb(233 237 255 / 0.26);
+	--hs-stage-glass: rgb(233 237 255 / 0.1);
+	--hs-stage-glass-strong: rgb(233 237 255 / 0.18);
+	--hs-stage-danger: #ff9aa9;
+	--hs-stage-success: #7fe0b5;
 
-	/* Rückmeldungen */
-	--hs-danger: #a3301f;
-	--hs-danger-soft: #f6dcd6;
-	--hs-success: #2c6a3a;
-	--hs-success-soft: #d9ecdc;
-
-	/* Netz */
-	--hs-node: #5f5b53;
-	--hs-on-node: #ffffff;
-	--hs-node-root: #24221f;
-	--hs-on-node-root: #f9f8f6;
-	--hs-edge: #6f6a61;
-	--hs-edge-opacity: 0.32;
-
-	/* Karte */
-	--hs-map-land: #e9e7e2;
-	--hs-map-water: #cfd9db;
-	--hs-map-green: #dfe3d6;
-	--hs-map-road: #f9f8f6;
-	--hs-map-boundary: #b2ada3;
-	--hs-map-label: #56524b;
+	/* Karte: Nachtkarte in Tinte-Tönen, in beiden Themen. Land etwas heller als Wasser. */
+	--hs-map-land: #101842;
+	--hs-map-water: #070b24;
+	--hs-map-green: #121d48;
+	--hs-map-road: #2b3568;
+	--hs-map-boundary: #4b5688;
+	--hs-map-label: #a9b3dc;
 
 	/* Typografie */
+	--hs-font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
 	--hs-font-sans:
-		'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
-		'Helvetica Neue', Arial, sans-serif;
+		'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+		sans-serif;
 	--hs-weight-regular: 420;
-	--hs-weight-strong: 620;
-	--hs-text-xs: 0.75rem;
+	--hs-weight-strong: 600;
+	--hs-weight-display: 620;
+	--hs-text-xs: 0.8125rem;
 	--hs-text-sm: 0.875rem;
-	--hs-text-base: 1rem;
-	--hs-text-lg: 1.1875rem;
-	--hs-text-xl: 1.4375rem;
-	--hs-text-2xl: 1.75rem;
-	--hs-text-3xl: 2.25rem;
-	--hs-text-4xl: 2.875rem;
-	--hs-leading-tight: 1.2;
-	--hs-leading-normal: 1.55;
+	--hs-text-base: 1.0625rem;
+	--hs-text-lg: 1.25rem;
+	--hs-text-xl: 1.5rem;
+	--hs-text-2xl: 1.875rem;
+	--hs-text-3xl: 2.5rem;
+	--hs-text-4xl: 3rem;
+	--hs-text-statement: clamp(1.75rem, 3.4vw, 2.5rem);
+	--hs-text-hero: clamp(2.75rem, 6.2vw, 5.125rem);
+	--hs-leading-display: 1.04;
+	--hs-leading-tight: 1.15;
+	--hs-leading-normal: 1.6;
+	--hs-tracking-display: -0.028em;
+	--hs-tracking-title: -0.022em;
 
 	/* Abstände (4-px-Raster) */
 	--hs-space-1: 0.25rem;
@@ -84,134 +113,107 @@
 	--hs-space-6: 2rem;
 	--hs-space-7: 3rem;
 	--hs-space-8: 4.5rem;
+	--hs-space-9: 7rem;
 
-	/* Radien */
-	--hs-radius-sm: 0.375rem;
-	--hs-radius-md: 0.625rem;
-	--hs-radius-lg: 1rem;
+	/* Radien mit Rangfolge: Bühne, Karte, Bedienelement, Pille */
+	--hs-radius-sm: 0.5rem;
+	--hs-radius-md: 0.75rem;
+	--hs-radius-lg: 1.25rem;
+	--hs-radius-stage: 1.875rem;
 	--hs-radius-full: 999px;
-
-	/* Schatten */
-	--hs-shadow-sm: 0 1px 2px rgb(36 34 31 / 0.08);
-	--hs-shadow-md: 0 6px 20px -6px rgb(36 34 31 / 0.22), 0 1px 3px rgb(36 34 31 / 0.08);
-
-	/* Fokus */
-	--hs-focus: #0b5c6b;
-	--hs-focus-ring: 0 0 0 2px var(--hs-bg), 0 0 0 4px var(--hs-focus);
 
 	/* Bewegung: 150 bis 300 ms, zwei Kurven */
 	--hs-duration-fast: 150ms;
 	--hs-duration-base: 220ms;
 	--hs-duration-slow: 300ms;
 	--hs-ease-standard: cubic-bezier(0.2, 0, 0, 1);
-	--hs-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+	--hs-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
 	/* Maße */
-	--hs-content: 68rem;
-	--hs-prose: 40rem;
-	--hs-control-height: 2.75rem;
+	--hs-content: 72rem;
+	--hs-prose: 38rem;
+	--hs-control-height: 3rem;
+	--hs-gutter: 1.25rem;
+}
+
+@media (min-width: 720px) {
+	:root {
+		--hs-gutter: 2rem;
+	}
 }
 
 /* Dunkles Thema: per Systemeinstellung, solange nicht ausdrücklich "hell" gewählt ist. */
 @media (prefers-color-scheme: dark) {
 	:root:not([data-theme='light']) {
 		color-scheme: dark;
-
-		--hs-bg: #1b1a18;
-		--hs-surface: #232220;
-		--hs-raised: #2c2a27;
-		--hs-sunken: #141312;
-
-		--hs-line: #3c3a36;
-		--hs-line-strong: #807b72;
-
-		--hs-ink: #ece9e3;
-		--hs-ink-muted: #bab5ab;
-		--hs-ink-subtle: #a19c92;
-
-		--hs-accent: #74c5d2;
-		--hs-accent-hover: #93d5df;
-		--hs-accent-soft: #1c3a40;
-		--hs-on-accent: #0b262b;
-
-		--hs-origin: #f0b04c;
-		--hs-origin-soft: #46351a;
-		--hs-on-origin: #2a1d05;
-
-		--hs-danger: #f1907f;
-		--hs-danger-soft: #47211b;
-		--hs-success: #8fd09c;
-		--hs-success-soft: #1d3a24;
-
-		--hs-node: #b0aba1;
-		--hs-on-node: #1b1a18;
-		--hs-node-root: #ece9e3;
-		--hs-on-node-root: #1b1a18;
-		--hs-edge: #a19c92;
-		--hs-edge-opacity: 0.36;
-
-		--hs-map-land: #232220;
-		--hs-map-water: #1a2a2e;
-		--hs-map-green: #252a22;
-		--hs-map-road: #33312d;
-		--hs-map-boundary: #6a665f;
-		--hs-map-label: #bab5ab;
-
+		--hs-bg: #060918;
+		--hs-surface: #0e1430;
+		--hs-raised: #151c40;
+		--hs-sunken: #1a2250;
+	--hs-seg-track: #0e1430;
+	--hs-seg-thumb: #2a3572;
+		--hs-seg-track: #0e1430;
+		--hs-seg-thumb: #2a3572;
+		--hs-line: rgb(233 237 255 / 0.12);
+		--hs-line-strong: #6b74a0;
+		--hs-ink: #eef1ff;
+		--hs-ink-muted: #b3badb;
+		--hs-ink-subtle: #939bc2;
+		--hs-accent: #2747f5;
+		--hs-accent-hover: #3d5bff;
+		--hs-accent-ink: #9db0ff;
+		--hs-accent-soft: #1a2459;
+		--hs-on-accent: #ffffff;
+		--hs-origin: #ffb31a;
+		--hs-origin-soft: #3a2c0b;
+		--hs-danger: #ff8a9b;
+		--hs-danger-soft: #3d1420;
+		--hs-success: #6fd6a8;
+		--hs-success-soft: #0f3326;
+		--hs-stage-bg: #0c1233;
+		--hs-stage-border: rgb(233 237 255 / 0.14);
+		--hs-glass: rgb(6 9 24 / 0.72);
 		--hs-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-		--hs-shadow-md: 0 8px 24px -6px rgb(0 0 0 / 0.6), 0 1px 3px rgb(0 0 0 / 0.4);
-
-		--hs-focus: #74c5d2;
+		--hs-shadow-md: 0 2px 4px rgb(0 0 0 / 0.3), 0 18px 40px -16px rgb(0 0 0 / 0.7);
+		--hs-shadow-lg: 0 4px 10px rgb(0 0 0 / 0.4), 0 40px 80px -28px rgb(0 0 0 / 0.85);
+		--hs-focus: #9db0ff;
+		--hs-backdrop: rgb(2 4 14 / 0.62);
 	}
 }
 
 /* Dunkles Thema: ausdrücklich gewählt. Gleiche Werte wie oben. */
 :root[data-theme='dark'] {
 	color-scheme: dark;
-
-	--hs-bg: #1b1a18;
-	--hs-surface: #232220;
-	--hs-raised: #2c2a27;
-	--hs-sunken: #141312;
-
-	--hs-line: #3c3a36;
-	--hs-line-strong: #807b72;
-
-	--hs-ink: #ece9e3;
-	--hs-ink-muted: #bab5ab;
-	--hs-ink-subtle: #a19c92;
-
-	--hs-accent: #74c5d2;
-	--hs-accent-hover: #93d5df;
-	--hs-accent-soft: #1c3a40;
-	--hs-on-accent: #0b262b;
-
-	--hs-origin: #f0b04c;
-	--hs-origin-soft: #46351a;
-	--hs-on-origin: #2a1d05;
-
-	--hs-danger: #f1907f;
-	--hs-danger-soft: #47211b;
-	--hs-success: #8fd09c;
-	--hs-success-soft: #1d3a24;
-
-	--hs-node: #b0aba1;
-	--hs-on-node: #1b1a18;
-	--hs-node-root: #ece9e3;
-	--hs-on-node-root: #1b1a18;
-	--hs-edge: #a19c92;
-	--hs-edge-opacity: 0.36;
-
-	--hs-map-land: #232220;
-	--hs-map-water: #1a2a2e;
-	--hs-map-green: #252a22;
-	--hs-map-road: #33312d;
-	--hs-map-boundary: #6a665f;
-	--hs-map-label: #bab5ab;
-
+	--hs-bg: #060918;
+	--hs-surface: #0e1430;
+	--hs-raised: #151c40;
+	--hs-sunken: #1a2250;
+	--hs-seg-track: #0e1430;
+	--hs-seg-thumb: #2a3572;
+	--hs-line: rgb(233 237 255 / 0.12);
+	--hs-line-strong: #6b74a0;
+	--hs-ink: #eef1ff;
+	--hs-ink-muted: #b3badb;
+	--hs-ink-subtle: #939bc2;
+	--hs-accent: #2747f5;
+	--hs-accent-hover: #3d5bff;
+	--hs-accent-ink: #9db0ff;
+	--hs-accent-soft: #1a2459;
+	--hs-on-accent: #ffffff;
+	--hs-origin: #ffb31a;
+	--hs-origin-soft: #3a2c0b;
+	--hs-danger: #ff8a9b;
+	--hs-danger-soft: #3d1420;
+	--hs-success: #6fd6a8;
+	--hs-success-soft: #0f3326;
+	--hs-stage-bg: #0c1233;
+	--hs-stage-border: rgb(233 237 255 / 0.14);
+	--hs-glass: rgb(6 9 24 / 0.72);
 	--hs-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-	--hs-shadow-md: 0 8px 24px -6px rgb(0 0 0 / 0.6), 0 1px 3px rgb(0 0 0 / 0.4);
-
-	--hs-focus: #74c5d2;
+	--hs-shadow-md: 0 2px 4px rgb(0 0 0 / 0.3), 0 18px 40px -16px rgb(0 0 0 / 0.7);
+	--hs-shadow-lg: 0 4px 10px rgb(0 0 0 / 0.4), 0 40px 80px -28px rgb(0 0 0 / 0.85);
+	--hs-focus: #9db0ff;
+	--hs-backdrop: rgb(2 4 14 / 0.62);
 }
 
 :root[data-theme='light'] {

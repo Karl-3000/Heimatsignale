@@ -11,7 +11,7 @@ describe('buildMapStyle', () => {
 		const style = buildMapStyle(base) as unknown as Style;
 		expect(style.version).toBe(8);
 		expect(Object.keys(style.sources).sort()).toEqual([MASK_SOURCE, CIRCLE_SOURCE].sort());
-		expect(style.layers.map((l) => l.id)).toEqual(['hintergrund', 'maske', 'umkreis-linie']);
+		expect(style.layers.map((l) => l.id)).toEqual(['maske', 'umkreis-schein', 'umkreis-linie']);
 		expect(style.glyphs).toBeUndefined();
 		expect(JSON.stringify(style).includes('http')).toBe(false);
 	});
@@ -22,7 +22,8 @@ describe('buildMapStyle', () => {
 		expect(style.layers.some((l) => l.type === 'symbol')).toBe(false);
 		expect(style.glyphs).toBeUndefined();
 		// Maske und Kreis liegen immer über der Grundkarte.
-		expect(style.layers.slice(-2).map((l) => l.id)).toEqual(['maske', 'umkreis-linie']);
+		expect(style.layers.slice(-3).map((l) => l.id)).toEqual(['maske', 'umkreis-schein', 'umkreis-linie']);
+		expect(style.layers[0].id).toBe('hintergrund');
 	});
 
 	it('zeigt Ortsnamen nur mit Glyphen-URL', () => {
@@ -33,7 +34,7 @@ describe('buildMapStyle', () => {
 		expect(ohneKacheln.glyphs).toBeUndefined();
 	});
 
-	it('hat ein helles und ein dunkles Farbset mit denselben Schlüsseln', () => {
+	it('ist in beiden Themen eine Nachtkarte: gleiche Schlüssel, nur der Bühnengrund weicht ab', () => {
 		expect(Object.keys(DARK_MAP_COLORS).sort()).toEqual(Object.keys(LIGHT_MAP_COLORS).sort());
 		expect(DARK_MAP_COLORS.background).not.toBe(LIGHT_MAP_COLORS.background);
 	});

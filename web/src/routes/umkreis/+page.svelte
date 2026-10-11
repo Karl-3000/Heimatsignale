@@ -28,12 +28,12 @@
 	<title>Umkreis – {session.siteName}</title>
 </svelte:head>
 
-<div class="grid gap-6" data-testid="umkreis-page">
-	<header class="flex flex-wrap items-end justify-between gap-3">
+<div class="grid gap-7" data-testid="umkreis-page">
+	<header class="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
 		<div>
 			<h1>Dein Umkreis</h1>
 			{#if overview}
-				<p class="text-ink-muted" data-testid="umkreis-summary">
+				<p class="mt-2 text-lg text-ink-muted" data-testid="umkreis-summary">
 					{#if overview.total === 0}
 						{overview.radius_km} km um {overview.me.residence.name}
 					{:else}
@@ -48,7 +48,7 @@
 				<RadiusToggle options={umkreis.options} value={umkreis.radius} onchange={(radiusKm) => void umkreis.setRadius(radiusKm)} />
 			{/if}
 			{#if overview}
-				<Button size="sm" icon={RefreshCw} loading={umkreis.loading} onclick={() => void umkreis.load(true)} testid="umkreis-refresh">Aktualisieren</Button>
+				<Button size="sm" variant="ghost" icon={RefreshCw} loading={umkreis.loading} onclick={() => void umkreis.load(true)} testid="umkreis-refresh">Aktualisieren</Button>
 			{/if}
 		</div>
 	</header>

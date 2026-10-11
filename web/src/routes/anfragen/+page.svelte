@@ -108,9 +108,9 @@
 </svelte:head>
 
 <div class="page" data-testid="requests-page">
-	<header class="grid gap-2">
+	<header class="head">
 		<h1>Kontaktanfragen</h1>
-		<p class="max-w-prose text-ink-muted">Die erste Nachricht ist immer eine Anfrage. Erst nach der Annahme entsteht ein Gespräch.</p>
+		<p class="hs-lead">Die erste Nachricht ist immer eine Anfrage. Erst nach der Annahme entsteht ein Gespräch.</p>
 	</header>
 
 	{#if loadError}
@@ -145,12 +145,12 @@
 								<div class="grid gap-4">
 									<PersonSummary user={request.from} link />
 									<blockquote class="body" data-testid="request-text">{request.body}</blockquote>
-									<p class="text-sm text-ink-subtle">
+									<p class="meta">
 										Eingegangen {formatDateTime(request.created_at)}. Ohne Antwort läuft die Anfrage am {formatDate(request.expires_at)} ab.
 									</p>
 									<div class="flex flex-wrap gap-2">
 										<Button variant="primary" loading={busyId === request.id} onclick={() => void accept(request)} testid="request-accept">Annehmen</Button>
-										<Button disabled={busyId === request.id} onclick={() => void decline(request)} testid="request-decline">Ablehnen</Button>
+										<Button variant="secondary" disabled={busyId === request.id} onclick={() => void decline(request)} testid="request-decline">Ablehnen</Button>
 										<Button
 											variant="ghost"
 											disabled={busyId === request.id}
@@ -175,7 +175,7 @@
 						</li>
 					{/each}
 				</ul>
-				<p class="text-sm text-ink-muted">Eine Ablehnung wird der anderen Person nicht angezeigt. Für sie bleibt die Anfrage offen, bis sie abläuft.</p>
+				<p class="quiet">Eine Ablehnung wird der anderen Person nicht angezeigt. Für sie bleibt die Anfrage offen, bis sie abläuft.</p>
 			{/if}
 		</div>
 	{:else}
@@ -208,7 +208,7 @@
 										<Badge tone={request.state === 'open' ? 'accent' : 'neutral'}>{request.state === 'open' ? 'offen' : 'abgelaufen'}</Badge>
 									</div>
 									<blockquote class="body">{request.body}</blockquote>
-									<p class="text-sm text-ink-subtle">
+									<p class="meta">
 										Gesendet {formatDateTime(request.created_at)}.
 										{#if request.state === 'open'}Läuft am {formatDate(request.expires_at)} ab.{/if}
 									</p>
@@ -222,7 +222,7 @@
 						</li>
 					{/each}
 				</ul>
-				<p class="text-sm text-ink-muted">Zurückgezogene Anfragen zählen sofort nicht mehr mit. Pro Person sind insgesamt zwei Anfragen möglich.</p>
+				<p class="quiet">Zurückgezogene Anfragen zählen sofort nicht mehr mit. Pro Person sind insgesamt zwei Anfragen möglich.</p>
 			{/if}
 		</div>
 	{/if}
@@ -240,8 +240,13 @@
 <style>
 	.page {
 		display: grid;
-		gap: var(--hs-space-5);
+		gap: var(--hs-space-6);
 		max-width: 44rem;
+	}
+
+	.head {
+		display: grid;
+		gap: var(--hs-space-3);
 	}
 
 	.list {
@@ -252,28 +257,42 @@
 		padding: 0;
 	}
 
+	/* Der Text der Anfrage steht wie eine Sprechblase der anderen Person. */
 	.body {
 		margin: 0;
-		padding: var(--hs-space-3) var(--hs-space-4);
-		border-left: 3px solid var(--hs-line-strong);
-		background: var(--hs-raised);
-		border-radius: 0 var(--hs-radius-md) var(--hs-radius-md) 0;
+		padding: var(--hs-space-4) var(--hs-space-5);
+		background: var(--hs-sunken);
+		border-radius: var(--hs-radius-lg);
+		border-top-left-radius: var(--hs-radius-sm);
 		white-space: pre-wrap;
 		overflow-wrap: anywhere;
+	}
+
+	.meta {
+		font-size: var(--hs-text-sm);
+		color: var(--hs-ink-subtle);
+	}
+
+	.quiet {
+		font-size: var(--hs-text-sm);
+		color: var(--hs-ink-muted);
 	}
 
 	.quota {
 		display: flex;
 		flex-wrap: wrap;
-		gap: var(--hs-space-3) var(--hs-space-7);
+		gap: var(--hs-space-4) var(--hs-space-8);
 	}
 
 	.quota dt {
 		font-size: var(--hs-text-sm);
-		color: var(--hs-ink-subtle);
+		color: var(--hs-ink-muted);
 	}
 
 	.quota dd {
-		font-weight: var(--hs-weight-strong);
+		font-family: var(--hs-font-display);
+		font-weight: var(--hs-weight-display);
+		font-size: var(--hs-text-xl);
+		letter-spacing: -0.02em;
 	}
 </style>

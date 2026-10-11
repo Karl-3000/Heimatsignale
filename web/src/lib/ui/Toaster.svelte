@@ -28,77 +28,80 @@
 	.toaster {
 		position: fixed;
 		left: 50%;
-		bottom: calc(var(--hs-space-4) + env(safe-area-inset-bottom, 0px) + var(--hs-toast-offset, 0px));
+		top: calc(4.75rem + env(safe-area-inset-top, 0px));
 		transform: translateX(-50%);
 		z-index: 60;
 		display: flex;
 		flex-direction: column;
+		align-items: center;
 		gap: var(--hs-space-2);
-		width: min(28rem, calc(100vw - 2rem));
+		width: min(30rem, calc(100vw - 2rem));
 		pointer-events: none;
 	}
 
+	/* Dunkle Pille, in beiden Themen. */
 	.toast {
 		display: flex;
-		align-items: flex-start;
+		align-items: center;
 		gap: var(--hs-space-3);
-		padding: var(--hs-space-3) var(--hs-space-3) var(--hs-space-3) var(--hs-space-4);
-		border-radius: var(--hs-radius-md);
-		border: 1px solid var(--hs-line-strong);
-		border-left-width: 4px;
-		background: var(--hs-raised);
-		color: var(--hs-ink);
-		box-shadow: var(--hs-shadow-md);
+		max-width: 100%;
+		padding: var(--hs-space-2) var(--hs-space-2) var(--hs-space-2) var(--hs-space-4);
+		border-radius: 1.75rem;
+		border: 1px solid var(--hs-stage-line);
+		background: var(--hs-tinte);
+		color: var(--hs-stage-ink);
+		box-shadow: var(--hs-shadow-lg);
 		font-size: var(--hs-text-sm);
 		pointer-events: auto;
-		animation: hs-toast-in var(--hs-duration-base) var(--hs-ease-standard);
+		animation: hs-toast-in var(--hs-duration-slow) var(--hs-ease-out);
 	}
 
 	@keyframes hs-toast-in {
 		from {
 			opacity: 0;
-			transform: translateY(6px);
+			transform: translateY(-10px);
 		}
 	}
 
-	.toast-success {
-		border-left-color: var(--hs-success);
-	}
-
-	.toast-error {
-		border-left-color: var(--hs-danger);
-	}
-
-	.toast-info {
-		border-left-color: var(--hs-accent);
-	}
-
 	.glyph {
+		display: inline-flex;
 		flex: none;
-		margin-top: 0.0625rem;
+		color: var(--hs-stage-accent);
+	}
+
+	.toast-error .glyph {
+		color: var(--hs-stage-danger);
+	}
+
+	.toast-success .glyph {
+		color: var(--hs-stage-success);
 	}
 
 	p {
 		flex: 1;
 		min-width: 0;
+		padding: var(--hs-space-1) 0;
 	}
 
 	button {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 1.75rem;
-		height: 1.75rem;
+		width: 2.25rem;
+		height: 2.25rem;
 		flex: none;
 		border: 0;
-		border-radius: var(--hs-radius-sm);
-		background: transparent;
-		color: var(--hs-ink-muted);
+		border-radius: 50%;
+		background: var(--hs-stage-glass);
+		color: var(--hs-stage-ink);
 		cursor: pointer;
 	}
 
 	button:hover {
-		background: var(--hs-sunken);
-		color: var(--hs-ink);
+		background: var(--hs-stage-glass-strong);
+	}
+
+	button:focus-visible {
+		outline-color: var(--hs-stage-accent);
 	}
 </style>

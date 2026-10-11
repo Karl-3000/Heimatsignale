@@ -27,6 +27,13 @@
 	);
 	const view = $derived(umkreis.view);
 
+	/** Bei vielen Wohnorten (weiter Umkreis) stehen zuerst nur die größten da; der gewählte ist immer dabei. */
+	const CHIP_LIMIT = 8;
+	let showAll = $state(false);
+	const shownResidences = $derived(
+		showAll || residences.length <= CHIP_LIMIT + 2 ? residences : residences.filter((r, i) => i < CHIP_LIMIT || r.ags === umkreis.scope)
+	);
+
 	async function choose(scope: string, moveFocus: boolean): Promise<void> {
 		umkreis.select(scope);
 		if (!moveFocus) return;
@@ -66,7 +73,7 @@
 						<span class="n hs-num">{overview.total}</span>
 					</button>
 				</li>
-				{#each residences as r (r.ags)}
+				{#each shownResidences as r (r.ags)}
 					<li>
 						<button
 							type="button"
@@ -81,6 +88,13 @@
 						</button>
 					</li>
 				{/each}
+				{#if residences.length > CHIP_LIMIT + 2}
+					<li>
+						<button type="button" class="more" aria-expanded={showAll ? 'true' : 'false'} onclick={() => (showAll = !showAll)} data-testid="residence-more">
+							{showAll ? 'Weniger zeigen' : `Alle ${residences.length} Wohnorte zeigen`}
+						</button>
+					</li>
+				{/if}
 			</ul>
 		</section>
 
@@ -90,7 +104,7 @@
 					<h2 id="netz-titel" tabindex="-1" bind:this={networkHeading} class="net-title" data-testid="network-title">
 						Herkunft: {view.core.root.name}
 					</h2>
-					<p class="text-ink-muted">
+					<p class="net-lead">
 						{personen(view.core.root.count)}
 						{umkreis.scope === SCOPE_ALL ? `leben im Umkreis von ${overview.radius_km} km.` : `leben in ${view.core.root.name}.`}
 						Öffne ein Bundesland, dann einen Landkreis, dann einen Ort.
@@ -105,17 +119,23 @@
 <style>
 	.panel {
 		display: grid;
-		gap: var(--hs-space-6);
+		gap: var(--hs-space-7);
 	}
 
+	/* Leiser Kleintext unter der Bühne. */
 	.hint {
-		max-width: 62rem;
+		max-width: 46rem;
 		font-size: var(--hs-text-sm);
+		line-height: 1.5;
 		color: var(--hs-ink-muted);
 	}
 
 	.small-title {
-		font-size: var(--hs-text-base);
+		font-family: var(--hs-font-sans);
+		font-size: var(--hs-text-sm);
+		font-weight: var(--hs-weight-strong);
+		letter-spacing: 0;
+		color: var(--hs-ink-muted);
 	}
 
 	.chips {
@@ -131,11 +151,12 @@
 		display: inline-flex;
 		align-items: center;
 		gap: var(--hs-space-2);
-		min-height: 2.5rem;
-		padding: 0 var(--hs-space-3);
-		border: 1px solid var(--hs-line-strong);
+		min-height: 2.75rem;
+		padding: 0 var(--hs-space-4);
+		border: 0;
 		border-radius: var(--hs-radius-full);
-		background: var(--hs-raised);
+		background: var(--hs-surface);
+		box-shadow: var(--hs-shadow-sm);
 		color: var(--hs-ink);
 		font: inherit;
 		font-size: var(--hs-text-sm);
@@ -144,46 +165,63 @@
 	}
 
 	.chips button:hover {
-		background: var(--hs-sunken);
+		background: var(--hs-accent-soft);
 	}
 
 	.chips button.on {
-		background: var(--hs-ink);
-		border-color: var(--hs-ink);
-		color: var(--hs-bg);
+		background: var(--hs-accent);
+		color: var(--hs-on-accent);
 		font-weight: var(--hs-weight-strong);
+		box-shadow: none;
 	}
 
 	.chips button:focus-visible {
 		outline: 2px solid var(--hs-focus);
 		outline-offset: 2px;
+		border-radius: var(--hs-radius-full);
+	}
+
+	.chips button.more {
+		background: transparent;
+		box-shadow: none;
+		color: var(--hs-accent-ink);
+		font-weight: var(--hs-weight-strong);
+	}
+
+	.chips button.more:hover {
+		background: var(--hs-accent-soft);
 	}
 
 	.n {
-		color: var(--hs-ink-muted);
+		color: var(--hs-ink-subtle);
 		font-weight: var(--hs-weight-strong);
 	}
 
 	.chips button.on .n {
-		color: var(--hs-bg);
+		color: var(--hs-on-accent);
 	}
 
 	.mine {
 		margin-left: 0.35em;
-		color: var(--hs-ink-muted);
+		color: var(--hs-ink-subtle);
 	}
 
 	.chips button.on .mine {
-		color: var(--hs-bg);
+		color: var(--hs-on-accent);
 	}
 
 	.net-title {
 		outline: none;
-		scroll-margin-top: 5rem;
+		scroll-margin-top: 6rem;
 	}
 
 	.net-title:focus-visible {
 		outline: 2px solid var(--hs-focus);
-		outline-offset: 4px;
+		outline-offset: 6px;
+	}
+
+	.net-lead {
+		margin-top: var(--hs-space-2);
+		color: var(--hs-ink-muted);
 	}
 </style>

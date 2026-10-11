@@ -1,6 +1,7 @@
 # Heimatsignale: Oberfläche
 
 SvelteKit 2 mit Svelte 5 (Runes), TypeScript, Tailwind CSS 4, D3 (d3-force, d3-hierarchy) und MapLibre GL.
+Schriften: Inter und Bricolage Grotesque, beide selbst gehostet über fontsource.
 Die Oberfläche ist eine reine SPA (`ssr = false`, `adapter-static` mit `fallback: 'index.html'`), weil alle Daten
 hinter dem Login liegen. Ein Reverse-Proxy liefert `build/` aus und leitet `/api/` und den Admin-Pfad an Django
 weiter (gleiche Origin). Der API-Vertrag steht in `../docs/API.md`.
@@ -31,7 +32,7 @@ src/
 │   ├── api/                   client.ts (ein fetch-Client), endpoints.ts, types.ts, guard.ts (Routenschutz),
 │   │                          session.svelte.ts, inbox.svelte.ts (Polling, Lesestatus nur lokal)
 │   ├── pow/                   Proof-of-Work (Altcha): solver.ts, pow.worker.ts, solve.ts, run.svelte.ts
-│   ├── network/               Herkunftsnetz: layout.ts, labels.ts, model.ts, scene.ts, core.ts,
+│   ├── network/               Herkunftsnetz: layout.ts, labels.ts, model.ts, scene.ts, camera.ts, core.ts,
 │   │                          view.svelte.ts, umkreis.svelte.ts, OriginNetwork, OriginTree, synthetic.ts
 │   ├── map/                   Karte: style.ts, cluster.ts, miniature.ts, geo.ts, UmkreisMap, Miniature
 │   └── util/                  Formate, Speicher, Farbschema
@@ -41,20 +42,61 @@ static/                        manifest.webmanifest, icon.svg, theme.js
 
 Alle Module ohne `.svelte` im Namen sind frei von Framework-Code und haben Tests daneben.
 
-## Design-Tokens
+## Gestaltung: „Signale bei Nacht“
+
+Heimatorte sind Leuchtfeuer, und wer weggezogen ist, bleibt ein Licht, das dorthin zeigt. Daraus folgt die eine
+auffällige Entscheidung: Die **Bühne** (Herkunftsnetz und Karte) liegt in beiden Themen auf tiefem Nachtblau.
+Alles darum herum ist ruhig, hell, großzügig und typografisch. Die Kühnheit steckt in der Bühne, der Rest hält
+sich zurück.
 
 `src/lib/tokens/tokens.css` ist die einzige Quelle für Farben, Typografie, Abstände, Radien, Schatten und
 Bewegung. `app.css` bildet sie über `@theme inline` in Tailwind ab (`bg-surface`, `text-ink-muted` ...);
-Komponenten greifen direkt auf `var(--hs-...)` zu.
+Komponenten greifen nur auf `var(--hs-...)` zu, nie auf feste Farbwerte.
 
-- Grundsystem aus warmem Grau, kein reines Weiß oder Schwarz.
-- `--hs-accent` (Petrol): Interaktion. `--hs-origin` (Bernstein): nur die eigene Herkunft im Netz.
-  Bundesländer haben keine eigenen Farben.
-- Dunkles Thema per Systemeinstellung oder Wahl (`data-theme` am `<html>`, gespeichert unter `hs:theme`).
-  `static/theme.js` setzt es vor dem ersten Zeichnen; als Datei, weil die CSP Inline-Skripte verbietet.
-- Inter Variable mit zwei Gewichten, Tabellenziffern über `.hs-num`.
-- Bewegung 150 bis 300 ms; bei `prefers-reduced-motion` sind alle Dauern 0.
+| Name        | Wert      | Verwendung                                                                                   |
+|-------------|-----------|----------------------------------------------------------------------------------------------|
+| Tinte       | `#0A1030` | Bühnengrund und Textfarbe auf Hell. Es gibt kein neutrales Grau als Schwarz                  |
+| Papier      | `#F3F5FA` | Seitengrund. Erhabene Flächen sind reines Weiß, ohne Rahmen, mit in Tinte getöntem Schatten  |
+| Fernblau    | `#2747F5` | die eine Farbe für Interaktion (`--hs-accent`). Auf der Bühne der helle Ton `#8FA5FF`        |
+| Heimatlicht | `#FFB31A` | nur „deine Herkunft“. Als Text auf Hell der Ockerton `#8F5300` (`--hs-origin`)               |
+| Mondweiß    | `#E9EDFF` | Knoten, Linien und Schrift auf der Bühne                                                     |
+
+- Dunkles Thema: Seite `#060918`, Flächen `#0E1430` und `#151C40`, Text `#EEF1FF`. Die Bühne ist dort eine Spur
+  heller als die Seite und bekommt eine Haarlinie. Wahl per System oder `data-theme` (gespeichert unter
+  `hs:theme`); `static/theme.js` setzt sie vor dem ersten Zeichnen, als Datei, weil die CSP Inline-Skripte verbietet.
+- Schrift: **Bricolage Grotesque** (variabel, `--hs-font-display`) für Überschriften, große Zahlen, Nicknames und
+  die Wortmarke; **Inter** für Fließtext und Bedienelemente, Tabellenziffern über `.hs-num`. Große Sprünge in der
+  Skala (`--hs-text-hero`, `--hs-text-statement`), überall Satzschreibung.
+- Form: Radien mit Rangfolge (Bühne 30 px, Karte 20 px, Bedienelement 12 px, Pille rund). Karten nur dort, wo
+  etwas ein Gegenstand ist (Person, Anfrage, Gespräch, Personenliste); sonst gruppieren Abstand und Schrift.
+- Segmentierte Auswahl (`.hs-seg` in `app.css`): Pillenspur mit gleitendem Daumen, für Reiter, Netz/Liste,
+  20/100 km und das Farbschema.
+- Bewegung nur als Antwort auf eine Aktion, 150 bis 300 ms: Kanten zeichnen sich nach außen, Kinder wachsen aus
+  dem Elternknoten, und wenn die eigene Herkunft erscheint, geht einmal ein Ring von ihr aus. Die Startseite hat
+  einen einzigen Auftakt (das Beispielnetz leuchtet von der Mitte nach außen auf). Nichts läuft in Schleife.
+  Bei `prefers-reduced-motion` entfällt alles.
 - Icons: Lucide, immer über `ui/Icon.svelte` (eine Strichstärke).
+
+Gemessene Kontraste (WCAG): Tinte auf Papier 17,0; gedämpfter Text `#454C6E` auf Papier 7,7; leiser Text `#5A6184`
+auf Papier 5,5; Fernblau auf Weiß 6,4 (Weiß auf Fernblau ebenso); Ocker auf Weiß 6,2; Mondweiß auf Tinte 16,0;
+gedämpfte Bühnenschrift `#A9B3DC` auf Tinte 9,0; Heimatlicht auf Tinte 10,4; Tinte auf Heimatlicht 10,4;
+dunkles Thema: Text 17,6, gedämpft 10,3, Links `#9DB0FF` 9,5.
+
+## Logo
+
+Das Zeichen ist ein H aus zwei Lichtern: unten links der Ort, an dem du jetzt wohnst, oben rechts frei schwebend
+das Heimatlicht, dazwischen eine geschwungene Linie in der Formensprache der Netzkanten. Es ist damit das kleinste
+mögliche Herkunftsnetz und zugleich der Anfangsbuchstabe.
+
+- Dateien: `static/icon.svg` (Favicon, passt sich über `prefers-color-scheme` an), `static/app-icon.svg`
+  (App-Symbol, vollflächig und maskierbar: helles Zeichen auf Tinte), `ui/Brand.svelte` (Zeichen und Wortmarke;
+  `tone="stage"` für die Bühne, `markOnly` für enge Stellen).
+- Wortmarke: gesetzter Text in Bricolage Grotesque, Gewicht 650, Laufweite -0,035 em.
+- Farben: Zeichen in Tinte (auf Hell) oder Mondweiß (auf der Bühne), das schwebende Licht in Heimatlicht.
+  Einfarbig ist das Zeichen ebenfalls zulässig.
+- Schutzraum: ringsum der Durchmesser des großen Lichts (ein Drittel der Zeichenhöhe). Mindestgröße 16 px.
+- Nicht erlaubt: das Licht mit dem Stamm verbinden, das Zeichen drehen, spiegeln oder verzerren, andere Farben
+  für das Licht, Schatten oder Verläufe auf dem Zeichen, die Wortmarke in einer anderen Schrift.
 
 ## Stabilitätsregel des Netzes
 
@@ -68,7 +110,10 @@ Umgesetzt in `lib/network/layout.ts` (`NetworkLayout.sync`), aufgerufen aus `cor
 3. Beim Aufklappen nehmen bestehende Knoten nur als feste Hindernisse teil (`fx`/`fy` gesetzt). Bewegt werden
    ausschließlich die neuen Knoten: Startposition im Fächer um den Winkel des Elternknotens, radiale Bindung an
    den Ring ihrer Stufe, Kollision gegen alle Klickflächen. Reicht der Bogen nicht, entstehen versetzte Reihen.
-4. Die Zeichenfläche hat eine feste Größe (`HALF_EXTENT`), damit beim Wachsen nichts springt.
+4. Das Koordinatensystem des Netzes ist fest (`HALF_EXTENT`). Beweglich ist nur die Kamera (`camera.ts`): Nach
+   jeder Änderung passt sie den sichtbaren Baum mit Rand in die Bühne ein und hält die Ecke der Bedienelemente
+   frei. Beschriftungen werden für den Ausschnitt platziert (`placeSceneLabels`): Sie wechseln die Seite, werden
+   gekürzt oder ausgeblendet, statt abgeschnitten zu werden, und bleiben auf dem Bildschirm gleich groß.
 5. Die 300-ms-Animation ist reine Darstellung: Neue Knoten starten an der Position des Elternknotens und laufen
    per CSS-Transition zu ihrem festen Ziel. Bei reduzierter Bewegung entfällt sie.
 
@@ -134,7 +179,7 @@ Stabile `data-testid`-Attribute für die Ende-zu-Ende-Tests, nach Bereich:
   `site.radius_options`), `radius-status`, `empty-wider`, `umkreis-refresh`, `umkreis-loading`, `umkreis-error`,
   `umkreis-empty`, `umkreis-map` (Attribut `data-ready`), `map-node` und `map-cluster` (Attribute `data-ags`,
   `data-mode`), `map-zoom-in`, `map-zoom-out`, `map-reset`, `radius-hint`, `residence-list`, `residence-all`,
-  `residence-item` (Attribut `data-ags`), `network-title`
+  `residence-item` (Attribut `data-ags`), `residence-more`, `network-title`
 - Netz und Liste: `network-explorer` (Attribut `data-mode`), `view-toggle`, `view-toggle-netz`,
   `view-toggle-liste`, `sort-distance`, `sort-count`, `network`, `network-root`, `network-node` (Attribute
   `data-node-id`, `data-level`, `data-own`), `network-zoom-in`, `network-zoom-out`, `network-center`,

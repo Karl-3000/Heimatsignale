@@ -542,6 +542,34 @@ export function datasetWeit(): SyntheticDataset {
 	);
 }
 
+/**
+ * Ein Bundesland mit vielen Landkreisen: Bayern mit 24 Kreisen, daneben wenige andere Länder.
+ * Prüft, dass das Netz nach dem Aufklappen in die Bühne passt und Beschriftungen nicht abgeschnitten werden.
+ */
+export function datasetBayern(): SyntheticDataset {
+	const rand = seededRandom(24);
+	const kreise = [
+		'Oberallgäu', 'Rosenheim', 'Garmisch-Partenkirchen', 'Passau', 'Ansbach', 'Bamberg', 'Traunstein', 'Berchtesgadener Land',
+		'Weilheim-Schongau', 'Bad Tölz-Wolfratshausen', 'Ostallgäu', 'Unterallgäu', 'Neu-Ulm', 'Donau-Ries', 'Eichstätt', 'Regensburg',
+		'Cham', 'Schwandorf', 'Hof', 'Kulmbach', 'Würzburg', 'Main-Spessart', 'Aschaffenburg', 'Neustadt a.d.Aisch-Bad Windsheim'
+	];
+	const groups: SyntheticGroup[] = [];
+	kreise.forEach((name, i) => {
+		const own = i === 0;
+		const no = own ? 780 : 200 + i * 3;
+		groups.push(g('09', no, name, own ? 139 : 110, own ? 'Sonthofen' : `${name.split(/[- ]/)[0]}stadt`, i % 3 === 0 ? HERTEN : MARL, 1 + Math.floor(Math.pow(rand(), 2) * 9), own ? 0 : 30 + i * 11));
+		if (own) groups.push(g('09', no, name, 124, 'Immenstadt', MARL, 1, 8));
+	});
+	groups.push(
+		g('08', 436, 'Ravensburg', 64, 'Ravensburg', MARL, 6, 60),
+		g('05', 554, 'Borken', 8, 'Bocholt', MARL, 9, 520),
+		g('14', 524, 'Zwickau', 330, 'Zwickau', HERTEN, 4, 410),
+		g('13', 71, 'Mecklenburgische Seenplatte', 107, 'Neubrandenburg', MARL, 2, 720),
+		g('07', 131, 'Ahrweiler', 7, 'Bad Neuenahr-Ahrweiler', MARL, 3, 390)
+	);
+	return finish('bayern', 'Bayern mit 24 Landkreisen', 'Ein Bundesland mit vielen Landkreisen. Nach dem Aufklappen muss alles in die Bühne passen.', groups, [MARL, HERTEN]);
+}
+
 export function allDatasets(): SyntheticDataset[] {
 	return [
 		datasetKlein(),
@@ -552,6 +580,7 @@ export function allDatasets(): SyntheticDataset[] {
 		datasetDreiWohnorte(),
 		datasetHerkunftAusserhalb(),
 		datasetLeer(),
-		datasetWeit()
+		datasetWeit(),
+		datasetBayern()
 	];
 }

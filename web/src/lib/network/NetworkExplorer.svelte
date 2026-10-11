@@ -20,11 +20,13 @@
 		linkPeople?: boolean;
 		height?: string;
 		idBase?: string;
+		/** Einmaliges Aufleuchten des Netzes beim ersten Zeichnen (Startseite). */
+		intro?: boolean;
 		/** Übernimmt die Sortierung, wenn sie für mehrere Netze gemeinsam gilt. */
 		onsort?: (mode: SortMode) => void;
 	}
 
-	let { view, mode = $bindable(), linkPeople = true, height, idBase = 'herkunft', onsort }: Props = $props();
+	let { view, mode = $bindable(), linkPeople = true, height, idBase = 'herkunft', intro = false, onsort }: Props = $props();
 
 	const sortOptions: Array<{ value: SortMode; label: string }> = [
 		{ value: 'distance', label: 'Nähe zu deinem Heimatort' },
@@ -70,7 +72,7 @@
 	{#if mode === 'netz'}
 		<div class="stage" class:with-panel={view.selectedId !== null} role="tabpanel" id="{idBase}-panel-netz" aria-labelledby="{idBase}-tab-netz">
 			{#key view}
-				<OriginNetwork {view} {height} />
+				<OriginNetwork {view} {height} {intro} />
 			{/key}
 			<PeoplePanel {view} {linkPeople} />
 		</div>
@@ -124,17 +126,19 @@
 		display: inline-flex;
 		align-items: center;
 		gap: var(--hs-space-2);
-		min-height: 2.25rem;
+		min-height: 2.5rem;
+		color: var(--hs-ink-muted);
 		cursor: pointer;
 	}
 
 	.sort label.checked {
+		color: var(--hs-ink);
 		font-weight: var(--hs-weight-strong);
 	}
 
 	.sort input {
-		width: 1rem;
-		height: 1rem;
+		width: 1.125rem;
+		height: 1.125rem;
 		accent-color: var(--hs-accent);
 	}
 
@@ -146,7 +150,7 @@
 
 	@media (min-width: 960px) {
 		.stage.with-panel {
-			grid-template-columns: minmax(0, 1fr) 20rem;
+			grid-template-columns: minmax(0, 1fr) 21rem;
 		}
 	}
 

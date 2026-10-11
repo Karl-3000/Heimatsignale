@@ -63,26 +63,28 @@
 		max-height: calc(100dvh - 2rem);
 		margin: auto;
 		padding: 0;
-		border: 1px solid var(--hs-line);
-		border-radius: var(--hs-radius-lg);
+		border: 0;
+		border-radius: var(--hs-radius-stage);
 		background: var(--hs-surface);
 		color: var(--hs-ink);
-		box-shadow: var(--hs-shadow-md);
+		box-shadow: var(--hs-shadow-lg);
 		overflow: hidden;
 	}
 
 	dialog::backdrop {
-		background: rgb(20 19 18 / 0.55);
+		background: var(--hs-backdrop);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
 	}
 
 	dialog[open] {
-		animation: hs-dialog-in var(--hs-duration-base) var(--hs-ease-standard);
+		animation: hs-dialog-in var(--hs-duration-slow) var(--hs-ease-out);
 	}
 
 	@keyframes hs-dialog-in {
 		from {
 			opacity: 0;
-			transform: translateY(8px);
+			transform: translateY(12px) scale(0.98);
 		}
 	}
 
@@ -97,11 +99,11 @@
 		align-items: flex-start;
 		justify-content: space-between;
 		gap: var(--hs-space-3);
-		padding: var(--hs-space-4) var(--hs-space-4) 0 var(--hs-space-5);
+		padding: var(--hs-space-5) var(--hs-space-4) 0 var(--hs-space-6);
 	}
 
 	h2 {
-		font-size: var(--hs-text-lg);
+		font-size: var(--hs-text-xl);
 		padding-top: var(--hs-space-2);
 	}
 
@@ -113,19 +115,18 @@
 		height: 2.75rem;
 		flex: none;
 		border: 0;
-		border-radius: var(--hs-radius-md);
-		background: transparent;
+		border-radius: 50%;
+		background: var(--hs-sunken);
 		color: var(--hs-ink-muted);
 		cursor: pointer;
 	}
 
 	.close:hover {
-		background: var(--hs-sunken);
 		color: var(--hs-ink);
 	}
 
 	.content {
-		padding: var(--hs-space-3) var(--hs-space-5) var(--hs-space-5);
+		padding: var(--hs-space-4) var(--hs-space-6) var(--hs-space-6);
 		overflow-y: auto;
 	}
 
@@ -134,8 +135,23 @@
 		flex-wrap: wrap;
 		justify-content: flex-end;
 		gap: var(--hs-space-2);
-		padding: var(--hs-space-3) var(--hs-space-5) var(--hs-space-4);
+		padding: var(--hs-space-4) var(--hs-space-6) var(--hs-space-5);
 		border-top: 1px solid var(--hs-line);
-		background: var(--hs-raised);
+	}
+
+	@media (max-width: 480px) {
+		header {
+			padding-left: var(--hs-space-5);
+		}
+
+		.content {
+			padding-left: var(--hs-space-5);
+			padding-right: var(--hs-space-5);
+		}
+
+		footer {
+			padding-left: var(--hs-space-5);
+			padding-right: var(--hs-space-5);
+		}
 	}
 </style>

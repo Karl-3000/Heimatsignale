@@ -42,7 +42,7 @@
 	.field {
 		display: flex;
 		flex-direction: column;
-		gap: var(--hs-space-1);
+		gap: var(--hs-space-2);
 	}
 
 	label {
@@ -56,34 +56,42 @@
 	}
 
 	.hint {
+		margin-top: calc(var(--hs-space-1) * -1);
 		font-size: var(--hs-text-sm);
 		color: var(--hs-ink-muted);
 	}
 
 	input {
-		min-height: var(--hs-control-height);
+		min-height: 3.25rem;
 		width: 100%;
-		padding: 0 var(--hs-space-3);
-		border: 1px solid var(--hs-line-strong);
+		padding: 0 var(--hs-space-4);
+		border: 0;
 		border-radius: var(--hs-radius-md);
-		background: var(--hs-raised);
+		background: var(--hs-sunken);
+		box-shadow: inset 0 0 0 1px transparent;
 		color: var(--hs-ink);
 		font: inherit;
+		transition:
+			box-shadow var(--hs-duration-fast) var(--hs-ease-standard),
+			background-color var(--hs-duration-fast) var(--hs-ease-standard);
 	}
 
 	input::placeholder {
 		color: var(--hs-ink-subtle);
 	}
 
+	input:hover {
+		box-shadow: inset 0 0 0 1px var(--hs-line-strong);
+	}
+
 	input:focus-visible {
-		outline: 2px solid var(--hs-focus);
-		outline-offset: 1px;
-		border-color: var(--hs-focus);
+		outline: none;
+		background: var(--hs-raised);
+		box-shadow: inset 0 0 0 2px var(--hs-focus);
 	}
 
 	input[aria-invalid='true'] {
-		border-color: var(--hs-danger);
-		border-width: 2px;
+		box-shadow: inset 0 0 0 2px var(--hs-danger);
 	}
 
 	.error {

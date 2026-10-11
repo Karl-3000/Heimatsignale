@@ -19,9 +19,9 @@
 
 <fieldset class="theme" class:compact data-testid="theme-toggle">
 	<legend class={compact ? 'hs-sr-only' : ''}>Farbschema</legend>
-	<div class="options">
+	<div class="hs-seg" style:--seg-count={options.length} style:--seg-index={options.findIndex((o) => o.value === theme.choice)}>
 		{#each options as option (option.value)}
-			<label class:checked={theme.choice === option.value} title={compact ? option.label : undefined}>
+			<label class="hs-seg-item" data-on={theme.choice === option.value ? 'true' : 'false'} title={compact ? option.label : undefined}>
 				<input
 					type="radio"
 					name="{uid}-theme"
@@ -52,38 +52,9 @@
 		padding: 0;
 	}
 
-	.options {
-		display: inline-flex;
-		gap: 2px;
-		padding: 3px;
-		border-radius: var(--hs-radius-md);
-		background: var(--hs-sunken);
-	}
-
-	label {
-		position: relative;
-		display: inline-flex;
-		align-items: center;
-		gap: var(--hs-space-2);
+	.compact label {
 		min-height: 2.25rem;
 		padding: 0 var(--hs-space-3);
-		border: 1px solid transparent;
-		border-radius: calc(var(--hs-radius-md) - 3px);
-		color: var(--hs-ink-muted);
-		font-size: var(--hs-text-sm);
-		font-weight: var(--hs-weight-strong);
-		cursor: pointer;
-	}
-
-	.compact label {
-		min-height: 2rem;
-		padding: 0 var(--hs-space-2);
-	}
-
-	label.checked {
-		background: var(--hs-raised);
-		border-color: var(--hs-line-strong);
-		color: var(--hs-ink);
 	}
 
 	input {
@@ -96,6 +67,6 @@
 
 	label:has(input:focus-visible) {
 		outline: 2px solid var(--hs-focus);
-		outline-offset: 1px;
+		outline-offset: 2px;
 	}
 </style>

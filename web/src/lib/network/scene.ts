@@ -58,6 +58,47 @@ export interface Scene {
 	rootLabel: { x: number; y: number; box: Box };
 	/** Tiefster sichtbarer Knoten der eigenen Herkunft, falls vorhanden. */
 	ownDeepestId: string | null;
+	/** Eingaben der Beschriftung, damit die Ansicht sie für ihren Ausschnitt neu platzieren kann. */
+	labelInputs: LabelInput[];
+}
+
+export interface SceneLabelOptions {
+	/** Bildschirm-Pixel je Netzeinheit. */
+	scale?: number;
+	/** Sichtbarer Ausschnitt in Netzkoordinaten. */
+	bounds?: Box;
+	/** Weitere Hindernisse, z. B. die Fläche unter den Bedienelementen. */
+	obstacles?: Box[];
+}
+
+export interface SceneLabels {
+	labels: Map<string, LabelPlacement>;
+	rootLabel: { x: number; y: number; box: Box; fontSize: number };
+}
+
+/**
+ * Platziert die Beschriftungen einer Szene für einen Ausschnitt und Maßstab. Der Wohnort
+ * in der Mitte und sein Name sind feste Hindernisse.
+ */
+export function placeSceneLabels(inputs: LabelInput[], rootName: string, options: SceneLabelOptions = {}): SceneLabels {
+	const k = options.scale && options.scale > 0 ? 1 / options.scale : 1;
+	const rootFont = 13 * k;
+	const rootWidth = (estimateTextWidth(rootName, 13) + 8) * k;
+	const rootLabelY = ROOT_RADIUS + (6 + LABEL_LINE_HEIGHT / 2) * k;
+	const rootLabelBox: Box = {
+		x0: -rootWidth / 2,
+		y0: ROOT_RADIUS + 5 * k,
+		x1: rootWidth / 2,
+		y1: ROOT_RADIUS + (7 + LABEL_LINE_HEIGHT) * k
+	};
+	const rootBox: Box = { x0: -ROOT_RADIUS - 2, y0: -ROOT_RADIUS - 2, x1: ROOT_RADIUS + 2, y1: ROOT_RADIUS + 2 };
+	const labels = placeLabels(inputs, {
+		obstacles: [rootBox, rootLabelBox, ...(options.obstacles ?? [])],
+		halfExtent: HALF_EXTENT,
+		bounds: options.bounds,
+		scale: options.scale
+	});
+	return { labels, rootLabel: { x: 0, y: rootLabelY, box: rootLabelBox, fontSize: rootFont } };
 }
 
 export function buildScene(tree: TreeSnapshot, positions: ReadonlyMap<string, LayoutPosition>, rootName: string): Scene {
@@ -108,7 +149,8 @@ export function buildScene(tree: TreeSnapshot, positions: ReadonlyMap<string, La
 			id: row.node.id,
 			x: pos.x,
 			y: pos.y,
-			r,
+			// Ringe um die eigene Herkunft gehören zum Knoten; die Beschriftung hält Abstand davon.
+			r: row.node.own ? r + 6 : r + 1,
 			full: row.node.name,
 			short: shortLabel(row.node.level, row.node.key, row.node.name),
 			suffix: countInside ? undefined : String(row.node.count),
@@ -117,18 +159,7 @@ export function buildScene(tree: TreeSnapshot, positions: ReadonlyMap<string, La
 		});
 	}
 
-	// Der Wohnort in der Mitte und sein Name sind feste Hindernisse.
-	const rootWidth = estimateTextWidth(rootName, 13) + 8;
-	const rootLabelY = ROOT_RADIUS + 6 + LABEL_LINE_HEIGHT / 2;
-	const rootLabelBox: Box = {
-		x0: -rootWidth / 2,
-		y0: ROOT_RADIUS + 5,
-		x1: rootWidth / 2,
-		y1: ROOT_RADIUS + 7 + LABEL_LINE_HEIGHT
-	};
-	const rootBox: Box = { x0: -ROOT_RADIUS - 2, y0: -ROOT_RADIUS - 2, x1: ROOT_RADIUS + 2, y1: ROOT_RADIUS + 2 };
+	const placed = placeSceneLabels(inputs, rootName);
 
-	const labels = placeLabels(inputs, { obstacles: [rootBox, rootLabelBox], halfExtent: HALF_EXTENT });
-
-	return { nodes, edges, labels, rootLabel: { x: 0, y: rootLabelY, box: rootLabelBox }, ownDeepestId };
+	return { nodes, edges, labels: placed.labels, rootLabel: placed.rootLabel, ownDeepestId, labelInputs: inputs };
 }

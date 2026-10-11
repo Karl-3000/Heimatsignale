@@ -46,9 +46,9 @@
 </svelte:head>
 
 <div class="page" data-testid="conversations-page">
-	<header class="grid gap-2">
+	<header class="head">
 		<h1>Gespräche</h1>
-		<p class="max-w-prose text-ink-muted">Reiner Text, zu zweit. Niemand sieht, ob du online bist oder eine Nachricht gelesen hast.</p>
+		<p class="hs-lead">Reiner Text, zu zweit. Niemand sieht, ob du online bist oder eine Nachricht gelesen hast.</p>
 	</header>
 
 	{#if loadError}<Notice tone="danger" live testid="conversations-error"><p>{loadError}</p></Notice>{/if}
@@ -67,7 +67,7 @@
 			{#each items as c (c.id)}
 				<li>
 					<a href="/gespraeche/{c.id}" class="item" class:unread={unread(c)} class:gone={!c.available} data-testid="conversation-item">
-						<span class="head">
+						<span class="head-row">
 							<span class="name">{c.partner ? c.partner.nickname : 'Gespräch nicht mehr verfügbar'}</span>
 							{#if unread(c)}<Badge tone="accent">neu</Badge>{/if}
 						</span>
@@ -90,59 +90,68 @@
 <style>
 	.page {
 		display: grid;
-		gap: var(--hs-space-5);
+		gap: var(--hs-space-6);
 		max-width: 44rem;
+	}
+
+	.head {
+		display: grid;
+		gap: var(--hs-space-3);
 	}
 
 	.list {
 		display: grid;
+		gap: var(--hs-space-3);
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		border: 1px solid var(--hs-line);
-		border-radius: var(--hs-radius-lg);
-		background: var(--hs-surface);
-		overflow: hidden;
 	}
 
-	li + li {
-		border-top: 1px solid var(--hs-line);
-	}
-
+	/* Jedes Gespräch ist ein Gegenstand: eine erhabene Karte. */
 	.item {
 		display: grid;
-		gap: 0.125rem;
-		padding: var(--hs-space-4);
+		gap: 0.25rem;
+		padding: var(--hs-space-5);
+		border-radius: var(--hs-radius-lg);
+		background: var(--hs-surface);
+		box-shadow: var(--hs-shadow-sm);
 		color: var(--hs-ink);
 		text-decoration: none;
+		transition: box-shadow var(--hs-duration-fast) var(--hs-ease-standard);
 	}
 
 	.item:hover {
-		background: var(--hs-sunken);
-		color: var(--hs-ink);
+		box-shadow: var(--hs-shadow-md);
 	}
 
 	.item:focus-visible {
-		outline-offset: -3px;
+		border-radius: var(--hs-radius-lg);
 	}
 
-	.item.unread {
-		box-shadow: inset 3px 0 0 var(--hs-accent);
-	}
-
-	.head {
+	.head-row {
 		display: flex;
 		align-items: center;
 		gap: var(--hs-space-2);
 	}
 
 	.name {
-		font-weight: var(--hs-weight-strong);
+		font-family: var(--hs-font-display);
+		font-weight: var(--hs-weight-display);
+		font-size: var(--hs-text-lg);
+		letter-spacing: -0.02em;
 		overflow-wrap: anywhere;
 	}
 
+	.gone {
+		background: transparent;
+		box-shadow: inset 0 0 0 1px var(--hs-line);
+	}
+
 	.gone .name {
+		font-family: var(--hs-font-sans);
 		font-weight: var(--hs-weight-regular);
+		font-size: var(--hs-text-base);
+		letter-spacing: 0;
 		color: var(--hs-ink-muted);
 	}
 
@@ -153,6 +162,7 @@
 	}
 
 	.preview {
+		margin-top: var(--hs-space-2);
 		color: var(--hs-ink-muted);
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -161,6 +171,7 @@
 
 	.unread .preview {
 		color: var(--hs-ink);
+		font-weight: var(--hs-weight-strong);
 	}
 
 	.who {

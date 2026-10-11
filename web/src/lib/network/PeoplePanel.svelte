@@ -58,15 +58,15 @@
 {/if}
 
 <style>
+	/* Die Personen eines Orts sind ein Gegenstand: eine erhabene Karte mit großen Namen. */
 	.panel {
 		display: flex;
 		flex-direction: column;
-		gap: var(--hs-space-3);
-		padding: var(--hs-space-4);
-		border: 1px solid var(--hs-line);
-		border-left: 3px solid var(--hs-accent);
+		gap: var(--hs-space-4);
+		padding: var(--hs-space-5);
 		border-radius: var(--hs-radius-lg);
 		background: var(--hs-surface);
+		box-shadow: var(--hs-shadow-md);
 	}
 
 	header {
@@ -77,16 +77,17 @@
 	}
 
 	h3 {
-		font-size: var(--hs-text-lg);
+		font-size: var(--hs-text-xl);
 	}
 
 	.meta {
+		margin-top: var(--hs-space-1);
 		font-size: var(--hs-text-sm);
 		color: var(--hs-ink-muted);
 	}
 
 	.own {
-		margin-left: var(--hs-space-2);
+		display: block;
 		color: var(--hs-origin);
 		font-weight: var(--hs-weight-strong);
 	}
@@ -99,14 +100,13 @@
 		height: 2.5rem;
 		flex: none;
 		border: 0;
-		border-radius: var(--hs-radius-md);
-		background: transparent;
+		border-radius: 50%;
+		background: var(--hs-sunken);
 		color: var(--hs-ink-muted);
 		cursor: pointer;
 	}
 
 	.close:hover {
-		background: var(--hs-sunken);
 		color: var(--hs-ink);
 	}
 
@@ -118,28 +118,62 @@
 
 	li {
 		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: var(--hs-space-3);
-		min-height: 2.75rem;
-		padding: var(--hs-space-2) 0;
+		flex-direction: column;
+		gap: 0.125rem;
+		padding: var(--hs-space-3) 0;
 		border-top: 1px solid var(--hs-line);
 	}
 
 	li a,
 	.nick {
-		font-weight: var(--hs-weight-strong);
+		font-family: var(--hs-font-display);
+		font-weight: var(--hs-weight-display);
+		font-size: var(--hs-text-lg);
+		letter-spacing: -0.02em;
+		line-height: 1.2;
 		overflow-wrap: anywhere;
+	}
+
+	li a {
+		color: var(--hs-ink);
+		text-decoration-color: color-mix(in srgb, currentColor 28%, transparent);
+	}
+
+	li a:hover {
+		color: var(--hs-accent-ink);
+		text-decoration-color: currentColor;
 	}
 
 	.age {
 		color: var(--hs-ink-muted);
 		font-size: var(--hs-text-sm);
-		white-space: nowrap;
 	}
 
 	.empty {
 		font-size: var(--hs-text-sm);
 		color: var(--hs-ink-muted);
+	}
+
+	/* Auf schmalen Bildschirmen gleitet die Liste als Blatt von unten herein. */
+	@media (max-width: 719px) {
+		.panel {
+			position: fixed;
+			left: var(--hs-space-2);
+			right: var(--hs-space-2);
+			bottom: calc(var(--hs-toast-offset, 0px) + env(safe-area-inset-bottom, 0px) + var(--hs-space-2));
+			z-index: 45;
+			max-height: 56dvh;
+			overflow-y: auto;
+			border-radius: var(--hs-radius-stage);
+			box-shadow: var(--hs-shadow-lg);
+			animation: hs-sheet-in var(--hs-duration-slow) var(--hs-ease-out);
+		}
+	}
+
+	@keyframes hs-sheet-in {
+		from {
+			opacity: 0;
+			transform: translateY(24px);
+		}
 	}
 </style>

@@ -11,7 +11,6 @@
 	import type { RequestBlockedReason, UserResponse } from '$lib/api/types';
 	import { umkreis } from '$lib/network/umkreis.svelte';
 	import Button from '$lib/ui/Button.svelte';
-	import Card from '$lib/ui/Card.svelte';
 	import ConfirmDialog from '$lib/ui/ConfirmDialog.svelte';
 	import Notice from '$lib/ui/Notice.svelte';
 	import PersonSummary from '$lib/ui/PersonSummary.svelte';
@@ -142,7 +141,7 @@
 </svelte:head>
 
 <div class="page" data-testid="profile-page">
-	<p><Button href="/umkreis" variant="ghost" size="sm" icon={ArrowLeft} testid="profile-back">Zurück zum Umkreis</Button></p>
+	<p class="back"><Button href="/umkreis" variant="ghost" size="sm" icon={ArrowLeft} testid="profile-back">Zurück zum Umkreis</Button></p>
 
 	{#if loading && !data}
 		<p role="status" class="text-ink-muted">Profil wird geladen.</p>
@@ -155,11 +154,11 @@
 		<div><Button onclick={() => void load(userId)}>Erneut versuchen</Button></div>
 	{:else if user && relation}
 		<h1 class="hs-sr-only">Profil von {user.nickname}</h1>
-		<Card padding="lg" testid="profile-card">
+		<div class="person-card" data-testid="profile-card">
 			<PersonSummary {user} size="lg" showMemberSince />
-		</Card>
+		</div>
 
-		<section class="grid gap-3" aria-labelledby="kontakt-titel">
+		<section aria-labelledby="kontakt-titel">
 			<h2 id="kontakt-titel">Kontakt</h2>
 
 			{#if relation.conversation_id}
@@ -208,15 +207,15 @@
 			{/if}
 		</section>
 
-		<section class="grid gap-3" aria-labelledby="schutz-titel">
+		<section aria-labelledby="schutz-titel">
 			<h2 id="schutz-titel" class="small">Blockieren und melden</h2>
-			<p class="text-sm text-ink-muted">
+			<p class="quiet">
 				Blockieren wirkt sofort und in beide Richtungen: Ihr seht euch nicht mehr, werdet füreinander nicht mitgezählt und könnt euch nicht schreiben. Ein
 				laufendes Gespräch endet.
 			</p>
 			<div class="flex flex-wrap gap-2">
-				<Button icon={Ban} onclick={() => (blockOpen = true)} testid="profile-block">Blockieren</Button>
-				<Button icon={Flag} onclick={() => (reportOpen = true)} testid="profile-report">Melden</Button>
+				<Button variant="ghost" icon={Ban} onclick={() => (blockOpen = true)} testid="profile-block">Blockieren</Button>
+				<Button variant="ghost" icon={Flag} onclick={() => (reportOpen = true)} testid="profile-report">Melden</Button>
 			</div>
 		</section>
 
@@ -231,11 +230,40 @@
 <style>
 	.page {
 		display: grid;
-		gap: var(--hs-space-5);
-		max-width: 40rem;
+		gap: var(--hs-space-7);
+		max-width: 42rem;
+	}
+
+	.back {
+		margin-bottom: calc(var(--hs-space-5) * -1);
+		margin-left: calc(var(--hs-space-3) * -1);
+	}
+
+	/* Die Person als große typografische Karte. */
+	.person-card {
+		padding: var(--hs-space-6);
+		border-radius: var(--hs-radius-stage);
+		background: var(--hs-surface);
+		box-shadow: var(--hs-shadow-md);
+	}
+
+	section {
+		display: grid;
+		gap: var(--hs-space-4);
 	}
 
 	.small {
 		font-size: var(--hs-text-lg);
+	}
+
+	.quiet {
+		font-size: var(--hs-text-sm);
+		color: var(--hs-ink-muted);
+	}
+
+	@media (min-width: 640px) {
+		.person-card {
+			padding: var(--hs-space-7);
+		}
 	}
 </style>

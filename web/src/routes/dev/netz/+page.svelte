@@ -57,7 +57,7 @@
 		</header>
 
 		<div class="grid gap-4 lg:grid-cols-2">
-			<div class="grid content-start gap-2">
+			<div class="grid min-w-0 content-start gap-2">
 				<label for="datensatz" class="text-sm hs-strong">Datensatz</label>
 				<select id="datensatz" bind:value={selectedId} onchange={handleDatasetChange} data-testid="dev-dataset">
 					{#each datasets as d (d.id)}
@@ -90,11 +90,13 @@
 <style>
 	select {
 		min-height: var(--hs-control-height);
+		width: 100%;
+		min-width: 0;
 		max-width: 28rem;
-		padding: 0 var(--hs-space-3);
-		border: 1px solid var(--hs-line-strong);
+		padding: 0 var(--hs-space-4);
+		border: 0;
 		border-radius: var(--hs-radius-md);
-		background: var(--hs-raised);
+		background: var(--hs-sunken);
 		color: var(--hs-ink);
 		font: inherit;
 	}

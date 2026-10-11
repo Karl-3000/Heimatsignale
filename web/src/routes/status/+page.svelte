@@ -120,15 +120,21 @@
 <style>
 	.facts {
 		display: grid;
-		gap: var(--hs-space-3);
-		padding: var(--hs-space-4);
-		border: 1px solid var(--hs-line);
-		border-radius: var(--hs-radius-lg);
-		background: var(--hs-surface);
+	}
+
+	.facts > div {
+		display: grid;
+		gap: 0.125rem;
+		padding: var(--hs-space-4) 0;
+		border-top: 1px solid var(--hs-line);
+	}
+
+	.facts > div:last-child {
+		border-bottom: 1px solid var(--hs-line);
 	}
 
 	.facts dt {
 		font-size: var(--hs-text-sm);
-		color: var(--hs-ink-subtle);
+		color: var(--hs-ink-muted);
 	}
 </style>

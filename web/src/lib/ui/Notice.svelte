@@ -29,20 +29,22 @@
 </div>
 
 <style>
+	/* Ruhiger, getönter Hinweis ohne Rahmen. Icon und Überschrift tragen die Bedeutung. */
 	.notice {
 		display: flex;
 		gap: var(--hs-space-3);
-		padding: var(--hs-space-3) var(--hs-space-4);
-		border-radius: var(--hs-radius-md);
-		border-left: 3px solid var(--hs-line-strong);
+		padding: var(--hs-space-4) var(--hs-space-5);
+		border-radius: var(--hs-radius-lg);
 		background: var(--hs-sunken);
 		color: var(--hs-ink);
 		font-size: var(--hs-text-sm);
+		line-height: 1.55;
 	}
 
 	.glyph {
 		flex: none;
 		margin-top: 0.125rem;
+		color: var(--hs-ink-muted);
 	}
 
 	.body {
@@ -51,6 +53,12 @@
 
 	.title {
 		font-weight: var(--hs-weight-strong);
+		font-size: var(--hs-text-base);
+	}
+
+	.title + .text {
+		margin-top: var(--hs-space-1);
+		color: var(--hs-ink-muted);
 	}
 
 	.text :global(p + p) {
@@ -58,22 +66,30 @@
 	}
 
 	.notice-info {
-		border-left-color: var(--hs-accent);
 		background: var(--hs-accent-soft);
 	}
 
+	.notice-info .glyph {
+		color: var(--hs-accent-ink);
+	}
+
 	.notice-warning {
-		border-left-color: var(--hs-origin);
-		background: var(--hs-origin-soft);
+		background: var(--hs-sunken);
 	}
 
 	.notice-danger {
-		border-left-color: var(--hs-danger);
 		background: var(--hs-danger-soft);
 	}
 
+	.notice-danger .glyph {
+		color: var(--hs-danger);
+	}
+
 	.notice-success {
-		border-left-color: var(--hs-success);
 		background: var(--hs-success-soft);
+	}
+
+	.notice-success .glyph {
+		color: var(--hs-success);
 	}
 </style>

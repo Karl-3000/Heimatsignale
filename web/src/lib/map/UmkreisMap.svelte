@@ -308,7 +308,7 @@
 	});
 </script>
 
-<div class="map" data-testid="umkreis-map" data-ready={ready || fallback ? 'true' : 'false'}>
+<div class="hs-stage map" data-testid="umkreis-map" data-ready={ready || fallback ? 'true' : 'false'}>
 	<div class="canvas" bind:this={container} class:fallback></div>
 
 	{#if fallback && size.width > 0}
@@ -349,11 +349,11 @@
 
 	{#if !fallback}
 		<div class="controls">
-			<button type="button" onclick={() => zoomBy(1)} disabled={!ready || zoom >= minZoom + zoomRange - 0.01} aria-label="Karte vergrößern" data-testid="map-zoom-in">
-				<Icon icon={Plus} size={18} />
-			</button>
 			<button type="button" onclick={() => zoomBy(-1)} disabled={!ready || zoom <= minZoom + 0.01} aria-label="Karte verkleinern" data-testid="map-zoom-out">
 				<Icon icon={Minus} size={18} />
+			</button>
+			<button type="button" onclick={() => zoomBy(1)} disabled={!ready || zoom >= minZoom + zoomRange - 0.01} aria-label="Karte vergrößern" data-testid="map-zoom-in">
+				<Icon icon={Plus} size={18} />
 			</button>
 			<button type="button" onclick={showAll} disabled={!ready} aria-label="Ganzen Umkreis zeigen" data-testid="map-reset">
 				<Icon icon={Scan} size={18} />
@@ -370,13 +370,7 @@
 
 <style>
 	.map {
-		position: relative;
-		height: clamp(20rem, 56dvh, 34rem);
-		border: 1px solid var(--hs-line);
-		border-radius: var(--hs-radius-lg);
-		background: var(--hs-map-land);
-		overflow: hidden;
-		isolation: isolate;
+		height: clamp(21rem, 58dvh, 36rem);
 	}
 
 	.canvas {
@@ -389,17 +383,22 @@
 	}
 
 	.canvas :global(.maplibregl-canvas:focus-visible) {
-		outline: 2px solid var(--hs-focus);
-		outline-offset: -3px;
+		outline: 2px solid var(--hs-stage-accent);
+		outline-offset: -4px;
+		border-radius: var(--hs-radius-stage);
 	}
 
+	/* Ersatzdarstellung ohne WebGL: derselbe Lichtring, außen dunkler. */
 	.fallback-circle {
 		position: absolute;
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
-		border: 1.5px dashed var(--hs-ink-muted);
+		border: 1.25px dashed color-mix(in srgb, var(--hs-stage-ink) 75%, transparent);
 		border-radius: 50%;
+		box-shadow:
+			0 0 0 100vmax color-mix(in srgb, var(--hs-stage-deep) 60%, transparent),
+			0 0 18px 2px color-mix(in srgb, var(--hs-stage-ink) 22%, transparent);
 	}
 
 	.overlay {
@@ -419,13 +418,12 @@
 
 	.own-dot {
 		position: absolute;
-		left: -6px;
-		top: -6px;
-		width: 12px;
-		height: 12px;
-		border: 2px solid var(--hs-ink);
+		left: -5px;
+		top: -5px;
+		width: 10px;
+		height: 10px;
+		border: 1.5px solid var(--hs-stage-ink);
 		border-radius: 50%;
-		background: var(--hs-raised);
 	}
 
 	.marker {
@@ -439,36 +437,45 @@
 		border: 0;
 		border-radius: 50%;
 		background: transparent;
-		color: var(--hs-ink);
+		color: var(--hs-stage-ink);
 		cursor: pointer;
 		pointer-events: auto;
 		/* Größenwechsel beim Zoomen weich, die Position selbst folgt der Karte ohne Verzögerung. */
 		transition:
 			width var(--hs-duration-fast) var(--hs-ease-standard),
-			height var(--hs-duration-fast) var(--hs-ease-standard);
+			height var(--hs-duration-fast) var(--hs-ease-standard),
+			box-shadow var(--hs-duration-fast) var(--hs-ease-standard);
 	}
 
+	/* Ein Licht mit Zahl, wie die Knoten im Netz. */
 	.marker-compact {
-		background: var(--hs-node-root);
-		color: var(--hs-on-node-root);
-		box-shadow: 0 0 0 2px var(--hs-raised);
+		background: var(--hs-stage-ink);
+		color: var(--hs-stage-on-light);
+		box-shadow: 0 0 0 5px color-mix(in srgb, var(--hs-stage-ink) 14%, transparent);
 	}
 
+	/* Sammelknoten: ein zweiter Ring zeigt, dass hier mehrere Gemeinden zusammengefasst sind. */
 	.marker-compact.multi {
 		box-shadow:
-			0 0 0 2px var(--hs-raised),
-			0 0 0 4px var(--hs-node-root);
+			0 0 0 3px var(--hs-stage-bg),
+			0 0 0 4.5px var(--hs-stage-ink),
+			0 0 0 10px color-mix(in srgb, var(--hs-stage-ink) 12%, transparent);
+	}
+
+	.marker:hover {
+		box-shadow: 0 0 0 7px color-mix(in srgb, var(--hs-stage-ink) 22%, transparent);
 	}
 
 	.marker.selected {
 		box-shadow:
-			0 0 0 2px var(--hs-raised),
-			0 0 0 5px var(--hs-accent);
+			0 0 0 2px var(--hs-stage-bg),
+			0 0 0 4.5px var(--hs-stage-accent);
 	}
 
 	.marker:focus-visible {
-		outline: 3px solid var(--hs-focus);
-		outline-offset: 3px;
+		outline: 2.5px solid var(--hs-stage-accent);
+		outline-offset: 4px;
+		border-radius: 50%;
 	}
 
 	.number {
@@ -479,15 +486,15 @@
 
 	.controls {
 		position: absolute;
-		right: var(--hs-space-3);
-		top: var(--hs-space-3);
+		right: var(--hs-space-4);
+		bottom: var(--hs-space-4);
 		display: flex;
-		flex-direction: column;
-		border: 1px solid var(--hs-line-strong);
-		border-radius: var(--hs-radius-md);
-		background: var(--hs-raised);
-		box-shadow: var(--hs-shadow-sm);
-		overflow: hidden;
+		padding: 3px;
+		border-radius: var(--hs-radius-full);
+		background: var(--hs-stage-glass);
+		box-shadow: inset 0 0 0 1px var(--hs-stage-line);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
 	}
 
 	.controls button {
@@ -497,37 +504,36 @@
 		width: 2.5rem;
 		height: 2.5rem;
 		border: 0;
+		border-radius: 50%;
 		background: transparent;
-		color: var(--hs-ink);
+		color: var(--hs-stage-ink);
 		cursor: pointer;
 	}
 
-	.controls button + button {
-		border-top: 1px solid var(--hs-line);
-	}
-
 	.controls button:hover:not(:disabled) {
-		background: var(--hs-sunken);
+		background: var(--hs-stage-glass-strong);
 	}
 
 	.controls button:disabled {
-		opacity: 0.45;
+		opacity: 0.4;
 		cursor: not-allowed;
 	}
 
 	.controls button:focus-visible {
-		outline: 2px solid var(--hs-focus);
-		outline-offset: -2px;
+		outline: 2px solid var(--hs-stage-accent);
+		outline-offset: 1px;
+		border-radius: 50%;
 	}
 
 	.attribution {
 		position: absolute;
-		left: var(--hs-space-2);
-		bottom: var(--hs-space-2);
-		padding: 0.125rem var(--hs-space-2);
-		border-radius: var(--hs-radius-sm);
-		background: var(--hs-raised);
+		left: var(--hs-space-4);
+		bottom: var(--hs-space-4);
 		font-size: var(--hs-text-xs);
-		color: var(--hs-ink-muted);
+		color: var(--hs-stage-muted);
+	}
+
+	.attribution a {
+		color: var(--hs-stage-muted);
 	}
 </style>
