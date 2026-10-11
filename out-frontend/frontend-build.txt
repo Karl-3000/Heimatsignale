@@ -1,0 +1,243 @@
+
+> heimatsignale-web@0.1.0 build
+> vite build
+
+[36mvite v7.3.7 [32mbuilding ssr environment for production...[36m[39m
+transforming...
+[32m✓[39m 336 modules transformed.
+rendering chunks...
+[36mvite v7.3.7 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32m✓[39m 439 modules transformed.
+rendering chunks...
+computing gzip size...
+[2m.svelte-kit/output/client/[22m[32m_app/version.json                                                                [39m[1m[2m    0.03 kB[22m[1m[22m[2m │ gzip:   0.05 kB[22m
+[2m.svelte-kit/output/client/[22m[32m_app/immutable/workers/pow.worker-DtTUpBjd.js                                    [39m[1m[2m    1.30 kB[22m[1m[22m
+[2m.svelte-kit/output/client/[22m[32m_app/immutable/assets/bricolage-grotesque-vietnamese-wght-normal.BUzh504Q.woff2  [39m[1m[2m    8.61 kB[22m[1m[22m
+[2m.svelte-kit/output/client/[22m[32m_app/immutable/assets/inter-vietnamese-wght-normal.CBcvBZtf.woff2                [39m[1m[2m   10.25 kB[22m[1m[22m
+[2m.svelte-kit/output/client/[22m[32m_app/immutable/assets/inter-greek-ext-wght-normal.DlzME5K_.woff2                 [39m[1m[2m   11.23 kB[22m[1m[22m
+[2m.svelte-kit/output/client/[22m[32m_app/immutable/assets/bricolage-grotesque-latin-ext-wght-normal.CcLUaPy7.woff2   [39m[1m[2m   18.67 kB[22m[1m[22m
+[2m.svelte-kit/output/client/[22m[32m_app/immutable/assets/inter-cyrillic-wght-normal.DqGufNeO.woff2                  [39m[1m[2m   18.75 kB[22m[1m[22m
+[2m.svelte-kit/output/client/[22m[32m_app/immutable/assets/inter-greek-wght-normal.CkhJZR-_.woff2                     [39m[1m[2m   19.00 kB[22m[1m[22m
+[2m.svelte-kit/output/client/[22m[32m_app/immutable/assets/inter-cyrillic-ext-wght-normal.BOeWTOD4.woff2              [39m[1m[2m   25.96 kB[22m[1m[22m
+[2m.svelte-kit/output/client/[22m[32m.vite/manifest.json                                                              [39m[1m[2m   30.17 kB[22m[1m[22m[2m │ gzip:   3.42 kB[22m
+[2m.svelte-kit/output/client/[22m[32m_app/immutable/assets/bricolage-grotesque-latin-wght-normal.DLoelf7F.woff2       [39m[1m[2m   41.34 kB[22m[1m[22m
+[2m.svelte-kit/output/client/[22m[32m_app/immutable/assets/inter-latin-wght-normal.Dx4kXJAl.woff2                     [39m[1m[2m   48.26 kB[22m[1m[22m
+[2m.svelte-kit/output/client/[22m[32m_app/immutable/assets/inter-latin-ext-wght-normal.DO1Apj_S.woff2                 [39m[1m[2m   85.07 kB[22m[1m[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/7.DMp7WX6s.css                                             [39m[1m[2m    0.33 kB[22m[1m[22m[2m │ gzip:   0.22 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/Tabs.BFCojJ37.css                                          [39m[1m[2m    0.35 kB[22m[1m[22m[2m │ gzip:   0.21 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/PowProgress.BJiCU7Zp.css                                   [39m[1m[2m    0.36 kB[22m[1m[22m[2m │ gzip:   0.21 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/18.DSs3PC3d.css                                            [39m[1m[2m    0.38 kB[22m[1m[22m[2m │ gzip:   0.19 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/Card.irL1rJAN.css                                          [39m[1m[2m    0.40 kB[22m[1m[22m[2m │ gzip:   0.19 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/ThemeToggle.CiyOxTY2.css                                   [39m[1m[2m    0.49 kB[22m[1m[22m[2m │ gzip:   0.27 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/FormPage.DsrysE02.css                                      [39m[1m[2m    0.56 kB[22m[1m[22m[2m │ gzip:   0.26 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/19.Bk4ehsE5.css                                            [39m[1m[2m    0.57 kB[22m[1m[22m[2m │ gzip:   0.30 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/16.7O5dlMyL.css                                            [39m[1m[2m    0.59 kB[22m[1m[22m[2m │ gzip:   0.27 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/5.IDs1WCYZ.css                                             [39m[1m[2m    0.71 kB[22m[1m[22m[2m │ gzip:   0.36 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/Badge.H_ZgXUP5.css                                         [39m[1m[2m    0.83 kB[22m[1m[22m[2m │ gzip:   0.33 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/3.DakJlU6z.css                                             [39m[1m[2m    0.96 kB[22m[1m[22m[2m │ gzip:   0.34 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/9.CpkXPApS.css                                             [39m[1m[2m    0.97 kB[22m[1m[22m[2m │ gzip:   0.40 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/LegalPage.DGKkfB9A.css                                     [39m[1m[2m    1.03 kB[22m[1m[22m[2m │ gzip:   0.40 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/Brand.CC1YdwS2.css                                         [39m[1m[2m    1.06 kB[22m[1m[22m[2m │ gzip:   0.41 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/Notice.Ckm1iwBT.css                                        [39m[1m[2m    1.10 kB[22m[1m[22m[2m │ gzip:   0.36 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/Field.DwJwmG8o.css                                         [39m[1m[2m    1.15 kB[22m[1m[22m[2m │ gzip:   0.43 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/TextArea.BpbQ2xUn.css                                      [39m[1m[2m    1.39 kB[22m[1m[22m[2m │ gzip:   0.50 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/PersonSummary.KnRHtPxE.css                                 [39m[1m[2m    1.46 kB[22m[1m[22m[2m │ gzip:   0.44 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/10.Cmh4Jh3F.css                                            [39m[1m[2m    1.54 kB[22m[1m[22m[2m │ gzip:   0.52 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/21.BCFwSTLI.css                                            [39m[1m[2m    1.97 kB[22m[1m[22m[2m │ gzip:   0.60 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/PlaceSearch.kx1nn4sw.css                                   [39m[1m[2m    2.01 kB[22m[1m[22m[2m │ gzip:   0.66 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/ReportDialog.RDk2_BNa.css                                  [39m[1m[2m    2.40 kB[22m[1m[22m[2m │ gzip:   0.78 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/Button.BgqtJIx6.css                                        [39m[1m[2m    2.42 kB[22m[1m[22m[2m │ gzip:   0.72 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/11.BsqH7p-4.css                                            [39m[1m[2m    2.90 kB[22m[1m[22m[2m │ gzip:   0.87 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/17.DzDSpxDe.css                                            [39m[1m[2m    3.01 kB[22m[1m[22m[2m │ gzip:   0.86 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/2.BRncbsSY.css                                             [39m[1m[2m    4.71 kB[22m[1m[22m[2m │ gzip:   1.17 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/geo.BqKQkjqo.css                                           [39m[1m[2m   12.09 kB[22m[1m[22m[2m │ gzip:   2.58 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/0.DF0_QKsl.css                                             [39m[1m[2m   34.78 kB[22m[1m[22m[2m │ gzip:   7.83 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/UmkreisPanel.Qmv0XoT7.css                                  [39m[1m[2m   77.48 kB[22m[1m[22m[2m │ gzip:  11.67 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/-pOcwAWD.js                                                [39m[1m[2m    0.05 kB[22m[1m[22m[2m │ gzip:   0.07 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/CNh6be_H.js                                                [39m[1m[2m    0.09 kB[22m[1m[22m[2m │ gzip:   0.11 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/entry/start.PRm8t-8l.js                                           [39m[1m[2m    0.12 kB[22m[1m[22m[2m │ gzip:   0.11 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/CnF-85hS.js                                                [39m[1m[2m    0.15 kB[22m[1m[22m[2m │ gzip:   0.13 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/26ajv1mo.js                                                [39m[1m[2m    0.15 kB[22m[1m[22m[2m │ gzip:   0.15 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/BqKDEIrF.js                                                [39m[1m[2m    0.31 kB[22m[1m[22m[2m │ gzip:   0.19 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/C-4n5nPd.js                                                [39m[1m[2m    0.34 kB[22m[1m[22m[2m │ gzip:   0.26 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/BbUB2Pvq.js                                                [39m[1m[2m    0.45 kB[22m[1m[22m[2m │ gzip:   0.29 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/f17-tgk3.js                                                [39m[1m[2m    0.47 kB[22m[1m[22m[2m │ gzip:   0.33 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/C_lOi1dd.js                                                [39m[1m[2m    0.47 kB[22m[1m[22m[2m │ gzip:   0.32 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/BKkD1skT.js                                                [39m[1m[2m    0.48 kB[22m[1m[22m[2m │ gzip:   0.31 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/D4CxXN5N.js                                                [39m[1m[2m    0.63 kB[22m[1m[22m[2m │ gzip:   0.37 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/DfHvMar7.js                                                [39m[1m[2m    0.64 kB[22m[1m[22m[2m │ gzip:   0.38 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/CjmYi3_j.js                                                [39m[1m[2m    0.68 kB[22m[1m[22m[2m │ gzip:   0.42 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/CStsKaPz.js                                                [39m[1m[2m    0.79 kB[22m[1m[22m[2m │ gzip:   0.55 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/20.D0w6YTfH.js                                              [39m[1m[2m    0.86 kB[22m[1m[22m[2m │ gzip:   0.55 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/C23_X2aK.js                                                [39m[1m[2m    1.05 kB[22m[1m[22m[2m │ gzip:   0.57 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/CLyHdfCh.js                                                [39m[1m[2m    1.17 kB[22m[1m[22m[2m │ gzip:   0.64 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/1.BnQeBvxl.js                                               [39m[1m[2m    1.17 kB[22m[1m[22m[2m │ gzip:   0.68 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/PPVm8Dsz.js                                                [39m[1m[2m    1.23 kB[22m[1m[22m[2m │ gzip:   0.71 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/DkN12IhF.js                                                [39m[1m[2m    1.26 kB[22m[1m[22m[2m │ gzip:   0.65 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/wbPk3Yxo.js                                                [39m[1m[2m    1.37 kB[22m[1m[22m[2m │ gzip:   0.66 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/B2wIptwe.js                                                [39m[1m[2m    1.48 kB[22m[1m[22m[2m │ gzip:   0.67 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/DkymGRWP.js                                                [39m[1m[2m    1.52 kB[22m[1m[22m[2m │ gzip:   0.82 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/BQFN6ncw.js                                                [39m[1m[2m    1.67 kB[22m[1m[22m[2m │ gzip:   0.84 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/GAsuuC2M.js                                                [39m[1m[2m    1.73 kB[22m[1m[22m[2m │ gzip:   0.91 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/CVeOS9Cw.js                                                [39m[1m[2m    1.74 kB[22m[1m[22m[2m │ gzip:   0.88 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/BYG7TzuR.js                                                [39m[1m[2m    1.80 kB[22m[1m[22m[2m │ gzip:   0.84 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/D-B96JGM.js                                                [39m[1m[2m    1.87 kB[22m[1m[22m[2m │ gzip:   0.99 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/12.vG8-R6_r.js                                              [39m[1m[2m    1.93 kB[22m[1m[22m[2m │ gzip:   0.94 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/CGjaN2ED.js                                                [39m[1m[2m    2.02 kB[22m[1m[22m[2m │ gzip:   0.90 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/BOVFraEW.js                                                [39m[1m[2m    2.05 kB[22m[1m[22m[2m │ gzip:   1.00 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/15.CHAIHJCE.js                                              [39m[1m[2m    2.57 kB[22m[1m[22m[2m │ gzip:   1.35 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/D9LWrHnv.js                                                [39m[1m[2m    2.73 kB[22m[1m[22m[2m │ gzip:   1.27 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/DLb6XGhd.js                                                [39m[1m[2m    2.78 kB[22m[1m[22m[2m │ gzip:   1.46 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/z8SeB81u.js                                                [39m[1m[2m    2.80 kB[22m[1m[22m[2m │ gzip:   0.88 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/8.BCK9fiKt.js                                               [39m[1m[2m    3.01 kB[22m[1m[22m[2m │ gzip:   1.51 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/C-VM48r6.js                                                [39m[1m[2m    3.14 kB[22m[1m[22m[2m │ gzip:   1.31 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/7.CWsmvB7R.js                                               [39m[1m[2m    3.21 kB[22m[1m[22m[2m │ gzip:   1.72 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/14.Cucrhufr.js                                              [39m[1m[2m    3.44 kB[22m[1m[22m[2m │ gzip:   1.62 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/10.BDg_4Bh5.js                                              [39m[1m[2m    3.76 kB[22m[1m[22m[2m │ gzip:   1.79 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/4.NrSyJe_p.js                                               [39m[1m[2m    4.24 kB[22m[1m[22m[2m │ gzip:   1.99 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/13.CGwT7xWc.js                                              [39m[1m[2m    4.62 kB[22m[1m[22m[2m │ gzip:   2.17 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/19.DCnJmrFX.js                                              [39m[1m[2m    4.94 kB[22m[1m[22m[2m │ gzip:   2.26 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/DdnmSDsX.js                                                [39m[1m[2m    5.14 kB[22m[1m[22m[2m │ gzip:   2.46 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/18.CgYhd7Jc.js                                              [39m[1m[2m    5.21 kB[22m[1m[22m[2m │ gzip:   2.40 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/5.u9oKP4Bh.js                                               [39m[1m[2m    5.29 kB[22m[1m[22m[2m │ gzip:   2.34 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/Bak70ynB.js                                                [39m[1m[2m    5.55 kB[22m[1m[22m[2m │ gzip:   2.54 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/wZqEq1qp.js                                                [39m[1m[2m    6.12 kB[22m[1m[22m[2m │ gzip:   2.84 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/21.B6mCpifG.js                                              [39m[1m[2m    6.14 kB[22m[1m[22m[2m │ gzip:   2.61 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/2.hBMdjdfH.js                                               [39m[1m[2m    6.81 kB[22m[1m[22m[2m │ gzip:   2.91 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/6.BvK3vuCi.js                                               [39m[1m[2m    8.78 kB[22m[1m[22m[2m │ gzip:   3.67 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/3.CFSRM4cx.js                                               [39m[1m[2m    8.97 kB[22m[1m[22m[2m │ gzip:   3.51 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/entry/app.BevvdxHn.js                                             [39m[1m[2m    9.57 kB[22m[1m[22m[2m │ gzip:   3.56 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/16.jOLPZgKl.js                                              [39m[1m[2m   10.56 kB[22m[1m[22m[2m │ gzip:   4.26 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/11.4LD-FVm-.js                                              [39m[1m[2m   10.71 kB[22m[1m[22m[2m │ gzip:   4.41 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/0.BXmlkWo4.js                                               [39m[1m[2m   11.70 kB[22m[1m[22m[2m │ gzip:   4.56 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/BkmNAa_q.js                                                [39m[1m[2m   12.73 kB[22m[1m[22m[2m │ gzip:   5.22 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/xI7v_tqR.js                                                [39m[1m[2m   13.74 kB[22m[1m[22m[2m │ gzip:   5.71 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/9.mbprWPcD.js                                               [39m[1m[2m   13.83 kB[22m[1m[22m[2m │ gzip:   5.09 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/17.Dc_EqbFO.js                                              [39m[1m[2m   14.66 kB[22m[1m[22m[2m │ gzip:   5.79 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/CE0CT49g.js                                                [39m[1m[2m   19.23 kB[22m[1m[22m[2m │ gzip:   7.56 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/CIy3-iSr.js                                                [39m[1m[2m   19.97 kB[22m[1m[22m[2m │ gzip:   8.81 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/gPt7Ewci.js                                                [39m[1m[2m   21.90 kB[22m[1m[22m[2m │ gzip:   8.61 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/mRgR74iz.js                                                [39m[1m[2m   22.77 kB[22m[1m[22m[2m │ gzip:   9.29 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/CCRxM0CL.js                                                [39m[1m[2m   26.64 kB[22m[1m[22m[2m │ gzip:  10.23 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/BLgj1jrl.js                                                [39m[1m[2m   30.76 kB[22m[1m[22m[2m │ gzip:  11.09 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/EoDwrmQU.js                                                [39m[1m[2m   33.47 kB[22m[1m[22m[2m │ gzip:  12.81 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/BSCK7p18.js                                                [39m[1m[33m1,053.44 kB[39m[22m[2m │ gzip: 284.73 kB[22m
+[33m
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+[32m✓ built in 5.47s[39m
+[2m.svelte-kit/output/server/[22m[32m_app/immutable/assets/bricolage-grotesque-vietnamese-wght-normal.BUzh504Q.woff2  [39m[1m[2m  8.61 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[32m_app/immutable/assets/inter-vietnamese-wght-normal.CBcvBZtf.woff2                [39m[1m[2m 10.25 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[32m_app/immutable/assets/inter-greek-ext-wght-normal.DlzME5K_.woff2                 [39m[1m[2m 11.23 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[32m_app/immutable/assets/bricolage-grotesque-latin-ext-wght-normal.CcLUaPy7.woff2   [39m[1m[2m 18.67 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[32m_app/immutable/assets/inter-cyrillic-wght-normal.DqGufNeO.woff2                  [39m[1m[2m 18.75 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[32m_app/immutable/assets/inter-greek-wght-normal.CkhJZR-_.woff2                     [39m[1m[2m 19.00 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[32m.vite/manifest.json                                                              [39m[1m[2m 24.77 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[32m_app/immutable/assets/inter-cyrillic-ext-wght-normal.BOeWTOD4.woff2              [39m[1m[2m 25.96 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[32m_app/immutable/assets/bricolage-grotesque-latin-wght-normal.DLoelf7F.woff2       [39m[1m[2m 41.34 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[32m_app/immutable/assets/inter-latin-wght-normal.Dx4kXJAl.woff2                     [39m[1m[2m 48.26 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[32m_app/immutable/assets/inter-latin-ext-wght-normal.DO1Apj_S.woff2                 [39m[1m[2m 85.07 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_page.DMp7WX6s.css                                         [39m[1m[2m  0.33 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/Tabs.BFCojJ37.css                                          [39m[1m[2m  0.35 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/PowProgress.BJiCU7Zp.css                                   [39m[1m[2m  0.36 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_page.DSs3PC3d.css                                         [39m[1m[2m  0.38 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/Card.irL1rJAN.css                                          [39m[1m[2m  0.40 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/toast.CiyOxTY2.css                                         [39m[1m[2m  0.49 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/FormPage.DsrysE02.css                                      [39m[1m[2m  0.56 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_page.Bk4ehsE5.css                                         [39m[1m[2m  0.57 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_page.7O5dlMyL.css                                         [39m[1m[2m  0.59 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_page.IDs1WCYZ.css                                         [39m[1m[2m  0.71 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/Badge.H_ZgXUP5.css                                         [39m[1m[2m  0.83 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_page.DakJlU6z.css                                         [39m[1m[2m  0.96 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_page.CpkXPApS.css                                         [39m[1m[2m  0.97 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/LegalPage.DGKkfB9A.css                                     [39m[1m[2m  1.03 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/Brand.CC1YdwS2.css                                         [39m[1m[2m  1.06 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/Notice.Ckm1iwBT.css                                        [39m[1m[2m  1.10 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/Field.DwJwmG8o.css                                         [39m[1m[2m  1.15 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/TextArea.BpbQ2xUn.css                                      [39m[1m[2m  1.39 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/PersonSummary.KnRHtPxE.css                                 [39m[1m[2m  1.46 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_page.Cmh4Jh3F.css                                         [39m[1m[2m  1.54 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_page.BCFwSTLI.css                                         [39m[1m[2m  1.97 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/PlaceSearch.kx1nn4sw.css                                   [39m[1m[2m  2.01 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/ReportDialog.RDk2_BNa.css                                  [39m[1m[2m  2.40 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/Button.BgqtJIx6.css                                        [39m[1m[2m  2.42 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_page.BsqH7p-4.css                                         [39m[1m[2m  2.90 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_page.DzDSpxDe.css                                         [39m[1m[2m  3.01 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_page.BRncbsSY.css                                         [39m[1m[2m  4.71 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/NetworkExplorer.Br7j64wg.css                               [39m[1m[2m 12.07 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_layout.DF0_QKsl.css                                       [39m[1m[2m 34.78 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/UmkreisPanel.Qmv0XoT7.css                                  [39m[1m[2m 77.48 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/_layout.ts.js                                                      [39m[1m[2m  0.12 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/dev.js                                                                    [39m[1m[2m  0.17 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/shared-server.js                                                          [39m[1m[2m  0.21 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36menv.js                                                                           [39m[1m[2m  0.23 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/Badge.js                                                                  [39m[1m[2m  0.39 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36minternal.js                                                                      [39m[1m[2m  0.41 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/x.js                                                                      [39m[1m[2m  0.41 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/arrow-left.js                                                             [39m[1m[2m  0.44 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/state.svelte.js                                                           [39m[1m[2m  0.45 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/index2.js                                                                 [39m[1m[2m  0.46 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/server.js                                                                 [39m[1m[2m  0.62 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/FormPage.js                                                               [39m[1m[2m  0.68 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/LegalPage.js                                                              [39m[1m[2m  0.84 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/endpoints.js                                                              [39m[1m[2m  1.08 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/utils2.js                                                                 [39m[1m[2m  1.09 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/gespraeche/_page.svelte.js                                         [39m[1m[2m  1.17 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/bestaetigen/_page.svelte.js                                        [39m[1m[2m  1.19 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/verwaltungskonto/_page.svelte.js                                   [39m[1m[2m  1.25 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/Dialog.js                                                                 [39m[1m[2m  1.30 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/Brand.js                                                                  [39m[1m[2m  1.35 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/_error.svelte.js                                                   [39m[1m[2m  1.47 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/Tabs.js                                                                   [39m[1m[2m  1.61 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/PersonSummary.js                                                          [39m[1m[2m  1.72 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/Field.js                                                                  [39m[1m[2m  1.79 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/impressum/_page.svelte.js                                          [39m[1m[2m  2.08 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/ConfirmDialog.js                                                          [39m[1m[2m  2.09 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/profil/_id_/_page.svelte.js                                        [39m[1m[2m  2.19 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/session.svelte.js                                                         [39m[1m[2m  2.36 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/TextArea.js                                                               [39m[1m[2m  2.49 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/Notice.js                                                                 [39m[1m[2m  2.54 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/format.js                                                                 [39m[1m[2m  2.55 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/passwort-vergessen/_page.svelte.js                                 [39m[1m[2m  2.83 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/Button.js                                                                 [39m[1m[2m  2.93 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/einspruch/_page.svelte.js                                          [39m[1m[2m  3.22 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/anmelden/_page.svelte.js                                           [39m[1m[2m  3.51 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/passwort-neu/_page.svelte.js                                       [39m[1m[2m  3.80 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/anfragen/_page.svelte.js                                           [39m[1m[2m  3.87 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/internal.js                                                               [39m[1m[2m  3.87 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/gespraeche/_id_/_page.svelte.js                                    [39m[1m[2m  4.08 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/PowProgress.js                                                            [39m[1m[2m  4.11 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/dev/netz/_page.svelte.js                                           [39m[1m[2m  4.56 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/nutzungsbedingungen/_page.svelte.js                                [39m[1m[2m  4.83 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/registrieren/_page.svelte.js                                       [39m[1m[2m  5.05 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/exports.js                                                                [39m[1m[2m  5.59 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/status/_page.svelte.js                                             [39m[1m[2m  6.02 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/radius.js                                                                 [39m[1m[2m  6.03 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/umkreis.svelte.js                                                         [39m[1m[2m  6.07 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/Icon.js                                                                   [39m[1m[2m  6.38 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/umkreis/_page.svelte.js                                            [39m[1m[2m  6.94 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/vorschau/_page.svelte.js                                           [39m[1m[2m  7.13 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/toast.svelte.js                                                           [39m[1m[2m  7.49 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/_page.svelte.js                                                    [39m[1m[2m  7.89 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/datenschutz/_page.svelte.js                                        [39m[1m[2m  8.96 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/UmkreisPanel.js                                                           [39m[1m[2m 15.70 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/_layout.svelte.js                                                  [39m[1m[2m 16.26 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/synthetic.js                                                              [39m[1m[2m 20.19 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/einstellungen/_page.svelte.js                                      [39m[1m[2m 27.98 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/NetworkExplorer.js                                                        [39m[1m[2m 29.41 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/utils.js                                                                  [39m[1m[2m 34.22 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/view.svelte.js                                                            [39m[1m[2m 34.44 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mremote-entry.js                                                                  [39m[1m[2m 36.81 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/index.js                                                                  [39m[1m[2m 47.14 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/root.js                                                                   [39m[1m[2m 90.55 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mindex.js                                                                         [39m[1m[2m132.28 kB[22m[1m[22m
+[32m✓ built in 10.05s[39m
+
+Run npm run preview to preview your production build locally.
+
+> Using @sveltejs/adapter-static
+  Wrote site to "build"
+  ✔ done

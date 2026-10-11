@@ -1,0 +1,2 @@
+1
+Aufräumen: requests_expired=0, requests_deleted=0, unverified_deleted=0, approval_notices=0, place_changes_deleted=0, registration_ips_deleted=0, login_failures_deleted=0, pow_deleted=0, rate_counters_deleted=0, appeals_deleted=0, reports_deleted=0, audit_deleted=0, tombstones_deleted=0, journal_purged=0, aktive_konten=0

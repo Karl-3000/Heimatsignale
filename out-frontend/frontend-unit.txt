@@ -1,0 +1,31 @@
+
+> heimatsignale-web@0.1.0 test:unit
+> vitest run
+
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90m/home/runner/work/Heimatsignale/Heimatsignale/web[39m
+
+ [32m✓[39m src/lib/network/model.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 65[2mms[22m[39m
+ [32m✓[39m src/lib/map/cluster.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 281[2mms[22m[39m
+ [32m✓[39m src/lib/api/client.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m src/lib/network/labels.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 40[2mms[22m[39m
+ [32m✓[39m src/lib/map/style.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/lib/map/miniature.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m src/lib/api/guard.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/lib/map/geo.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m src/lib/network/camera.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 1559[2mms[22m[39m
+   [33m[2m✓[22m[39m Beschriftung im Ausschnitt[2m > [22mschneidet auf Telefon und Desktop keine Beschriftung ab und überlappt nicht [33m 1549[2mms[22m[39m
+ [32m✓[39m src/lib/util/format.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/lib/pow/solver.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 193[2mms[22m[39m
+ [32m✓[39m src/lib/network/geometry.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/lib/api/endpoints.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m src/lib/network/layout.test.ts [2m([22m[2m17 tests[22m[2m)[22m[33m 3338[2mms[22m[39m
+   [33m[2m✓[22m[39m Testdaten aus dem Projektplan[2m > [22m300 Knoten [33m 1295[2mms[22m[39m
+   [33m[2m✓[22m[39m Rechenzeit[2m > [22m300 Knoten vollständig aufklappen bleibt im Rahmen [33m 1281[2mms[22m[39m
+ [32m✓[39m src/lib/util/radius.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m15 passed[39m[22m[90m (15)[39m
+[2m      Tests [22m [1m[32m130 passed[39m[22m[90m (130)[39m
+[2m   Start at [22m 17:27:26
+[2m   Duration [22m 4.05s[2m (transform 750ms, setup 0ms, collect 1.54s, tests 5.62s, environment 7ms, prepare 1.73s)[22m
+

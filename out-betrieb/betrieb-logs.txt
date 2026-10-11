@@ -1,0 +1,132 @@
+app-1  | Operations to perform:
+app-1  |   Apply all migrations: accounts, admin, adminpanel, auth, contacts, contenttypes, jobs, moderation, otp_static, otp_totp, places, sessions
+app-1   | Running migrations:
+app-1   |   Applying places.0001_initial... OK
+app-1   |   Applying accounts.0001_initial... OK
+app-1   |   Applying accounts.0002_grabstein_ohne_created_at... OK
+app-1   |   Applying contenttypes.0001_initial... OK
+jobs-1  |     ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/core/management/__init__.py", line 442, in execute_from_command_line
+app-1   |   Applying admin.0001_initial... OK
+jobs-1  |     utility.execute()
+jobs-1  |     ~~~~~~~~~~~~~~~^^
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/core/management/__init__.py", line 436, in execute
+jobs-1  |     self.fetch_command(subcommand).run_from_argv(self.argv)
+jobs-1  |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/core/management/base.py", line 420, in run_from_argv
+app-1   |   Applying admin.0002_logentry_remove_auto_add... OK
+app-1   |   Applying admin.0003_logentry_add_action_flag_choices... OK
+app-1   |   Applying adminpanel.0001_initial... OK
+app-1   |   Applying contenttypes.0002_remove_content_type_name... OK
+app-1   |   Applying auth.0001_initial... OK
+app-1   |   Applying auth.0002_alter_permission_name_max_length... OK
+app-1   |   Applying auth.0003_alter_user_email_max_length... OK
+app-1   |   Applying auth.0004_alter_user_username_opts... OK
+app-1   |   Applying auth.0005_alter_user_last_login_null... OK
+jobs-1  |     self.execute(*args, **cmd_options)
+web-1   | {"level":"info","ts":1791739675.0589638,"msg":"maxprocs: Leaving GOMAXPROCS=4: CPU quota undefined"}
+web-1   | {"level":"info","ts":1791739675.0589888,"msg":"GOMEMLIMIT is updated","GOMEMLIMIT":15089769676,"previous":9223372036854775807}
+web-1   | {"level":"info","ts":1791739675.0589929,"msg":"using config from file","file":"/etc/caddy/Caddyfile"}
+web-1   | {"level":"info","ts":1791739675.0589957,"msg":"adapted config to JSON","adapter":"caddyfile"}
+web-1   | {"level":"info","ts":1791739675.0601614,"logger":"admin","msg":"admin endpoint started","address":"localhost:2019","enforce_origin":false,"origins":["//127.0.0.1:2019","//localhost:2019","//[::1]:2019"]}
+web-1   | {"level":"info","ts":1791739675.0607316,"logger":"http.auto_https","msg":"server is listening only on the HTTPS port but has no TLS connection policies; adding one to enable TLS","server_name":"srv0","https_port":443}
+web-1   | {"level":"info","ts":1791739675.0608003,"logger":"tls.cache.maintenance","msg":"started background certificate maintenance","cache":"0x365a8ca60380"}
+web-1   | {"level":"info","ts":1791739675.0608277,"logger":"http.auto_https","msg":"enabling automatic HTTP->HTTPS redirects","server_name":"srv0"}
+web-1   | {"level":"info","ts":1791739675.0654516,"logger":"http","msg":"enabling HTTP/3 listener","addr":":443"}
+web-1   | {"level":"info","ts":1791739675.065856,"msg":"failed to sufficiently increase receive buffer size (was: 1024 kiB, wanted: 7168 kiB, got: 2048 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details."}
+web-1   | {"level":"info","ts":1791739675.066137,"logger":"http.log","msg":"server running","name":"srv0","protocols":["h1","h2","h3"]}
+web-1   | {"level":"warn","ts":1791739675.0663364,"logger":"http","msg":"HTTP/2 skipped because it requires TLS","network":"tcp","addr":":80"}
+web-1   | {"level":"warn","ts":1791739675.066438,"logger":"http","msg":"HTTP/3 skipped because it requires TLS","network":"tcp","addr":":80"}
+web-1   | {"level":"info","ts":1791739675.066494,"logger":"http.log","msg":"server running","name":"remaining_auto_https_redirects","protocols":["h1","h2","h3"]}
+web-1   | {"level":"info","ts":1791739675.0665271,"logger":"http","msg":"enabling automatic TLS certificate management","domains":["localhost"]}
+web-1   | {"level":"info","ts":1791739675.0675542,"logger":"tls.obtain","msg":"acquiring lock","identifier":"localhost"}
+web-1   | {"level":"info","ts":1791739675.067781,"logger":"tls","msg":"cleaning storage unit","storage":"FileStorage:/data/caddy"}
+web-1   | {"level":"info","ts":1791739675.0680323,"logger":"tls.obtain","msg":"lock acquired","identifier":"localhost"}
+web-1   | {"level":"info","ts":1791739675.0681713,"logger":"tls.obtain","msg":"obtaining certificate","identifier":"localhost"}
+web-1   | {"level":"info","ts":1791739675.0690575,"logger":"tls","msg":"finished cleaning storage units"}
+web-1   | {"level":"warn","ts":1791739675.0857651,"logger":"pki.ca.local","msg":"installing root certificate (you might be prompted for password)","path":"storage:pki/authorities/local/root.crt"}
+web-1   | {"level":"info","ts":1791739675.0865693,"msg":"warning: \"certutil\" is not available, install \"certutil\" with \"apt install libnss3-tools\" or \"yum install nss-tools\" and try again"}
+web-1   | {"level":"info","ts":1791739675.0866897,"msg":"define JAVA_HOME environment variable to use the Java trust"}
+web-1   | {"level":"info","ts":1791739675.0881882,"logger":"tls.obtain","msg":"certificate obtained successfully","identifier":"localhost","issuer":"local"}
+app-1   |   Applying auth.0006_require_contenttypes_0002... OK
+app-1   |   Applying auth.0007_alter_validators_add_error_messages... OK
+app-1   |   Applying auth.0008_alter_user_username_max_length... OK
+app-1   |   Applying auth.0009_alter_user_last_name_max_length... OK
+app-1   |   Applying auth.0010_alter_group_name_max_length... OK
+app-1   |   Applying auth.0011_update_proxy_permissions... OK
+app-1   |   Applying auth.0012_alter_user_first_name_max_length... OK
+app-1   |   Applying contacts.0001_initial... OK
+app-1   |   Applying jobs.0001_initial... OK
+app-1   |   Applying moderation.0001_initial... OK
+app-1   |   Applying otp_static.0001_initial... OK
+app-1   |   Applying otp_static.0002_throttling... OK
+web-1   | {"level":"info","ts":1791739675.0883675,"logger":"tls.obtain","msg":"releasing lock","identifier":"localhost"}
+web-1   | {"level":"info","ts":1791739675.1127753,"msg":"certificate installed properly in linux trusts"}
+web-1   | {"level":"info","ts":1791739675.1132927,"msg":"autosaved config (load with --resume flag)","file":"/config/caddy/autosave.json"}
+web-1   | {"level":"info","ts":1791739675.1134033,"msg":"serving initial configuration"}
+web-1   | {"level":"error","ts":1791739678.0919502,"logger":"http.log.error.log0","msg":"dial tcp 172.18.0.3:8000: connect: connection refused","request":{"remote_ip":"172.18.0.1","remote_port":"53132","client_ip":"172.18.0.1","proto":"HTTP/2.0","method":"GET","host":"localhost","uri":"/api/session","headers":{"User-Agent":["curl/8.5.0"],"Accept":["*/*"]},"tls":{"resumed":false,"version":772,"cipher_suite":4865,"proto":"h2","server_name":"localhost","ech":false}},"duration":0.000927774,"status":502,"err_id":"2dh6ksxea","err_trace":"reverseproxy.statusError (reverseproxy.go:1695)"}
+jobs-1  |     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/core/management/base.py", line 464, in execute
+jobs-1  |     output = self.handle(*args, **options)
+jobs-1  |   File "/app/deletion/management/commands/loeschdienst.py", line 10, in handle
+jobs-1  |     counts = purge_deleted_accounts()
+jobs-1  |   File "/app/deletion/services.py", line 66, in purge_deleted_accounts
+jobs-1  |     ids = list(deleted.values_list("id", flat=True))
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/db/models/query.py", line 386, in __iter__
+jobs-1  |     self._fetch_all()
+jobs-1  |     ~~~~~~~~~~~~~~~^^
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/db/models/query.py", line 1954, in _fetch_all
+app-1   |   Applying otp_static.0003_add_timestamps... OK
+app-1   |   Applying otp_totp.0001_initial... OK
+app-1   |   Applying otp_totp.0002_auto_20190420_0723... OK
+app-1   |   Applying otp_totp.0003_add_timestamps... OK
+app-1   |   Applying sessions.0001_initial... OK
+app-1   | 10749 Orte importiert, 0 nicht mehr vorhandene entfernt.
+app-1   | [2026-10-11 17:27:59 +0000] [1] [INFO] Starting gunicorn 26.2.0
+app-1   | [2026-10-11 17:27:59 +0000] [1] [INFO] Listening at: http://0.0.0.0:8000 (1)
+app-1   | [2026-10-11 17:27:59 +0000] [1] [INFO] Using worker: sync
+app-1   | [2026-10-11 17:27:59 +0000] [13] [INFO] Booting worker with pid: 13
+app-1   | [2026-10-11 17:27:59 +0000] [14] [INFO] Booting worker with pid: 14
+app-1   | [2026-10-11 17:27:59 +0000] [15] [INFO] Booting worker with pid: 15
+app-1   | [2026-10-11 17:27:59 +0000] [1] [INFO] Control socket listening at /home/heimat/.gunicorn/gunicorn.ctl
+app-1   | GET /api/session 200 29ms
+jobs-1  |     self._result_cache = list(self._iterable_class(self))
+jobs-1  |                          ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/db/models/query.py", line 273, in __iter__
+jobs-1  |     for row in compiler.results_iter(
+jobs-1  |                ~~~~~~~~~~~~~~~~~~~~~^
+jobs-1  |         chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+jobs-1  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs-1  |     ):
+jobs-1  |     ^
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1572, in results_iter
+jobs-1  |     results = self.execute_sql(
+jobs-1  |         MULTI, chunked_fetch=chunked_fetch, chunk_size=chunk_size
+jobs-1  |     )
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1623, in execute_sql
+jobs-1  |     cursor.execute(sql, params)
+jobs-1  |     ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+jobs-1  |     return self._execute_with_wrappers(
+jobs-1  |            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+jobs-1  |         sql, params, many=False, executor=self._execute
+jobs-1  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs-1  |     )
+jobs-1  |     ^
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+jobs-1  |     return executor(sql, params, many, context)
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+jobs-1  |     with self.db.wrap_database_errors:
+jobs-1  |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+jobs-1  |     raise dj_exc_value.with_traceback(traceback) from exc_value
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+jobs-1  |     return self.cursor.execute(sql, params)
+jobs-1  |            ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+jobs-1  |   File "/usr/local/lib/python3.13/site-packages/psycopg/cursor.py", line 117, in execute
+jobs-1  |     raise ex.with_traceback(None)
+jobs-1  | django.db.utils.ProgrammingError: relation "users" does not exist
+jobs-1  | LINE 1: SELECT "users"."id" AS "id" FROM "users" WHERE "users"."stat...
+jobs-1  |                                          ^
+jobs-1  | Löschdienst fehlgeschlagen
+jobs-1  | Aufräumen: requests_expired=0, requests_deleted=0, unverified_deleted=0, approval_notices=0, place_changes_deleted=0, registration_ips_deleted=0, login_failures_deleted=0, pow_deleted=0, rate_counters_deleted=0, appeals_deleted=0, reports_deleted=0, audit_deleted=0, tombstones_deleted=0, journal_purged=0, aktive_konten=0

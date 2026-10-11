@@ -1,0 +1,5 @@
+NAME                   IMAGE                    COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+heimatsignale-app-1    heimatsignale-app        "docker-entrypoint.s…"   app       12 seconds ago   Up 6 seconds              8000/tcp
+heimatsignale-db-1     postgis/postgis:16-3.4   "docker-entrypoint.s…"   db        12 seconds ago   Up 12 seconds (healthy)   5432/tcp
+heimatsignale-jobs-1   heimatsignale-jobs       "docker-entrypoint.s…"   jobs      12 seconds ago   Up 6 seconds              8000/tcp
+heimatsignale-web-1    heimatsignale-web        "caddy run --config …"   web       12 seconds ago   Up 6 seconds              0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp, 443/udp, 2019/tcp

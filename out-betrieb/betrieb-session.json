@@ -1,0 +1,1 @@
+{"authenticated": false, "csrf_token": "l47So8KDQJEk2hAN3qweAwAa5QSi6RzhoElJiiV2CMEobIhrLyXaq8erpA91Xjk3", "state": null, "user": null, "site": {"name": "Heimatsignale", "radius_km": 20, "radius_options": [20, 100], "request_body_max": 500, "message_body_max": 2000, "poll_seconds": 30, "admin_path": "/verwaltung/"}}

@@ -1,0 +1,96 @@
+[11/Oct/2026 19:28:05] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:05] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:29] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:29] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:29] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:30] "GET /api/places/search?q=Sonth HTTP/1.1" 200 475
+[11/Oct/2026 19:28:30] "GET /api/places/search?q=Marl HTTP/1.1" 200 631
+[11/Oct/2026 19:28:30] "GET /api/auth/challenge?purpose=register HTTP/1.1" 200 273
+[11/Oct/2026 19:28:30] "POST /api/auth/register HTTP/1.1" 202 12
+[11/Oct/2026 19:28:31] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:31] "POST /api/auth/verify-email HTTP/1.1" 200 905
+[11/Oct/2026 19:28:31] "GET /api/session HTTP/1.1" 200 905
+[11/Oct/2026 19:28:31] "GET /api/inbox/summary HTTP/1.1" 200 45
+[11/Oct/2026 19:28:31] "POST /api/me/nickname/reroll HTTP/1.1" 200 62
+[11/Oct/2026 19:28:31] "GET /api/inbox/summary HTTP/1.1" 200 45
+[11/Oct/2026 19:28:31] "POST /api/me/nickname/confirm HTTP/1.1" 204 0
+[11/Oct/2026 19:28:31] "GET /api/inbox/summary HTTP/1.1" 200 45
+[11/Oct/2026 19:28:31] "GET /api/nearby/overview?radius_km=20 HTTP/1.1" 200 3939
+[11/Oct/2026 19:28:33] "GET /api/nearby/origins?residence=all&level=district&parent=09&radius_km=20 HTTP/1.1" 200 1867
+[11/Oct/2026 19:28:34] "GET /api/nearby/origins?residence=all&level=place&parent=09780&radius_km=20 HTTP/1.1" 200 1113
+[11/Oct/2026 19:28:36] "GET /api/nearby/people?residence=all&home=09780139&page=1&radius_km=20 HTTP/1.1" 200 1779
+[11/Oct/2026 19:28:37] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:37] "POST /api/auth/login HTTP/1.1" 200 903
+[11/Oct/2026 19:28:37] "GET /api/session HTTP/1.1" 200 903
+[11/Oct/2026 19:28:37] "GET /api/inbox/summary HTTP/1.1" 200 45
+[11/Oct/2026 19:28:37] "GET /api/nearby/overview?radius_km=20 HTTP/1.1" 200 3939
+[11/Oct/2026 19:28:37] "GET /api/session HTTP/1.1" 200 903
+[11/Oct/2026 19:28:37] "GET /api/users/e3284227-facf-45db-a186-59ed395d8747 HTTP/1.1" 200 517
+[11/Oct/2026 19:28:38] "POST /api/requests HTTP/1.1" 201 79
+[11/Oct/2026 19:28:38] "GET /api/users/e3284227-facf-45db-a186-59ed395d8747 HTTP/1.1" 200 634
+[11/Oct/2026 19:28:38] "GET /api/session HTTP/1.1" 200 903
+[11/Oct/2026 19:28:38] "GET /api/inbox/summary HTTP/1.1" 200 45
+[11/Oct/2026 19:28:38] "GET /api/requests HTTP/1.1" 200 659
+[11/Oct/2026 19:28:38] "POST /api/requests/53183ce2-acc7-42e1-b3b9-a0367ecfc56f/accept HTTP/1.1" 200 59
+[11/Oct/2026 19:28:38] "GET /api/conversations/19f64ce0-1d3f-4cbb-9f9b-a07ca42ea109/messages HTTP/1.1" 200 601
+[11/Oct/2026 19:28:38] "GET /api/requests HTTP/1.1" 200 112
+[11/Oct/2026 19:28:38] "GET /api/inbox/summary HTTP/1.1" 200 166
+[11/Oct/2026 19:28:38] "POST /api/conversations/19f64ce0-1d3f-4cbb-9f9b-a07ca42ea109/messages HTTP/1.1" 201 173
+[11/Oct/2026 19:28:38] "GET /api/session HTTP/1.1" 200 906
+[11/Oct/2026 19:28:38] "GET /api/conversations HTTP/1.1" 200 618
+[11/Oct/2026 19:28:38] "GET /api/inbox/summary HTTP/1.1" 200 166
+[11/Oct/2026 19:28:38] "GET /api/conversations/19f64ce0-1d3f-4cbb-9f9b-a07ca42ea109/messages HTTP/1.1" 200 773
+[11/Oct/2026 19:28:39] "POST /api/conversations/19f64ce0-1d3f-4cbb-9f9b-a07ca42ea109/messages HTTP/1.1" 201 131
+[11/Oct/2026 19:28:39] "POST /api/reports HTTP/1.1" 201 12
+[11/Oct/2026 19:28:40] "POST /api/blocks HTTP/1.1" 204 0
+[11/Oct/2026 19:28:40] "GET /api/inbox/summary HTTP/1.1" 200 45
+[11/Oct/2026 19:28:40] "GET /api/conversations HTTP/1.1" 200 160
+[11/Oct/2026 19:28:40] "GET /api/session HTTP/1.1" 200 903
+[11/Oct/2026 19:28:40] "GET /api/conversations/19f64ce0-1d3f-4cbb-9f9b-a07ca42ea109/messages HTTP/1.1" 200 96
+[11/Oct/2026 19:28:40] "GET /api/inbox/summary HTTP/1.1" 200 45
+[11/Oct/2026 19:28:40] "GET /api/session HTTP/1.1" 200 906
+Not Found: /api/users/53449119-4a3b-4b1f-8930-85dfebceecfe
+Not Found: /api/users/53449119-4a3b-4b1f-8930-85dfebceecfe
+[11/Oct/2026 19:28:40] "GET /api/users/53449119-4a3b-4b1f-8930-85dfebceecfe HTTP/1.1" 404 95
+[11/Oct/2026 19:28:40] "GET /api/session HTTP/1.1" 200 906
+[11/Oct/2026 19:28:40] "GET /api/me/place-changes HTTP/1.1" 200 13
+[11/Oct/2026 19:28:40] "GET /api/blocks HTTP/1.1" 200 137
+[11/Oct/2026 19:28:40] "GET /api/inbox/summary HTTP/1.1" 200 45
+[11/Oct/2026 19:28:41] "POST /api/me/delete HTTP/1.1" 204 0
+[11/Oct/2026 19:28:41] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:41] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:41] "GET /api/session HTTP/1.1" 200 317
+Unauthorized: /api/auth/login
+Unauthorized: /api/auth/login
+[11/Oct/2026 19:28:41] "POST /api/auth/login HTTP/1.1" 401 89
+[11/Oct/2026 19:28:41] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:42] "POST /api/auth/login HTTP/1.1" 200 903
+[11/Oct/2026 19:28:42] "GET /api/session HTTP/1.1" 200 903
+[11/Oct/2026 19:28:42] "GET /api/inbox/summary HTTP/1.1" 200 45
+[11/Oct/2026 19:28:42] "GET /api/nearby/overview?radius_km=20 HTTP/1.1" 200 3939
+[11/Oct/2026 19:28:43] "GET /api/nearby/origins?residence=all&level=district&parent=09&radius_km=20 HTTP/1.1" 200 1867
+[11/Oct/2026 19:28:43] "GET /api/session HTTP/1.1" 200 317
+Unauthorized: /api/nearby/overview
+Unauthorized: /api/nearby/overview
+[11/Oct/2026 19:28:43] "GET /api/nearby/overview HTTP/1.1" 401 64
+[11/Oct/2026 19:28:43] "GET /verwaltung/login/ HTTP/1.1" 200 4690
+[11/Oct/2026 19:28:43] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:44] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:44] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:44] "GET /api/session HTTP/1.1" 200 317
+[11/Oct/2026 19:28:44] "POST /api/auth/login HTTP/1.1" 200 903
+[11/Oct/2026 19:28:44] "GET /api/session HTTP/1.1" 200 903
+[11/Oct/2026 19:28:44] "GET /api/inbox/summary HTTP/1.1" 200 45
+[11/Oct/2026 19:28:44] "GET /api/nearby/overview?radius_km=20 HTTP/1.1" 200 3939
+[11/Oct/2026 19:28:44] "GET /api/nearby/overview HTTP/1.1" 200 3939
+[11/Oct/2026 19:28:45] "GET /api/nearby/overview?radius_km=100 HTTP/1.1" 200 8330
+[11/Oct/2026 19:28:46] "GET /api/nearby/origins?residence=all&level=district&parent=09&radius_km=100 HTTP/1.1" 200 2307
+[11/Oct/2026 19:28:48] "GET /api/nearby/origins?residence=all&level=place&parent=09780&radius_km=100 HTTP/1.1" 200 1342
+[11/Oct/2026 19:28:49] "GET /api/nearby/people?residence=all&home=09780139&page=1&radius_km=100 HTTP/1.1" 200 3188
+[11/Oct/2026 19:28:50] "GET /api/session HTTP/1.1" 200 903
+[11/Oct/2026 19:28:50] "GET /api/inbox/summary HTTP/1.1" 200 45
+[11/Oct/2026 19:28:50] "GET /api/nearby/overview?radius_km=100 HTTP/1.1" 200 8330
+[11/Oct/2026 19:28:50] "GET /api/nearby/overview?radius_km=20 HTTP/1.1" 200 3939
+Unprocessable Content: /api/nearby/overview
+Unprocessable Content: /api/nearby/overview
+[11/Oct/2026 19:28:50] "GET /api/nearby/overview?radius_km=55 HTTP/1.1" 422 127

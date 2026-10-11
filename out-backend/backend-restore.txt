@@ -1,0 +1,16 @@
+1. Ausgangslage
+NOTICE:  database "heimat_wiederherstellungstest" does not exist, skipping
+Ausgangslage angelegt.
+2. Backup ("Montag")
+3. Löschungen nach dem Backup ("Dienstag")
+Nach dem Backup gelöscht: Konto, Nachricht, Anfrage.
+4. Backup einspielen ("Mittwoch")
+5. Journal-Nachlauf und Tagesjob
+account 68bd1e63-7252-4643-a86b-23a1a83b6d6a: Konto gelöscht
+conversation 2aecf0d8-9d18-4d6d-9df3-e298425ce134: Konversation fehlte bereits
+message db60c911-e45d-42bb-a389-299842c73f45: Nachricht gelöscht
+request b7a06c56-6f1a-4db0-8b5c-28715b9a9689: Anfrage zurückgezogen
+Nachlauf beendet: 4 ausgeführt, 0 unbestätigt übersprungen.
+Aufräumen: requests_expired=0, requests_deleted=0, unverified_deleted=0, approval_notices=0, place_changes_deleted=0, registration_ips_deleted=0, login_failures_deleted=0, pow_deleted=0, rate_counters_deleted=0, appeals_deleted=0, reports_deleted=0, audit_deleted=0, tombstones_deleted=1, journal_purged=0, aktive_konten=2
+6. Prüfung
+Wiederherstellungstest bestanden: Nach dem Nachlauf ist nichts Gelöschtes zurück.

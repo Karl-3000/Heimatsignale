@@ -1,0 +1,9 @@
+
+Running 4 tests using 1 worker
+
+  ✓  1 tests/durchstich.spec.ts:46:1 › Durchstich: Registrierung, Herkunftsnetz, Kontaktanfrage, Gespräch, Meldung, Blockierung, Löschung (12.7s)
+  ✓  2 tests/durchstich.spec.ts:208:1 › Umkreis auf dem Handy, dunkles Thema, Listenansicht als Standard (1.9s)
+  ✓  3 tests/durchstich.spec.ts:223:1 › Ohne Anmeldung gibt es keine Nutzerdaten, und der Admin-Bereich verlangt den zweiten Faktor (554ms)
+  ✓  4 tests/durchstich.spec.ts:237:1 › Umkreis umschalten: 20 km als Standard, 100 km auf Wunsch, Auswahl bleibt erhalten (7.1s)
+
+  4 passed (23.2s)
