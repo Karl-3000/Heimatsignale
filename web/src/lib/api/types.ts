@@ -43,7 +43,10 @@ export interface Me {
 
 export interface SiteInfo {
 	name: string;
+	/** Standard-Umkreis in km. */
 	radius_km: number;
+	/** Wählbare Umkreise in km, z. B. [20, 100]. */
+	radius_options?: number[];
 	request_body_max: number;
 	message_body_max: number;
 	poll_seconds: number;
@@ -254,6 +257,7 @@ export const REPORT_REASONS: ReadonlyArray<{ value: ReportReason; label: string 
 export const DEFAULT_SITE: SiteInfo = {
 	name: 'Heimatsignale',
 	radius_km: 20,
+	radius_options: [20, 100],
 	request_body_max: 500,
 	message_body_max: 2000,
 	poll_seconds: 30,

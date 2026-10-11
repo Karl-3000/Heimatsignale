@@ -1,8 +1,10 @@
 import { errorMessage, isApiError } from '../api/client';
 import { getOverview } from '../api/endpoints';
-import type { NearbyOverview } from '../api/types';
+import type { NearbyOverview, SiteInfo } from '../api/types';
 import { formatRetryAfter } from '../util/format';
-import { apiSource } from './api-source';
+import { RADIUS_STORAGE_KEY, radiusOptions, resolveRadius } from '../util/radius';
+import { readStorage, writeStorage } from '../util/storage';
+import { createApiSource } from './api-source';
 import { scopeName, statesFromOverview, totalForScope } from './overview';
 import { SCOPE_ALL, type OriginSource } from './source';
 import { ownOriginFromAgs, type SortMode } from './types';
@@ -14,6 +16,9 @@ function initialMode(): ViewMode {
 	return 'netz';
 }
 
+/** Liefert die Datenquelle für einen Umkreis; null bedeutet den Standard des Servers. */
+export type SourceFactory = (radiusKm: number | null) => OriginSource;
+
 /**
  * Gemeinsamer Zustand der Umkreis-Ansicht: Karte, Netz und Liste lesen dieselbe Instanz.
  *
@@ -21,6 +26,10 @@ function initialMode(): ViewMode {
  * deshalb dieselbe Auswahl, dieselben aufgeklappten Stufen, denselben Ausschnitt und
  * denselben Fokus wieder. Je Wohnort (und für "Alle im Umkreis") gibt es eine eigene
  * NetworkView; schon geladene Stufen werden nicht erneut abgefragt.
+ *
+ * Hier liegt auch der gewählte Umkreis (z. B. 20 oder 100 km). Übersicht, Herkunft und
+ * Personen werden immer mit demselben Wert abgefragt. Ein Wechsel verwirft alle Netze,
+ * weil sich die Zahlen ändern; Darstellung (Netz oder Liste) und Sortierung bleiben.
  */
 export class UmkreisState {
 	overview = $state.raw<NearbyOverview | null>(null);
@@ -31,44 +40,97 @@ export class UmkreisState {
 	mode = $state<ViewMode>(initialMode());
 	sort = $state<SortMode>('distance');
 	view = $state.raw<NetworkView | null>(null);
+	/** Gewählter Umkreis in km; null, solange die Auswahl des Servers noch nicht bekannt ist. */
+	radius = $state<number | null>(null);
+	/** Wählbare Umkreise in km, aufsteigend. */
+	options = $state.raw<number[]>([]);
 	/** Zuletzt gezeigter Kartenausschnitt. */
 	camera: { center: [number, number]; zoom: number } | null = null;
 
 	private views = new Map<string, NetworkView>();
-	private readonly source: OriginSource;
+	private readonly sourceFor: SourceFactory;
+	private source: OriginSource;
+	private requestId = 0;
 
-	constructor(source: OriginSource = apiSource) {
-		this.source = source;
+	constructor(sourceFor: SourceFactory = (radiusKm) => createApiSource(radiusKm ?? undefined)) {
+		this.sourceFor = sourceFor;
+		this.source = sourceFor(null);
 	}
 
 	get isEmpty(): boolean {
 		return this.overview !== null && this.overview.total === 0;
 	}
 
+	/**
+	 * Übernimmt Auswahl und Standardwert aus der Sitzung. Die im Browser gespeicherte Wahl
+	 * gilt nur, wenn der Server sie anbietet.
+	 */
+	configure(site: Pick<SiteInfo, 'radius_km' | 'radius_options'>): void {
+		const options = radiusOptions(site.radius_options, site.radius_km);
+		this.options = options;
+		if (this.radius === null || !options.includes(this.radius)) {
+			this.radius = resolveRadius(readStorage(RADIUS_STORAGE_KEY), options, site.radius_km);
+		}
+	}
+
 	/** Übernimmt eine fertige Übersicht (Entwicklungsansicht, Tests). */
 	setOverview(overview: NearbyOverview): void {
 		this.overview = overview;
 		this.views.clear();
+		this.source = this.sourceFor(this.radius);
 		if (this.scope !== SCOPE_ALL && !overview.residences.some((r) => r.ags === this.scope)) this.scope = SCOPE_ALL;
 		this.view = this.ensureView(this.scope);
 	}
 
 	/** Lädt die Übersicht einmal. Mit `force` werden alle Netze verworfen und neu aufgebaut. */
 	async load(force: boolean = false): Promise<void> {
-		if (this.loading) return;
+		if (this.loading && !force) return;
 		if (this.overview && !force) return;
+		const id = ++this.requestId;
 		this.loading = true;
 		this.error = null;
 		try {
-			this.setOverview(await getOverview());
+			const overview = await this.fetchOverview();
+			// Eine inzwischen gestartete neuere Abfrage (anderer Umkreis) hat Vorrang.
+			if (id !== this.requestId) return;
+			this.setOverview(overview);
 		} catch (e) {
+			if (id !== this.requestId) return;
 			this.error =
 				isApiError(e) && e.isRateLimited
 					? `Zu viele Abfragen in kurzer Zeit. Bitte versuche es ${formatRetryAfter(e.retryAfter)} noch einmal.`
 					: errorMessage(e);
 		} finally {
-			this.loading = false;
+			if (id === this.requestId) this.loading = false;
 		}
+	}
+
+	private async fetchOverview(): Promise<NearbyOverview> {
+		try {
+			return await getOverview(this.radius ?? undefined);
+		} catch (e) {
+			// Der Server bietet den gespeicherten Umkreis nicht mehr an: einmal mit seinem Standard laden.
+			if (isApiError(e) && e.status === 422 && this.radius !== null) {
+				const overview = await getOverview();
+				this.radius = overview.radius_km;
+				writeStorage(RADIUS_STORAGE_KEY, null);
+				return overview;
+			}
+			throw e;
+		}
+	}
+
+	/**
+	 * Wechselt den Umkreis. Die Übersicht wird neu geladen und alle Netze beginnen von vorn
+	 * (aufgeklappte Stufen, Auswahl, Personenliste), weil sich die Zahlen ändern.
+	 */
+	async setRadius(radiusKm: number): Promise<void> {
+		if (radiusKm === this.radius) return;
+		if (this.options.length > 0 && !this.options.includes(radiusKm)) return;
+		this.radius = radiusKm;
+		writeStorage(RADIUS_STORAGE_KEY, String(radiusKm));
+		this.camera = null;
+		await this.load(true);
 	}
 
 	private ensureView(scope: string): NetworkView | null {
@@ -103,8 +165,10 @@ export class UmkreisState {
 		this.view?.setSort(mode);
 	}
 
-	/** Verwirft alles, z. B. nach der Abmeldung. */
+	/** Verwirft die geladenen Daten, z. B. nach der Abmeldung. Der gewählte Umkreis bleibt. */
 	reset(): void {
+		this.requestId += 1;
+		this.loading = false;
 		this.overview = null;
 		this.view = null;
 		this.views.clear();

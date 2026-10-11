@@ -71,7 +71,7 @@ export function maskPolygon(center: LngLat, radiusKm: number): LngLat[][] {
 }
 
 /**
- * Einfache ebene Projektion um einen Mittelpunkt. Für 20 km Umkreis genau genug;
+ * Einfache ebene Projektion um einen Mittelpunkt. Für Umkreise bis etwa 100 km genau genug;
  * dient als Ersatzdarstellung, wenn die Kartenbibliothek nicht starten kann (kein WebGL).
  */
 export function localProject(

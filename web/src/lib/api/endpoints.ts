@@ -108,16 +108,18 @@ export function nearestPlace(lat: number, lon: number): Promise<{ place: Place }
 
 /* Umkreis und Herkunft */
 
-export function getOverview(): Promise<NearbyOverview> {
-	return api.get('/api/nearby/overview');
+/* `radiusKm` ist einer der Werte aus site.radius_options; ohne Angabe gilt der Standard des Servers. */
+
+export function getOverview(radiusKm?: number): Promise<NearbyOverview> {
+	return api.get('/api/nearby/overview', { radius_km: radiusKm });
 }
 
-export function getOrigins(residence: string, level: OriginLevel, parent?: string): Promise<OriginsResponse> {
-	return api.get('/api/nearby/origins', { residence, level, parent: level === 'state' ? undefined : parent });
+export function getOrigins(residence: string, level: OriginLevel, parent?: string, radiusKm?: number): Promise<OriginsResponse> {
+	return api.get('/api/nearby/origins', { residence, level, parent: level === 'state' ? undefined : parent, radius_km: radiusKm });
 }
 
-export function getPeople(residence: string, home: string, page: number): Promise<PeopleResponse> {
-	return api.get('/api/nearby/people', { residence, home, page });
+export function getPeople(residence: string, home: string, page: number, radiusKm?: number): Promise<PeopleResponse> {
+	return api.get('/api/nearby/people', { residence, home, page, radius_km: radiusKm });
 }
 
 export function getUser(userId: string): Promise<UserResponse> {

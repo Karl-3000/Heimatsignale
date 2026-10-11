@@ -3,7 +3,7 @@
  * wenige Farben, keine POI-Symbole, damit das Netz der Vordergrund ist.
  * Grundlage ist das Protomaps-Basemap-Schema v4 (Ebenen earth, water, landuse,
  * roads, boundaries, places). Ohne Kachel-URL besteht der Stil nur aus Hintergrund,
- * 20-km-Kreis und Maske; die Karte funktioniert dann ohne jede Netzanfrage.
+ * Umkreis-Kreis und Maske; die Karte funktioniert dann ohne jede Netzanfrage.
  * Ortsnamen auf der Grundkarte gibt es nur, wenn eine Glyphen-URL gesetzt ist.
  */
 
@@ -182,7 +182,7 @@ export function buildMapStyle(options: StyleOptions, origin: string = ''): Json 
 		}
 	}
 
-	// Außerhalb des Umkreises wird die Karte abgedeckt: Gezeigt wird nie mehr als der 20-km-Radius.
+	// Außerhalb des Umkreises wird die Karte abgedeckt: Gezeigt wird nie mehr als der gewählte Umkreis.
 	layers.push(
 		{ id: 'maske', type: 'fill', source: MASK_SOURCE, paint: { 'fill-color': c.mask, 'fill-opacity': 0.92 } },
 		{

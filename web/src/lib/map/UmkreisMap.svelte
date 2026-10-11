@@ -21,7 +21,7 @@
 
 	/**
 	 * Umkreiskarte. Der eigene Wohnort liegt in der Mitte; gezeigt wird nie mehr als der
-	 * 20-km-Radius. Jede Wohnort-Gemeinde ist EIN Knoten mit der Miniatur ihres
+	 * gewählte Umkreis (overview.radius_km, z. B. 20 oder 100 km). Jede Wohnort-Gemeinde ist EIN Knoten mit der Miniatur ihres
 	 * Stufe-1-Netzes, nie eine einzelne Person. Die Knoten sind HTML-Elemente über der
 	 * Karte: Ihre Position kommt bei jeder Kartenbewegung aus der Projektion, und aus den
 	 * Pixelabständen entstehen die Sammelknoten (unter 48 px).
@@ -41,7 +41,8 @@
 	let { overview, scope, tilesUrl = '', glyphsUrl = '', camera = null, onselect, oncamera }: Props = $props();
 
 	const PADDING = 28;
-	const ZOOM_RANGE = 4;
+	/** Zoomstufen über dem kleinsten Zoom bei 20 km. Größere Umkreise bekommen entsprechend mehr. */
+	const BASE_ZOOM_RANGE = 4;
 
 	let container = $state<HTMLDivElement | null>(null);
 	let map: MapLibreMap | null = null;
@@ -56,6 +57,8 @@
 
 	const center = $derived<LngLat>([overview.me.residence.lon, overview.me.residence.lat]);
 	const radiusKm = $derived(overview.radius_km || 20);
+	// Der größte Zoom bleibt bei jedem Umkreis auf Gemeinde-Niveau: 100 km erlauben gut zwei Stufen mehr.
+	const zoomRange = $derived(BASE_ZOOM_RANGE + Math.max(0, Math.log2(radiusKm / 20)));
 	const ownState = $derived(overview.me.home?.state_code ?? null);
 	const byAgs = $derived(new Map(overview.residences.map((r) => [r.ags, r])));
 
@@ -121,14 +124,14 @@
 		return buildMapStyle({ colors, center, radiusKm, tilesUrl, glyphsUrl }, origin) as unknown as StyleSpecification;
 	}
 
-	/** Kleinster Zoom: Der 20-km-Kreis passt gerade vollständig in die Fläche. Weiter heraus geht es nicht. */
+	/** Kleinster Zoom: Der Kreis des Umkreises passt gerade vollständig in die Fläche. Weiter heraus geht es nicht. */
 	function applyZoomLimits(jump: boolean): void {
 		if (!map) return;
 		map.setMinZoom(null);
 		const fit = map.cameraForBounds(circleBounds(center, radiusKm), { padding: PADDING });
 		const min = fit?.zoom ?? 9;
 		minZoom = min;
-		map.setMaxZoom(min + ZOOM_RANGE);
+		map.setMaxZoom(min + zoomRange);
 		map.setMinZoom(min);
 		if (jump) map.jumpTo({ center, zoom: min });
 		else if (map.getZoom() < min) map.jumpTo({ zoom: min });
@@ -179,7 +182,7 @@
 				[west, south],
 				[east, north]
 			],
-			{ padding: pad, maxZoom: minZoom + ZOOM_RANGE, duration: reducedMotion() ? 0 : 300 }
+			{ padding: pad, maxZoom: minZoom + zoomRange, duration: reducedMotion() ? 0 : 300 }
 		);
 	}
 
@@ -245,7 +248,7 @@
 				map = instance;
 				instance.touchZoomRotate.disableRotation();
 				instance.keyboard.disableRotation();
-				instance.getCanvas().setAttribute('aria-label', 'Karte des Umkreises. Mit den Pfeiltasten verschieben, mit Plus und Minus zoomen.');
+				instance.getCanvas().setAttribute('aria-label', 'Karte deines Umkreises. Mit den Pfeiltasten verschieben, mit Plus und Minus zoomen.');
 				instance.on('load', () => {
 					if (disposed) return;
 					applyZoomLimits(true);
@@ -269,6 +272,22 @@
 			map = null;
 			if (protocolAdded) removeProtocol?.('pmtiles');
 		};
+	});
+
+	// Wechsel des Umkreises: Kreis und Maske neu zeichnen, Zoomgrenzen neu setzen, ganz herauszoomen.
+	let appliedRadius = 0;
+	$effect(() => {
+		const current = radiusKm;
+		if (!ready || !map) return;
+		if (appliedRadius === 0) {
+			appliedRadius = current;
+			return;
+		}
+		if (current === appliedRadius) return;
+		appliedRadius = current;
+		map.setStyle(style());
+		applyZoomLimits(true);
+		frame += 1;
 	});
 
 	// Themenwechsel: Stil mit den Farben des neuen Themas neu setzen.
@@ -330,7 +349,7 @@
 
 	{#if !fallback}
 		<div class="controls">
-			<button type="button" onclick={() => zoomBy(1)} disabled={!ready || zoom >= minZoom + ZOOM_RANGE - 0.01} aria-label="Karte vergrößern" data-testid="map-zoom-in">
+			<button type="button" onclick={() => zoomBy(1)} disabled={!ready || zoom >= minZoom + zoomRange - 0.01} aria-label="Karte vergrößern" data-testid="map-zoom-in">
 				<Icon icon={Plus} size={18} />
 			</button>
 			<button type="button" onclick={() => zoomBy(-1)} disabled={!ready || zoom <= minZoom + 0.01} aria-label="Karte verkleinern" data-testid="map-zoom-out">

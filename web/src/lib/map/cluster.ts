@@ -28,26 +28,51 @@ export interface Cluster {
  * Agglomeratives Zusammenfassen: Solange zwei Gruppen näher als die Schwelle liegen,
  * wird das engste Paar vereinigt (Schwerpunkt nach Gewicht). Am Ende haben alle
  * Gruppen paarweise mindestens den Schwellenabstand.
+ *
+ * Für die Paarsuche liegen die Gruppen in einem Gitter mit der Schwelle als Zellgröße;
+ * geprüft werden nur Nachbarzellen. So bleibt die Karte auch mit einigen hundert
+ * Wohnorten (100-km-Umkreis) bei jeder Bewegung flüssig.
  */
 export function clusterPoints(points: readonly ScreenPoint[], threshold: number = CLUSTER_THRESHOLD_PX): Cluster[] {
 	const clusters: Cluster[] = [...points]
 		.sort((a, b) => a.id.localeCompare(b.id))
 		.map((p) => ({ ids: [p.id], x: p.x, y: p.y, weight: Math.max(p.weight, 0) }));
+	if (!(threshold > 0)) return clusters;
 
 	const limit = threshold * threshold;
+	const cellOf = (c: Cluster): string => `${Math.floor(c.x / threshold)}|${Math.floor(c.y / threshold)}`;
+
 	for (;;) {
+		const grid = new Map<string, number[]>();
+		clusters.forEach((c, i) => {
+			const key = cellOf(c);
+			const cell = grid.get(key);
+			if (cell) cell.push(i);
+			else grid.set(key, [i]);
+		});
+
 		let best = limit;
 		let bi = -1;
 		let bj = -1;
 		for (let i = 0; i < clusters.length; i++) {
-			for (let j = i + 1; j < clusters.length; j++) {
-				const dx = clusters[i].x - clusters[j].x;
-				const dy = clusters[i].y - clusters[j].y;
-				const d = dx * dx + dy * dy;
-				if (d < best) {
-					best = d;
-					bi = i;
-					bj = j;
+			const cx = Math.floor(clusters[i].x / threshold);
+			const cy = Math.floor(clusters[i].y / threshold);
+			for (let gx = cx - 1; gx <= cx + 1; gx++) {
+				for (let gy = cy - 1; gy <= cy + 1; gy++) {
+					const cell = grid.get(`${gx}|${gy}`);
+					if (!cell) continue;
+					for (const j of cell) {
+						if (j <= i) continue;
+						const dx = clusters[i].x - clusters[j].x;
+						const dy = clusters[i].y - clusters[j].y;
+						const d = dx * dx + dy * dy;
+						// Bei gleichem Abstand gewinnt das zuerst gefundene Paar in fester Reihenfolge (i, dann j).
+						if (d < best || (d === best && d < limit && (i < bi || (i === bi && j < bj)))) {
+							best = d;
+							bi = i;
+							bj = j;
+						}
+					}
 				}
 			}
 		}

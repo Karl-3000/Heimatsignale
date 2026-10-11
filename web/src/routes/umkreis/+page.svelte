@@ -8,6 +8,7 @@
 	import { umkreis } from '$lib/network/umkreis.svelte';
 	import Button from '$lib/ui/Button.svelte';
 	import Notice from '$lib/ui/Notice.svelte';
+	import RadiusToggle from '$lib/ui/RadiusToggle.svelte';
 	import { personen } from '$lib/util/format';
 
 	const tilesUrl = env.PUBLIC_TILES_URL ?? '';
@@ -16,7 +17,9 @@
 	const overview = $derived(umkreis.overview);
 
 	onMount(() => {
-		// Die Übersicht wird einmal geladen. Wer von einem Profil zurückkommt, findet alles wie zuvor.
+		// Auswahl und gespeicherte Wahl des Umkreises übernehmen, dann die Übersicht einmal laden.
+		// Wer von einem Profil zurückkommt, findet alles wie zuvor.
+		umkreis.configure(session.site);
 		void umkreis.load();
 	});
 </script>
@@ -40,10 +43,23 @@
 				</p>
 			{/if}
 		</div>
-		{#if overview}
-			<Button size="sm" icon={RefreshCw} loading={umkreis.loading} onclick={() => void umkreis.load(true)} testid="umkreis-refresh">Aktualisieren</Button>
-		{/if}
+		<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+			{#if umkreis.options.length > 1}
+				<RadiusToggle options={umkreis.options} value={umkreis.radius} onchange={(radiusKm) => void umkreis.setRadius(radiusKm)} />
+			{/if}
+			{#if overview}
+				<Button size="sm" icon={RefreshCw} loading={umkreis.loading} onclick={() => void umkreis.load(true)} testid="umkreis-refresh">Aktualisieren</Button>
+			{/if}
+		</div>
 	</header>
+
+	<p class="hs-sr-only" role="status" aria-live="polite" data-testid="radius-status">
+		{#if umkreis.loading && overview && umkreis.radius !== null && umkreis.radius !== overview.radius_km}
+			Der Umkreis von {umkreis.radius} km wird geladen.
+		{:else if overview}
+			Angezeigt wird der Umkreis von {overview.radius_km} km.
+		{/if}
+	</p>
 
 	{#if umkreis.error}
 		<Notice tone="danger" title="Der Umkreis ließ sich nicht laden" live testid="umkreis-error">
